@@ -19,6 +19,8 @@ import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../hooks/useAuth";
 import SidebarWidget from "./SidebarWidget";
 
+import NavItems from "../navmenu/NavItems";
+
 type NavItem = {
 	name: string;
 	icon: React.ReactNode;
@@ -27,43 +29,7 @@ type NavItem = {
 	requiredRoles?: string[]; // Roles requeridos para ver este menú
 };
 
-const navItems: NavItem[] = [
-	{
-		icon: <GridIcon />,
-		name: "Dashboard",
-		subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-	},
-	{
-		icon: <CalenderIcon />,
-		name: "Calendar",
-		path: "/calendar",
-		requiredRoles: ["admin", "coach"],
-	},
-	{
-		icon: <UserCircleIcon />,
-		name: "User Profile",
-		path: "/profile",
-		requiredRoles: ["admin", "client", "coach"],
-	},
-	{
-		name: "Forms",
-		icon: <ListIcon />,
-		subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-	},
-	{
-		name: "Tables",
-		icon: <TableIcon />,
-		subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-	},
-	{
-		name: "Pages",
-		icon: <PageIcon />,
-		subItems: [
-			{ name: "Blank Page", path: "/blank", pro: false },
-			{ name: "404 Error", path: "/error-404", pro: false },
-		],
-	},
-];
+const navItems = NavItems;
 
 const othersItems: NavItem[] = [
 	{
