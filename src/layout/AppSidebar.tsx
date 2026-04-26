@@ -2,65 +2,34 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
-import {
-	BoxCubeIcon,
-	CalenderIcon,
-	ChevronDownIcon,
-	GridIcon,
-	HorizontaLDots,
-	ListIcon,
-	PageIcon,
-	PieChartIcon,
-	PlugInIcon,
-	TableIcon,
-	UserCircleIcon,
-} from "../icons";
+import { ChevronDownIcon, HorizontaLDots } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../hooks/useAuth";
 import SidebarWidget from "./SidebarWidget";
 
 import NavItems from "../navmenu/NavItems";
+import OtherItems from "../navmenu/OtherItems";
+
+// user menu
+import MainItems from '../navmenu/MainItems';
 
 type NavItem = {
 	name: string;
 	icon: React.ReactNode;
 	path?: string;
-	subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+	subItems?: {
+		name: string;
+		path: string;
+		pro?: boolean;
+		new?: boolean;
+		requiredRoles?: string[];
+	}[];
 	requiredRoles?: string[]; // Roles requeridos para ver este menú
 };
 
-const navItems = NavItems;
+const navItems = MainItems;
 
-const othersItems: NavItem[] = [
-	{
-		icon: <PieChartIcon />,
-		name: "Charts",
-		subItems: [
-			{ name: "Line Chart", path: "/line-chart", pro: false },
-			{ name: "Bar Chart", path: "/bar-chart", pro: false },
-		],
-	},
-	{
-		icon: <BoxCubeIcon />,
-		name: "UI Elements",
-		subItems: [
-			{ name: "Alerts", path: "/alerts", pro: false },
-			{ name: "Avatar", path: "/avatars", pro: false },
-			{ name: "Badge", path: "/badge", pro: false },
-			{ name: "Buttons", path: "/buttons", pro: false },
-			{ name: "Images", path: "/images", pro: false },
-			{ name: "Videos", path: "/videos", pro: false },
-		],
-	},
-	{
-		icon: <PlugInIcon />,
-		name: "Authentication",
-		subItems: [
-			{ name: "Sign In", path: "/signin", pro: false },
-			{ name: "Sign Up", path: "/signup", pro: false },
-		],
-	},
-];
+const othersItems = OtherItems;
 
 const AppSidebar: React.FC = () => {
 	const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -76,12 +45,22 @@ const AppSidebar: React.FC = () => {
 	);
 	const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-	// Verificar si el usuario tiene acceso a un menú
+	// Verificar si el usuario tiene acceso a un menú o subitem
 	const canAccessMenuItem = (requiredRoles?: string[]): boolean => {
 		if (!requiredRoles || requiredRoles.length === 0) {
 			return true; // Si no tiene requiredRoles, todos pueden acceder
 		}
 		return hasAnyRole(requiredRoles);
+	};
+
+	// Filtrar subitems según los roles del usuario
+	const getFilteredSubItems = (
+		subItems?: NavItem["subItems"],
+	): NavItem["subItems"] => {
+		if (!subItems) return undefined;
+		return subItems.filter((subItem) =>
+			canAccessMenuItem(subItem.requiredRoles),
+		);
 	};
 
 	// Filtrar items según roles del usuario con useMemo
@@ -101,15 +80,18 @@ const AppSidebar: React.FC = () => {
 				menuType === "main" ? filteredNavItems : filteredOthersItems;
 			items.forEach((nav, index) => {
 				if (nav.subItems) {
-					nav.subItems.forEach((subItem) => {
-						if (location.pathname === subItem.path) {
-							setOpenSubmenu({
-								type: menuType as "main" | "others",
-								index,
-							});
-							submenuMatched = true;
-						}
-					});
+					const filteredSubItems = getFilteredSubItems(nav.subItems);
+					if (filteredSubItems) {
+						filteredSubItems.forEach((subItem) => {
+							if (location.pathname === subItem.path) {
+								setOpenSubmenu({
+									type: menuType as "main" | "others",
+									index,
+								});
+								submenuMatched = true;
+							}
+						});
+					}
 				}
 			});
 		});
@@ -223,7 +205,7 @@ const AppSidebar: React.FC = () => {
 							}}
 						>
 							<ul className="mt-2 space-y-1 ml-9">
-								{nav.subItems.map((subItem) => (
+								{getFilteredSubItems(nav.subItems)?.map((subItem) => (
 									<li key={subItem.name}>
 										<Link
 											to={subItem.path}
@@ -338,7 +320,7 @@ const AppSidebar: React.FC = () => {
 						</div>
 						<div className="">
 							<h2
-								className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+								className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
 									!isExpanded && !isHovered
 										? "lg:justify-center"
 										: "justify-start"

@@ -21,6 +21,9 @@ import Home from "./pages/Dashboard/Home";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 
+// pages
+import Clients from "./pages/Administration/Clients/Clients";
+
 export default function App() {
 	return (
 		<>
@@ -78,6 +81,18 @@ export default function App() {
 							{/* Charts */}
 							<Route path="/line-chart" element={<LineChart />} />
 							<Route path="/bar-chart" element={<BarChart />} />
+
+							{/* Admin Clients Page */}
+							<Route path="/administration">
+								<Route
+									path="clients"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Clients />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
 						</Route>
 
 						{/* Root redirect */}
