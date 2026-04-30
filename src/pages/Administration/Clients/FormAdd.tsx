@@ -13,7 +13,7 @@ type Props = {
 export default function FormAdd({ onSubmit, onClose }: Props) {
 	const [formData, setFormData] = useState({
 		name: "",
-		lastName: "",
+		lastname: "",
 		document: "",
 		birthDate: "",
 		phoneNumber: "",
@@ -66,8 +66,8 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Apellido</Label>
 						<Input
 							type="text"
-							value={formData.lastName}
-							name="lastName"
+							value={formData.lastname}
+							name="lastname"
 							onChange={handleChange}
 						/>
 					</div>

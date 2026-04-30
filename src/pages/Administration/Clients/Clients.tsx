@@ -12,6 +12,10 @@ type Client = {
 	id: number;
 	name: string;
 	lastname: string;
+	document: string;
+	birthDate: string;
+	phoneNumber: string;
+	email: string;
 	createDate: string;
 	status: string;
 	nextPaid: string;
@@ -28,8 +32,12 @@ const mockData: Client[] = [
 		id: 1,
 		name: "Pepedon",
 		lastname: "Pepe",
+		document: "",
+		birthDate: "",
+		phoneNumber: "",
+		email: "",
 		createDate: "11-01-2026",
-		status: "Valid",
+		status: "Active",
 		nextPaid: "11-02-2026",
 		updateDate: "11-01-2026",
 	},
@@ -37,8 +45,12 @@ const mockData: Client[] = [
 		id: 2,
 		name: "Pepe",
 		lastname: "Pepito",
+		document: "",
+		birthDate: "",
+		phoneNumber: "",
+		email: "",
 		createDate: "12-01-2026",
-		status: "Valid",
+		status: "Active",
 		nextPaid: "12-02-2026",
 		updateDate: "12-01-2026",
 	},
@@ -46,8 +58,12 @@ const mockData: Client[] = [
 		id: 3,
 		name: "Pepito",
 		lastname: "Pepito",
+		document: "",
+		birthDate: "",
+		phoneNumber: "",
+		email: "",
 		createDate: "12-01-2026",
-		status: "Valid",
+		status: "Active",
 		nextPaid: "12-02-2026",
 		updateDate: "12-01-2026",
 	},
@@ -55,8 +71,12 @@ const mockData: Client[] = [
 		id: 4,
 		name: "Pepa",
 		lastname: "Pepito",
+		document: "",
+		birthDate: "",
+		phoneNumber: "",
+		email: "",
 		createDate: "12-01-2026",
-		status: "Valid",
+		status: "Active",
 		nextPaid: "12-02-2026",
 		updateDate: "12-01-2026",
 	},
