@@ -10,8 +10,8 @@ import { useAuth } from "../../hooks/useAuth";
 export default function SignInForm() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [email, setEmail] = useState("admin@gym.com");
+	const [password, setPassword] = useState("admin123");
 	const [error, setError] = useState("");
 	const { login, isLoading } = useAuth();
 	const navigate = useNavigate();
