@@ -23,6 +23,7 @@ import { ProtectedRoute } from "./components/common/ProtectedRoute";
 
 // pages
 import Clients from "./pages/Administration/Clients/Clients";
+import Couchs from "./pages/Administration/Couchs/Couchs";
 
 export default function App() {
 	return (
@@ -89,6 +90,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["admin", "coach"]}>
 											<Clients />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="couchs"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Couchs />
 										</ProtectedRoute>
 									}
 								/>

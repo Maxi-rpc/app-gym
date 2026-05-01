@@ -1,0 +1,184 @@
+import { useState } from "react";
+import { Lineicons } from "@lineiconshq/react-lineicons";
+import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
+
+import { Couch } from "./types/Couch";
+
+type SortConfig = {
+	key: keyof Couch;
+	direction: "asc" | "desc";
+};
+
+type Props = {
+	listData: Couch[] | [];
+	onEdit?: (Couch: Couch) => void;
+	onDelet?: (Couch: Couch) => void;
+};
+
+export default function DataTable({ listData, onEdit, onDelet }: Props) {
+	const [sortConfig, setSortConfig] = useState<SortConfig>({
+		key: "id",
+		direction: "asc",
+	});
+
+	const handleEdit = (Couch: Couch) => {
+		onEdit?.(Couch);
+	};
+
+	const handleDelete = (Couch: Couch) => {
+		onDelet?.(Couch);
+	};
+
+	const sortedData = [...listData].sort((a, b) => {
+		const aValue = a[sortConfig.key];
+		const bValue = b[sortConfig.key];
+
+		if (typeof aValue === "string") {
+			return sortConfig.direction === "asc"
+				? aValue.localeCompare(bValue as string)
+				: (bValue as string).localeCompare(aValue);
+		}
+
+		if (typeof aValue === "number") {
+			return sortConfig.direction === "asc"
+				? (aValue as number) - (bValue as number)
+				: (bValue as number) - (aValue as number);
+		}
+
+		return 0;
+	});
+
+	const handleSort = (key: keyof Couch) => {
+		setSortConfig((prev) => ({
+			key,
+			direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+		}));
+	};
+
+	const SortIcon = ({ column }: { column: keyof Couch }) => {
+		if (sortConfig.key !== column) {
+			return <span className="text-gray-400">↕</span>;
+		}
+		return sortConfig.direction === "asc" ? (
+			<span className="text-blue-500">↑</span>
+		) : (
+			<span className="text-blue-500">↓</span>
+		);
+	};
+
+	return (
+		<div className="overflow-x-auto">
+			<table className="w-full table-auto">
+				<thead>
+					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("id")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								ID <SortIcon column="id" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("name")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Nombre <SortIcon column="name" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("lastname")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Apellido <SortIcon column="lastname" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("createDate")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Fecha Creación <SortIcon column="createDate" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("status")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Estado <SortIcon column="status" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("updateDate")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Actualizado <SortIcon column="updateDate" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<span className="font-semibold text-gray-700 dark:text-gray-300">
+								Acciones
+							</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{sortedData.map((Couch, index) => (
+						<tr
+							key={Couch.id}
+							className={`border-b border-gray-200 dark:border-gray-700 ${
+								index % 2 === 0
+									? "bg-white dark:bg-white/2"
+									: "bg-gray-50 dark:bg-white/5"
+							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
+						>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{Couch.id}
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{Couch.name}
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{Couch.lastname}
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{Couch.createDate}
+							</td>
+							<td className="px-4 py-3 text-sm">
+								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
+									{Couch.status}
+								</span>
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{Couch.updateDate}
+							</td>
+							<td className="px-4 py-3 text-sm">
+								<div className="flex gap-2">
+									<button
+										onClick={() => handleEdit(Couch)}
+										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+										title="Editar"
+									>
+										<Lineicons icon={Pencil1Outlined} size={20} color="blue" />
+									</button>
+
+									<button
+										onClick={() => handleDelete(Couch)}
+										className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+										title="Eliminar"
+									>
+										<Lineicons icon={Trash3Outlined} size={20} color="red" />
+									</button>
+								</div>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
+	);
+}
