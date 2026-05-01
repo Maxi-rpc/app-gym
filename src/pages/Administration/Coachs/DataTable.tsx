@@ -2,17 +2,17 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { Couch } from "./types/Couch";
+import { Coach } from "./types/Coach";
 
 type SortConfig = {
-	key: keyof Couch;
+	key: keyof Coach;
 	direction: "asc" | "desc";
 };
 
 type Props = {
-	listData: Couch[] | [];
-	onEdit?: (Couch: Couch) => void;
-	onDelet?: (Couch: Couch) => void;
+	listData: Coach[] | [];
+	onEdit?: (Coach: Coach) => void;
+	onDelet?: (Coach: Coach) => void;
 };
 
 export default function DataTable({ listData, onEdit, onDelet }: Props) {
@@ -21,12 +21,12 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 		direction: "asc",
 	});
 
-	const handleEdit = (Couch: Couch) => {
-		onEdit?.(Couch);
+	const handleEdit = (Coach: Coach) => {
+		onEdit?.(Coach);
 	};
 
-	const handleDelete = (Couch: Couch) => {
-		onDelet?.(Couch);
+	const handleDelete = (Coach: Coach) => {
+		onDelet?.(Coach);
 	};
 
 	const sortedData = [...listData].sort((a, b) => {
@@ -48,14 +48,14 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 		return 0;
 	});
 
-	const handleSort = (key: keyof Couch) => {
+	const handleSort = (key: keyof Coach) => {
 		setSortConfig((prev) => ({
 			key,
 			direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
 		}));
 	};
 
-	const SortIcon = ({ column }: { column: keyof Couch }) => {
+	const SortIcon = ({ column }: { column: keyof Coach }) => {
 		if (sortConfig.key !== column) {
 			return <span className="text-gray-400">↕</span>;
 		}
@@ -127,9 +127,9 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{sortedData.map((Couch, index) => (
+					{sortedData.map((Coach, index) => (
 						<tr
-							key={Couch.id}
+							key={Coach.id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
@@ -137,29 +137,29 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Couch.id}
+								{Coach.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Couch.name}
+								{Coach.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Couch.lastname}
+								{Coach.lastname}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Couch.createDate}
+								{Coach.createDate}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
-									{Couch.status}
+									{Coach.status}
 								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Couch.updateDate}
+								{Coach.updateDate}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
 									<button
-										onClick={() => handleEdit(Couch)}
+										onClick={() => handleEdit(Coach)}
 										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
 										title="Editar"
 									>
@@ -167,7 +167,7 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 									</button>
 
 									<button
-										onClick={() => handleDelete(Couch)}
+										onClick={() => handleDelete(Coach)}
 										className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
 										title="Eliminar"
 									>

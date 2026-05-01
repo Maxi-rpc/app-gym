@@ -1,7 +1,7 @@
 import { Modal } from "../../../components/ui/modal";
-import FormDelete from "./FormDelete";
+import FormEdit from "./FormEdit";
 
-import { Client } from "./types/Couch";
+import { Client } from "./types/Coach";
 
 type Props = {
 	isOpen: boolean;
@@ -10,7 +10,7 @@ type Props = {
 	defaultData: Client | null;
 };
 
-export default function ModalDelete({
+export default function ModalEdit({
 	isOpen,
 	onClose,
 	onSubmit,
@@ -21,14 +21,17 @@ export default function ModalDelete({
 			<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 				<div className="px-2 pr-14">
 					<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-						Eliminar Registro: {defaultData?.name} {defaultData?.lastname}
+						Editar Registro
 					</h4>
+					<p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+						Complete los campos requeridos*.
+					</p>
 				</div>
 
-				<FormDelete
+				<FormEdit
 					onClose={onClose}
 					onSubmit={onSubmit}
-					deleteText={defaultData?.email}
+					defaultData={defaultData}
 				/>
 			</div>
 		</Modal>

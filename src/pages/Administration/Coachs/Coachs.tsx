@@ -13,14 +13,14 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Couch } from "./types/Couch";
+import { Coach } from "./types/Coach";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 
-const mockData: Couch[] = [
+const mockData: Coach[] = [
 	{
 		id: 1,
 		name: "Pepedon",
@@ -59,7 +59,7 @@ const mockData: Couch[] = [
 	},
 ];
 
-export default function Couchs() {
+export default function Coachs() {
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -79,8 +79,8 @@ export default function Couchs() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Couch | null>(null);
-	const [listData, setListData] = useState<Couch[] | []>([]);
+	const [selectData, setSelectData] = useState<Coach | null>(null);
+	const [listData, setListData] = useState<Coach[] | []>([]);
 
 	const getData = () => {
 		console.log("getData");
@@ -106,8 +106,8 @@ export default function Couchs() {
 		getData();
 	};
 
-	const handleEdit = (Couch: Couch) => {
-		setSelectData(Couch);
+	const handleEdit = (Coach: Coach) => {
+		setSelectData(Coach);
 		openModalEdit();
 	};
 
@@ -118,18 +118,18 @@ export default function Couchs() {
 		getData();
 	};
 
-	const handleDelete = (Couch: Couch) => {
-		setSelectData(Couch);
+	const handleDelete = (Coach: Coach) => {
+		setSelectData(Coach);
 		openModalDelete();
 	};
 
 	return (
 		<div>
 			<PageMeta
-				title="App Gym - Administration Couch"
-				description="Panel de administracion para Couches"
+				title="App Gym - Administration Coach"
+				description="Panel de administracion para Coaches"
 			/>
-			<PageBreadcrumb pageTitle="Couchs" />
+			<PageBreadcrumb pageTitle="Coachs" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">

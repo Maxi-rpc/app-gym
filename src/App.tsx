@@ -23,7 +23,7 @@ import { ProtectedRoute } from "./components/common/ProtectedRoute";
 
 // pages
 import Clients from "./pages/Administration/Clients/Clients";
-import Couchs from "./pages/Administration/Couchs/Couchs";
+import Coachs from "./pages/Administration/Coachs/Coachs";
 
 export default function App() {
 	return (
@@ -94,10 +94,21 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="couchs"
+									path="coachs"
 									element={
 										<ProtectedRoute requiredRoles={["admin", "coach"]}>
-											<Couchs />
+											<Coachs />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+							{/* Paid Page */}
+							<Route path="/operations">
+								<Route
+									path="paid"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Clients />
 										</ProtectedRoute>
 									}
 								/>

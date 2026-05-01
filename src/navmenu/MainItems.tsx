@@ -1,5 +1,5 @@
 // Assume these icons are imported from an icon library
-import { CalenderIcon, GridIcon, UserCircleIcon } from "../icons";
+import { CalenderIcon, GridIcon, ListIcon, UserCircleIcon } from "../icons";
 
 type NavItem = {
 	name: string;
@@ -29,7 +29,26 @@ const mainItems: NavItem[] = [
 			},
 			{
 				name: "Profesores",
-				path: "/administration/couchs",
+				path: "/administration/coachs",
+				requiredRoles: ["admin", "coach"],
+				pro: false,
+			},
+		],
+	},
+	{
+		icon: <ListIcon />,
+		name: "Operaciones",
+		requiredRoles: ["admin", "coach"],
+		subItems: [
+			{
+				name: "Pagos",
+				path: "/operations/paid",
+				requiredRoles: ["admin", "coach"],
+				pro: false,
+			},
+			{
+				name: "Clases",
+				path: "/operations/class",
 				requiredRoles: ["admin", "coach"],
 				pro: false,
 			},
