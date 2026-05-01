@@ -1,12 +1,5 @@
 // Assume these icons are imported from an icon library
-import {
-	CalenderIcon,
-	GridIcon,
-	ListIcon,
-	PageIcon,
-	TableIcon,
-	UserCircleIcon,
-} from "../icons";
+import { CalenderIcon, GridIcon, UserCircleIcon } from "../icons";
 
 type NavItem = {
 	name: string;

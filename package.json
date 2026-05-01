@@ -16,6 +16,8 @@
     "@fullcalendar/list": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@lineiconshq/free-icons": "^1.0.4",
+    "@lineiconshq/react-lineicons": "^1.0.5",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/world": "^1.1.2",
     "apexcharts": "^4.1.0",
