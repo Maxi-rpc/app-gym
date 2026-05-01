@@ -5,20 +5,35 @@ import Input from "../../../components/form/input/InputField";
 import Select from "../../../components/form/Select";
 import Button from "../../../components/ui/button/Button";
 
+type Client = {
+	id: number;
+	name: string;
+	lastname: string;
+	document: string;
+	birthDate: string;
+	phoneNumber: string;
+	email: string;
+	createDate: string;
+	status: string;
+	nextPaid: string;
+	updateDate: string;
+};
+
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
+	defaultData: Client | null;
 };
 
-export default function FormAdd({ onSubmit, onClose }: Props) {
+export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [formData, setFormData] = useState({
-		name: "",
-		lastname: "",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "",
-		status: "",
+		name: defaultData?.name,
+		lastname: defaultData?.lastname,
+		document: defaultData?.document,
+		birthDate: defaultData?.birthDate,
+		phoneNumber: defaultData?.phoneNumber,
+		email: defaultData?.email,
+		status: defaultData?.status,
 	});
 	const handleClose = () => {
 		console.log("handleClose Modal");
@@ -37,6 +52,10 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 
 	const handleSelectChange = (value: string) => {
 		console.log("Selected value:", value);
+		setFormData({
+			...formData,
+			status: value,
+		});
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,6 +138,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 							placeholder="Seleccionar Estado"
 							onChange={handleSelectChange}
 							className="dark:bg-dark-900"
+							defaultValue={formData.status}
 						/>
 					</div>
 				</div>
