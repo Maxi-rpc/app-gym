@@ -1,21 +1,15 @@
 // Assume these icons are imported from an icon library
-import { CalenderIcon, GridIcon, ListIcon, UserCircleIcon } from "../icons";
+import { CalenderIcon, GridIcon, ListIcon, UserCircleIcon, PieChartIcon } from "../icons";
 
-type NavItem = {
-	name: string;
-	icon: React.ReactNode;
-	path?: string;
-	subItems?: {
-		name: string;
-		path: string;
-		pro?: boolean;
-		new?: boolean;
-		requiredRoles?: string[];
-	}[];
-	requiredRoles?: string[]; // Roles requeridos para ver este menú
-};
+import { NavItem } from "./types/NavItem";
 
 const mainItems: NavItem[] = [
+	{
+		icon: <PieChartIcon />,
+		name: "Dashboard",
+		path: "/administration/dashboard",
+		requiredRoles: ["admin", "coach"],
+	},
 	{
 		icon: <GridIcon />,
 		name: "Administración",

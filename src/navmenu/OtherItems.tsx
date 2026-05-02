@@ -1,19 +1,7 @@
 // Assume these icons are imported from an icon library
 import { BoxCubeIcon, PieChartIcon, PlugInIcon } from "../icons";
 
-type NavItem = {
-	name: string;
-	icon: React.ReactNode;
-	path?: string;
-	subItems?: {
-		name: string;
-		path: string;
-		pro?: boolean;
-		new?: boolean;
-		requiredRoles?: string[];
-	}[];
-	requiredRoles?: string[]; // Roles requeridos para ver este menú
-};
+import { NavItem } from "./types/NavItem";
 
 const otherItems: NavItem[] = [
 	{

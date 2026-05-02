@@ -22,6 +22,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 
 // pages
+import Dashboards from './pages/Administration/Dashboard/Dashboard';
 import Clients from "./pages/Administration/Clients/Clients";
 import Coachs from "./pages/Administration/Coachs/Coachs";
 
@@ -87,6 +88,14 @@ export default function App() {
 
 							{/* Admin Clients Page */}
 							<Route path="/administration">
+								<Route
+									path="dashboard"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Dashboards />
+										</ProtectedRoute>
+									}
+								/>
 								<Route
 									path="clients"
 									element={
