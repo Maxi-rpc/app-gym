@@ -1,38 +1,43 @@
 import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
+import { Trash3Outlined } from "@lineiconshq/free-icons";
 
-import { Client } from "./types/Client";
+import { Pay } from "../types/Pay";
 
 type SortConfig = {
-	key: keyof Client;
+	key: keyof Pay;
 	direction: "asc" | "desc";
 };
 
 type Props = {
-	listData: Client[] | [];
+	listData: Pay[] | [];
 	searchText: string;
-	onEdit?: (client: Client) => void;
-	onDelet?: (client: Client) => void;
+	onDelet?: (Pay: Pay) => void;
 };
 
-export default function DataTable({
-	listData,
-	searchText,
-	onEdit,
-	onDelet,
-}: Props) {
+export default function DataTable({ listData, searchText, onDelet }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
 		key: "id",
 		direction: "asc",
 	});
 
-	const handleEdit = (client: Client) => {
-		onEdit?.(client);
+	const handleDelete = (Pay: Pay) => {
+		onDelet?.(Pay);
 	};
 
-	const handleDelete = (client: Client) => {
-		onDelet?.(client);
+	const filterData = (listData: Pay[]) => {
+		if (!searchText.trim()) {
+			return listData;
+		}
+
+		const searchLower = searchText.toLowerCase();
+
+		return listData.filter((coach) => {
+			const nameMatch = coach.createDate.toLowerCase().includes(searchLower);
+			const lastnameMatch = coach.email.toLowerCase().includes(searchLower);
+
+			return nameMatch || lastnameMatch;
+		});
 	};
 
 	const sortedData = [...listData].sort((a, b) => {
@@ -54,29 +59,14 @@ export default function DataTable({
 		return 0;
 	});
 
-	const filterData = (listData: Client[]) => {
-		if (!searchText.trim()) {
-			return listData;
-		}
-
-		const searchLower = searchText.toLowerCase();
-
-		return listData.filter((client) => {
-			const nameMatch = client.name.toLowerCase().includes(searchLower);
-			const lastnameMatch = client.lastname.toLowerCase().includes(searchLower);
-
-			return nameMatch || lastnameMatch;
-		});
-	};
-
-	const handleSort = (key: keyof Client) => {
+	const handleSort = (key: keyof Pay) => {
 		setSortConfig((prev) => ({
 			key,
 			direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
 		}));
 	};
 
-	const SortIcon = ({ column }: { column: keyof Client }) => {
+	const SortIcon = ({ column }: { column: keyof Pay }) => {
 		if (sortConfig.key !== column) {
 			return <span className="text-gray-400">↕</span>;
 		}
@@ -102,18 +92,18 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("name")}
+								onClick={() => handleSort("clientid")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Nombre <SortIcon column="name" />
+								client Id <SortIcon column="clientid" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("lastname")}
+								onClick={() => handleSort("email")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Apellido <SortIcon column="lastname" />
+								Email <SortIcon column="email" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -134,14 +124,6 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("nextPaid")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Próximo Pago <SortIcon column="nextPaid" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
 								onClick={() => handleSort("updateDate")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
@@ -156,9 +138,9 @@ export default function DataTable({
 					</tr>
 				</thead>
 				<tbody>
-					{filterData(sortedData).map((client, index) => (
+					{filterData(sortedData).map((Pay, index) => (
 						<tr
-							key={client.id}
+							key={Pay.id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
@@ -166,40 +148,29 @@ export default function DataTable({
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.id}
+								{Pay.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.name}
+								{Pay.clientid}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.lastname}
+								{Pay.email}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.createDate}
+								{Pay.createDate}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
-									{client.status}
+									{Pay.status}
 								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.nextPaid}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.updateDate}
+								{Pay.updateDate}
 							</td>
 							<td className="px-4 py-3 text-sm">
-								<div className="flex gap-2">
+								<div className="flex gap-2 justify-center">
 									<button
-										onClick={() => handleEdit(client)}
-										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-										title="Editar"
-									>
-										<Lineicons icon={Pencil1Outlined} size={20} color="blue" />
-									</button>
-
-									<button
-										onClick={() => handleDelete(client)}
+										onClick={() => handleDelete(Pay)}
 										className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
 										title="Eliminar"
 									>

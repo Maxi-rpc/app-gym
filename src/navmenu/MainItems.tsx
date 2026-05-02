@@ -42,13 +42,7 @@ const mainItems: NavItem[] = [
 		subItems: [
 			{
 				name: "Pagos",
-				path: "/operations/paid",
-				requiredRoles: ["admin", "coach"],
-				pro: false,
-			},
-			{
-				name: "Clases",
-				path: "/operations/class",
+				path: "/operations/payments",
 				requiredRoles: ["admin", "coach"],
 				pro: false,
 			},

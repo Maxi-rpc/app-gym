@@ -182,6 +182,7 @@ export default function Coachs() {
 				{/* Data Table */}
 				<DataTable
 					listData={listData}
+					searchText={searchText}
 					onEdit={handleEdit}
 					onDelet={handleDelete}
 				/>

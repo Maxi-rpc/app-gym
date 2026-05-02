@@ -25,6 +25,8 @@ import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import Clients from "./pages/Administration/Clients/Clients";
 import Coachs from "./pages/Administration/Coachs/Coachs";
 
+import Payments from './pages/Operations/Payments/Payments';
+
 export default function App() {
 	return (
 		<>
@@ -105,10 +107,10 @@ export default function App() {
 							{/* Paid Page */}
 							<Route path="/operations">
 								<Route
-									path="paid"
+									path="payments"
 									element={
 										<ProtectedRoute requiredRoles={["admin", "coach"]}>
-											<Clients />
+											<Payments />
 										</ProtectedRoute>
 									}
 								/>

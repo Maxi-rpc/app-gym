@@ -11,11 +11,17 @@ type SortConfig = {
 
 type Props = {
 	listData: Coach[] | [];
+	searchText: string;
 	onEdit?: (Coach: Coach) => void;
 	onDelet?: (Coach: Coach) => void;
 };
 
-export default function DataTable({ listData, onEdit, onDelet }: Props) {
+export default function DataTable({
+	listData,
+	searchText,
+	onEdit,
+	onDelet,
+}: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
 		key: "id",
 		direction: "asc",
@@ -27,6 +33,21 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 
 	const handleDelete = (Coach: Coach) => {
 		onDelet?.(Coach);
+	};
+
+	const filterData = (listData: Coach[]) => {
+		if (!searchText.trim()) {
+			return listData;
+		}
+
+		const searchLower = searchText.toLowerCase();
+
+		return listData.filter((coach) => {
+			const nameMatch = coach.name.toLowerCase().includes(searchLower);
+			const lastnameMatch = coach.lastname.toLowerCase().includes(searchLower);
+
+			return nameMatch || lastnameMatch;
+		});
 	};
 
 	const sortedData = [...listData].sort((a, b) => {
@@ -127,7 +148,7 @@ export default function DataTable({ listData, onEdit, onDelet }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{sortedData.map((Coach, index) => (
+					{filterData(sortedData).map((Coach, index) => (
 						<tr
 							key={Coach.id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
