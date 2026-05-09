@@ -1,6 +1,7 @@
+import { useState } from "react";
+
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { useState } from "react";
 
 export default function SectionMontlhyTarget() {
 	const options: ApexOptions = {

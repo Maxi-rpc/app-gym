@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import Badge from "../../../../components/ui/badge/Badge";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
@@ -11,6 +13,51 @@ import {
 import AnimateCount from "../common/AnimateCount";
 
 export default function SectionMetrics() {
+	const [clients, setClients] = useState({
+		before: 0,
+		now: 0,
+		percent: 0,
+		arrow: "up",
+	});
+	const [members, setMembers] = useState({
+		before: 0,
+		now: 0,
+		percent: 0,
+		arrow: "up",
+	});
+
+	const getData = () => {
+		const clientsBefore = 100;
+		const clientsNow = 130;
+		const clientsPercent = ((clientsNow - clientsBefore) / clientsBefore) * 100;
+		const clientsArrow = clientsNow > clientsBefore ? "up" : "down";
+
+		setClients({
+			before: clientsBefore,
+			now: clientsNow,
+			percent: clientsPercent,
+			arrow: clientsArrow,
+		});
+
+		const membersBefore = 100;
+		const membersNow = 20;
+		const membersPercent = ((membersNow - membersBefore) / membersBefore) * 100;
+		const membersArrow = membersNow > membersBefore ? "up" : "down";
+
+		setMembers({
+			before: membersBefore,
+			now: membersNow,
+			percent: membersPercent,
+			arrow: membersArrow,
+		});
+
+		console.log(clients);
+	};
+
+	useEffect(() => {
+		getData();
+	}, []);
+
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
 			{/* <!-- Metric Item Start --> */}
@@ -29,12 +76,19 @@ export default function SectionMetrics() {
 							Clientes
 						</span>
 						<h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-							<AnimateCount target={1239} />
+							<AnimateCount target={clients?.now} />
 						</h4>
 					</div>
-					<Badge color="success">
-						<Lineicons icon={ArrowUpwardOutlined} size={15} />
-						11.01%
+					<Badge color={clients.arrow == "up" ? "success" : "error"}>
+						<Lineicons
+							icon={
+								clients.arrow == "up"
+									? ArrowUpwardOutlined
+									: ArrowDownwardOutlined
+							}
+							size={15}
+						/>
+						{clients?.percent}%
 					</Badge>
 				</div>
 			</div>
@@ -52,16 +106,23 @@ export default function SectionMetrics() {
 				<div className="flex items-end justify-between mt-5">
 					<div>
 						<span className="text-sm text-gray-500 dark:text-gray-400">
-							Membresía
+							Suscripciones
 						</span>
 						<h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-							<AnimateCount target={1100} />
+							<AnimateCount target={members?.now} />
 						</h4>
 					</div>
 
-					<Badge color="error">
-						<Lineicons icon={ArrowDownwardOutlined} size={15} />
-						9.05%
+					<Badge color={members.arrow == "up" ? "success" : "error"}>
+						<Lineicons
+							icon={
+								members.arrow == "up"
+									? ArrowUpwardOutlined
+									: ArrowDownwardOutlined
+							}
+							size={15}
+						/>
+						{members?.percent}%
 					</Badge>
 				</div>
 			</div>
