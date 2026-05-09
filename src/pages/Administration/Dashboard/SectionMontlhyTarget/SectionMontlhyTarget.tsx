@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";

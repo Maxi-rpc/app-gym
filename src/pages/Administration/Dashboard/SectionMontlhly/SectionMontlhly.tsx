@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
+
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { useState } from "react";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
@@ -9,6 +10,37 @@ import {
 } from "@lineiconshq/free-icons";
 
 export default function SectionMontlhly() {
+	const [data, setData] = useState({
+		targetMonthly: 0,
+		targetNow: 0,
+		percent: 0,
+		percentDif: 0,
+	});
+
+	const [graphConfig, setGraphConfig] = useState({
+		series: [0],
+	});
+
+	const getData = () => {
+		const targetObjetive = 200;
+		const target = 60;
+		const targetBefore = 30;
+		const percentGraph = (target / targetObjetive) * 100;
+		const percentNow = ((target - targetBefore) / targetBefore) * 100;
+
+		setData({
+			targetMonthly: targetObjetive,
+			targetNow: target,
+			percent: percentGraph,
+			percentDif: percentNow,
+		});
+
+		setGraphConfig({
+			...graphConfig,
+			series: [percentGraph],
+		});
+	};
+
 	const series = [75.55];
 	const options: ApexOptions = {
 		colors: ["#465FFF"],
@@ -57,6 +89,10 @@ export default function SectionMontlhly() {
 		},
 		labels: ["Progress"],
 	};
+
+	useEffect(() => {
+		getData();
+	}, [graphConfig]);
 
 	return (
 		<div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/3">

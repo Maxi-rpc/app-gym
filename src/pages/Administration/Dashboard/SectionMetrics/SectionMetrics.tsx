@@ -51,7 +51,6 @@ export default function SectionMetrics() {
 			arrow: membersArrow,
 		});
 
-		console.log(clients);
 	};
 
 	useEffect(() => {
