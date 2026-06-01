@@ -4,6 +4,7 @@ import PageMeta from "../../../components/common/PageMeta";
 import SectionMetrics from "./SectionMetrics/SectionMetrics";
 import SectionMontlhly from "./SectionMontlhly/SectionMontlhly";
 import SectionMontlhyTarget from "./SectionMontlhyTarget/SectionMontlhyTarget";
+import SectionRecentOrders from "./SectionRecentOrders/SectionRecentOrders";
 
 export default function Dashboard() {
 	return (
@@ -23,6 +24,10 @@ export default function Dashboard() {
 
 				<div className="col-span-12 xl:col-span-5">
 					<SectionMontlhly />
+				</div>
+
+				<div className="col-span-12 xl:col-span-7">
+					<SectionRecentOrders />
 				</div>
 			</div>
 		</div>
