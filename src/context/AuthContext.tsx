@@ -4,6 +4,7 @@ export interface User {
 	email: string;
 	name: string;
 	lastname: string;
+	phone: string;
 	roles: string[];
 }
 
@@ -90,6 +91,7 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				email: "admin@gym.com",
 				name: "Admin",
 				lastname: "User",
+				phone: "111112341",
 				roles: ["admin"],
 			},
 		},
@@ -99,6 +101,7 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				email: "client@gym.com",
 				name: "Client",
 				lastname: "User",
+				phone: "111112341",
 				roles: ["client"],
 			},
 		},
@@ -108,6 +111,7 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				email: "coach@gym.com",
 				name: "Coach",
 				lastname: "User",
+				phone: "111112341",
 				roles: ["coach"],
 			},
 		},

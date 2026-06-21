@@ -6,7 +6,6 @@ import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import AppLayout from "./layout/AppLayout";
 
 import NotFound from "./pages/OtherPage/NotFound";
-import Home from "./pages/Dashboard/Home";
 
 // auth
 import SignIn from "./pages/AuthPages/SignIn";
