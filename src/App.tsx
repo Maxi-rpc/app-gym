@@ -42,7 +42,7 @@ export default function App() {
 								</ProtectedRoute>
 							}
 						>
-							<Route index path="/" element={<Home />} />
+							<Route index path="/" element={<UserProfiles />} />
 
 							{/* profile Page */}
 							<Route
