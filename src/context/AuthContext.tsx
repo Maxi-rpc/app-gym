@@ -6,6 +6,7 @@ export interface User {
 	lastname: string;
 	phone: string;
 	roles: string[];
+	qrToken: string;
 }
 
 export interface AuthContextType {
@@ -93,6 +94,7 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				lastname: "User",
 				phone: "111112341",
 				roles: ["admin"],
+				qrToken: "1234abcadmin",
 			},
 		},
 		"client@gym.com": {
@@ -103,6 +105,7 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				lastname: "User",
 				phone: "111112341",
 				roles: ["client"],
+				qrToken: "1234abcclient",
 			},
 		},
 		"coach@gym.com": {
@@ -113,6 +116,7 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				lastname: "User",
 				phone: "111112341",
 				roles: ["coach"],
+				qrToken: "1234abccoach",
 			},
 		},
 	};

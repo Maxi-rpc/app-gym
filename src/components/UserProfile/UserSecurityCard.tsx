@@ -15,7 +15,7 @@ export default function UserSecurityCard() {
 		<>
 			<div className="mb-6 rounded-2xl border border-gray-200  p-5 lg:p-6 dark:border-gray-800 ">
 				<h4 className="text-lg mb-4 font-semibold text-gray-800 lg:mb-6 dark:text-white/90">
-					Security
+					Seguridad
 				</h4>
 				<div>
 					<div className="flex flex-col justify-between gap-4 border-b border-gray-200 py-4 first:pt-0 last:border-b-0 last:pb-0 sm:flex-row sm:items-end dark:border-gray-800">
