@@ -18,6 +18,7 @@ import UserProfiles from "./pages/UserProfiles";
 import Dashboards from './pages/Administration/Dashboard/Dashboard';
 import Clients from "./pages/Administration/Clients/Clients";
 import Coachs from "./pages/Administration/Coachs/Coachs";
+import Assistants from './pages/Administration/Assistants/Assistants';
 
 // operations
 import Payments from './pages/Operations/Payments/Payments';
@@ -68,6 +69,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["admin", "coach"]}>
 											<Clients />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="assistants"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Assistants />
 										</ProtectedRoute>
 									}
 								/>

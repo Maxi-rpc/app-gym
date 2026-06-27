@@ -1,5 +1,11 @@
 // Assume these icons are imported from an icon library
-import { CalenderIcon, GridIcon, ListIcon, UserCircleIcon, PieChartIcon } from "../icons";
+import {
+	CalenderIcon,
+	GridIcon,
+	ListIcon,
+	UserCircleIcon,
+	PieChartIcon,
+} from "../icons";
 
 import { NavItem } from "./types/NavItem";
 
@@ -24,6 +30,12 @@ const mainItems: NavItem[] = [
 			{
 				name: "Profesores",
 				path: "/administration/coachs",
+				requiredRoles: ["admin", "coach"],
+				pro: false,
+			},
+			{
+				name: "Asistencias",
+				path: "/administration/assistants",
 				requiredRoles: ["admin", "coach"],
 				pro: false,
 			},
