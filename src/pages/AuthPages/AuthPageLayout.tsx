@@ -1,3 +1,4 @@
+import { publicAsset } from "../../utils/publicAsset";
 import React from "react";
 import GridShape from "../../components/common/GridShape";
 import { Link } from "react-router";
@@ -21,7 +22,7 @@ export default function AuthLayout({
                 <img
                   width={231}
                   height={48}
-                  src="/images/logo/auth-logo.svg"
+                  src={publicAsset("images/logo/auth-logo.svg")}
                   alt="Logo"
                 />
               </Link>

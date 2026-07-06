@@ -13,67 +13,59 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Client } from "./types/Client";
+import { ClientAssistant } from "./types/ClientAssistant";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
-import ModalAttendance from './ModalAttendance';
-import ConfirmAttendanceButton from './ConfirmAttendanceButton';
+import ModalAttendance from "./ModalAttendance";
+import ConfirmAttendanceButton from "./ConfirmAttendanceButton";
 
-const mockData: Client[] = [
+const mockData: ClientAssistant[] = [
 	{
 		id: 1,
 		name: "Pepedon",
 		lastname: "Pepe",
 		document: "33333",
-		birthDate: "",
 		phoneNumber: "",
 		email: "pepe@test.com",
 		createDate: "11-01-2026",
 		status: "Activo",
-		nextPaid: "11-02-2026",
-		updateDate: "11-01-2026",
+		nextPaid: "12-02-2026",
 	},
 	{
 		id: 2,
 		name: "Pepe",
 		lastname: "Pepito",
 		document: "",
-		birthDate: "",
 		phoneNumber: "",
 		email: "pepe@test.com",
 		createDate: "12-01-2026",
 		status: "Activo",
 		nextPaid: "12-02-2026",
-		updateDate: "12-01-2026",
 	},
 	{
 		id: 3,
 		name: "Pepito",
 		lastname: "Pepito",
 		document: "",
-		birthDate: "",
 		phoneNumber: "",
 		email: "pepe@test.com",
 		createDate: "12-01-2026",
 		status: "Activo",
 		nextPaid: "12-02-2026",
-		updateDate: "12-01-2026",
 	},
 	{
 		id: 4,
 		name: "Pepa",
 		lastname: "Pepito",
 		document: "",
-		birthDate: "",
 		phoneNumber: "",
 		email: "pepe@test.com",
 		createDate: "12-01-2026",
 		status: "Activo",
 		nextPaid: "12-02-2026",
-		updateDate: "12-01-2026",
 	},
 ];
 
@@ -97,8 +89,8 @@ export default function Assistants() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Client | null>(null);
-	const [listData, setListData] = useState<Client[] | []>([]);
+	const [selectData, setSelectData] = useState<ClientAssistant | null>(null);
+	const [listData, setListData] = useState<ClientAssistant[] | []>([]);
 
 	const getData = () => {
 		console.log("getData");
@@ -124,7 +116,7 @@ export default function Assistants() {
 		getData();
 	};
 
-	const handleEdit = (client: Client) => {
+	const handleEdit = (client: ClientAssistant) => {
 		setSelectData(client);
 		openModalEdit();
 	};
@@ -136,7 +128,7 @@ export default function Assistants() {
 		getData();
 	};
 
-	const handleDelete = (client: Client) => {
+	const handleDelete = (client: ClientAssistant) => {
 		setSelectData(client);
 		openModalDelete();
 	};
@@ -211,11 +203,11 @@ export default function Assistants() {
 			</div>
 
 			{/* Modal Add */}
-			{/* <ModalAdd
+			<ModalAdd
 				isOpen={isOpenAdd}
 				onClose={closeModalAdd}
 				onSubmit={handleSave}
-			/> */}
+			/>
 
 			{/* Modal Edit */}
 			<ModalEdit

@@ -1,3 +1,4 @@
+import { publicAsset } from "../../utils/publicAsset";
 import { useState } from "react";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
 import NotificationDropdown from "./NotificationDropdown";
@@ -81,12 +82,12 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           <Link to="/" className="lg:hidden">
             <img
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src={publicAsset("images/logo/logo.svg")}
               alt="Logo"
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src={publicAsset("images/logo/logo-dark.svg")}
               alt="Logo"
             />
           </Link>

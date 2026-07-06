@@ -1,7 +1,7 @@
 import { Modal } from "../../../components/ui/modal";
 import FormEdit from "./FormEdit";
 
-import { Client } from "./types/Client";
+import { Client } from "./types/ClientAssistant";
 
 type Props = {
 	isOpen: boolean;

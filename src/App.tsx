@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
+import { HashRouter as Router } from "react-router";
 
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import { AuthProvider } from "./context/AuthContext";
@@ -15,13 +16,13 @@ import SignUp from "./pages/AuthPages/SignUp";
 import UserProfiles from "./pages/UserProfiles";
 
 // admin
-import Dashboards from './pages/Administration/Dashboard/Dashboard';
+import Dashboards from "./pages/Administration/Dashboard/Dashboard";
 import Clients from "./pages/Administration/Clients/Clients";
 import Coachs from "./pages/Administration/Coachs/Coachs";
-import Assistants from './pages/Administration/Assistants/Assistants';
+import Assistants from "./pages/Administration/Assistants/Assistants";
 
 // operations
-import Payments from './pages/Operations/Payments/Payments';
+import Payments from "./pages/Operations/Payments/Payments";
 
 export default function App() {
 	return (

@@ -2,18 +2,18 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { Client } from "./types/Client";
+import { ClientAssistant } from "./types/ClientAssistant";
 
 type SortConfig = {
-	key: keyof Client;
+	key: keyof ClientAssistant;
 	direction: "asc" | "desc";
 };
 
 type Props = {
-	listData: Client[] | [];
+	listData: ClientAssistant[] | [];
 	searchText: string;
-	onEdit?: (client: Client) => void;
-	onDelet?: (client: Client) => void;
+	onEdit?: (client: ClientAssistant) => void;
+	onDelet?: (client: ClientAssistant) => void;
 };
 
 export default function DataTable({
@@ -27,11 +27,11 @@ export default function DataTable({
 		direction: "asc",
 	});
 
-	const handleEdit = (client: Client) => {
+	const handleEdit = (client: ClientAssistant) => {
 		onEdit?.(client);
 	};
 
-	const handleDelete = (client: Client) => {
+	const handleDelete = (client: ClientAssistant) => {
 		onDelet?.(client);
 	};
 
@@ -54,7 +54,7 @@ export default function DataTable({
 		return 0;
 	});
 
-	const filterData = (listData: Client[]) => {
+	const filterData = (listData: ClientAssistant[]) => {
 		if (!searchText.trim()) {
 			return listData;
 		}
@@ -69,14 +69,14 @@ export default function DataTable({
 		});
 	};
 
-	const handleSort = (key: keyof Client) => {
+	const handleSort = (key: keyof ClientAssistant) => {
 		setSortConfig((prev) => ({
 			key,
 			direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
 		}));
 	};
 
-	const SortIcon = ({ column }: { column: keyof Client }) => {
+	const SortIcon = ({ column }: { column: keyof ClientAssistant }) => {
 		if (sortConfig.key !== column) {
 			return <span className="text-gray-400">↕</span>;
 		}
@@ -118,14 +118,6 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("createDate")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Fecha Creación <SortIcon column="createDate" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
 								onClick={() => handleSort("status")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
@@ -138,14 +130,6 @@ export default function DataTable({
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
 								Próximo Pago <SortIcon column="nextPaid" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
-								onClick={() => handleSort("updateDate")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Actualizado <SortIcon column="updateDate" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -174,9 +158,6 @@ export default function DataTable({
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{client.lastname}
 							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.createDate}
-							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
 									{client.status}
@@ -184,9 +165,6 @@ export default function DataTable({
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{client.nextPaid}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.updateDate}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">

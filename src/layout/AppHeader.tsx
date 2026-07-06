@@ -1,3 +1,4 @@
+import { publicAsset } from "../utils/publicAsset";
 import { useEffect, useRef, useState } from "react";
 
 import { Link } from "react-router";
@@ -86,12 +87,12 @@ const AppHeader: React.FC = () => {
           <Link to="/" className="lg:hidden">
             <img
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src={publicAsset("images/logo/logo.svg")}
               alt="Logo"
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src={publicAsset("images/logo/logo-dark.svg")}
               alt="Logo"
             />
           </Link>

@@ -1,3 +1,4 @@
+import { publicAsset } from "../../utils/publicAsset";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -30,7 +31,7 @@ export default function UserDataCard() {
 									<img
 										className="size-20"
 										alt="user"
-										src="/images/user/owner.jpg"
+										src={publicAsset("images/user/owner.jpg")}
 									/>
 								</div>
 								<div className="text-left">
