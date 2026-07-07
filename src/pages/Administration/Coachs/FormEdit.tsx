@@ -4,25 +4,12 @@ import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Select from "../../../components/form/Select";
 import Button from "../../../components/ui/button/Button";
-
-type Client = {
-	id: number;
-	name: string;
-	lastname: string;
-	document: string;
-	birthDate: string;
-	phoneNumber: string;
-	email: string;
-	createDate: string;
-	status: string;
-	nextPaid: string;
-	updateDate: string;
-};
+import { Coach } from "./types/Coach";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: Client | null;
+	defaultData: Coach | null;
 };
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {

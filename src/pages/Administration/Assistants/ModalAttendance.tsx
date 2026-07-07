@@ -1,5 +1,4 @@
 import { Modal } from "../../../components/ui/modal";
-import FormdAdd from "./FormAdd";
 import Button from "../../../components/ui/button/Button";
 import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
@@ -20,6 +19,7 @@ export default function ModalAttendance({ isOpen, onClose, onSubmit }: Props) {
 
 		console.log("Escaneado OK:", qrValue);
 
+		onSubmit();
 		setIsScanning(false);
 	};
 

@@ -3,7 +3,12 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 
 import Button from "../../../components/ui/button/Button";
 
-export default function ConfirmAttendanceButton() {
+type Props = {
+	onClick?: () => void; // Click handler
+	onConfirm?: () => void; // Click handler
+};
+
+export default function ConfirmAttendanceButton({ onClick, onConfirm }: Props) {
 	const [isScanning, setIsScanning] = useState(false);
 
 	const handleScan = (codes: { rawValue: string }[]) => {
@@ -13,12 +18,19 @@ export default function ConfirmAttendanceButton() {
 
 		console.log("Escaneado OK:", qrValue);
 
+		onConfirm?.();
 		setIsScanning(false);
 	};
 
 	return (
 		<div>
-			<Button size="sm" onClick={() => setIsScanning(true)}>
+			<Button
+				size="sm"
+				onClick={() => {
+					onClick?.();
+					setIsScanning(true);
+				}}
+			>
 				Confirmar asistencia
 			</Button>
 

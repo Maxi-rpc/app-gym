@@ -8,7 +8,6 @@ import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../hooks/useAuth";
 import SidebarWidget from "./SidebarWidget";
 
-import NavItems from "../navmenu/NavItems";
 import OtherItems from "../navmenu/OtherItems";
 
 // user menu
@@ -328,12 +327,12 @@ const AppSidebar: React.FC = () => {
 								}`}
 							>
 								{isExpanded || isHovered || isMobileOpen ? (
-									"Others"
+									"Útil"
 								) : (
 									<HorizontaLDots />
 								)}
 							</h2>
-							{renderMenuItems(filteredOthersItems, "others")}
+							{/* {renderMenuItems(filteredOthersItems, "others")} */}
 						</div>
 					</div>
 				</nav>

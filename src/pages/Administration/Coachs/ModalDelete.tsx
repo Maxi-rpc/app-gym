@@ -1,13 +1,13 @@
 import { Modal } from "../../../components/ui/modal";
 import FormDelete from "./FormDelete";
 
-import { Client } from "./types/Coach";
+import { Coach } from "./types/Coach";
 
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: () => void | undefined;
-	defaultData: Client | null;
+	defaultData: Coach | null;
 };
 
 export default function ModalDelete({

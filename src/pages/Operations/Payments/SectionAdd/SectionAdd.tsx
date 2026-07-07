@@ -21,12 +21,17 @@ export default function SectionEdit() {
 	});
 
 	const handleSubmit = () => {
-		const errors: { [key: string]: boolean } = {};
+		const errors = {
+			clientid: false,
+			email: false,
+			createDate: false,
+		};
+		type ErrorKey = keyof typeof errors;
 
 		Object.entries(formData).forEach(([key, value]) => {
 			// Excluir 'notes' e 'id' de la validación obligatoria
-			if (key !== "notes" && key !== "id") {
-				errors[key] = !value || value === "";
+			if (key in errors) {
+				errors[key as ErrorKey] = !value || value === "";
 			}
 		});
 

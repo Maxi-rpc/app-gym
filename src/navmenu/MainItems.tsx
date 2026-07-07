@@ -62,7 +62,7 @@ const mainItems: NavItem[] = [
 	},
 	{
 		icon: <UserCircleIcon />,
-		name: "User Profile",
+		name: "Perfil",
 		path: "/profile",
 		requiredRoles: ["admin", "client", "coach"],
 	},
