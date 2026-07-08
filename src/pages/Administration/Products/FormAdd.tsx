@@ -37,8 +37,8 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 	];
 
 	const optionsCategory = [
-		{ value: "golosina", label: "Golosina" },
-		{ value: "bebida", label: "Bebida" },
+		{ value: "Golosina", label: "Golosina" },
+		{ value: "Bebida", label: "Bebida" },
 	];
 
 	const handleSelectChange = (value: string) => {

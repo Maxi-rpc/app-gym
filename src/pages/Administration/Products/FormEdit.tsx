@@ -43,8 +43,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	];
 
 	const optionsCategory = [
-		{ value: "golosina", label: "Golosina" },
-		{ value: "bebida", label: "Bebida" },
+		{ value: "Golosina", label: "Golosina" },
+		{ value: "Bebida", label: "Bebida" },
 	];
 
 	const handleSelectChange = (value: string) => {
