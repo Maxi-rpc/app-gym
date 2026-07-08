@@ -1,4 +1,3 @@
-import { publicAsset } from "../../../../utils/publicAsset";
 import {
 	Table,
 	TableBody,
@@ -6,81 +5,76 @@ import {
 	TableHeader,
 	TableRow,
 } from "../../../../components/ui/table";
-import Badge from "../../../../components/ui/badge/Badge";
 
 // Define the TypeScript interface for the table rows
-interface Product {
-	id: number; // Unique identifier for each product
-	name: string; // Product name
-	variants: string; // Number of variants (e.g., "1 Variant", "2 Variants")
-	category: string; // Category of the product
-	price: string; // Price of the product (as a string with currency symbol)
-	// status: string; // Status of the product
-	image: string; // URL or path to the product image
-	status: "Delivered" | "Pending" | "Canceled"; // Status of the product
-}
+import { Product } from "../types/Product";
 
 // Define the table data using the interface
 const tableData: Product[] = [
 	{
 		id: 1,
-		name: "MacBook Pro 13”",
-		variants: "2 Variants",
-		category: "Laptop",
+		name: "Topline",
+		variants: "Menta",
+		category: "Golosina",
 		price: "$2399.00",
-		status: "Delivered",
-		image: publicAsset("images/product/product-01.jpg"), // Replace with actual image URL
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/mini/00243600/00243610.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
 	},
 	{
 		id: 2,
-		name: "Apple Watch Ultra",
-		variants: "1 Variant",
-		category: "Watch",
-		price: "$879.00",
-		status: "Pending",
-		image: publicAsset("images/product/product-02.jpg"), // Replace with actual image URL
+		name: "Topline",
+		variants: "Menta",
+		category: "Golosina",
+		price: "$2399.00",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/mini/00243600/00243610.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
 	},
 	{
 		id: 3,
-		name: "iPhone 15 Pro Max",
-		variants: "2 Variants",
-		category: "SmartPhone",
-		price: "$1869.00",
-		status: "Delivered",
-		image: publicAsset("images/product/product-03.jpg"), // Replace with actual image URL
+		name: "Topline",
+		variants: "Menta",
+		category: "Golosina",
+		price: "$2399.00",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/mini/00243600/00243610.jpg", // Replace with actual image URL
+		createDate: "06-07-2026",
 	},
 	{
 		id: 4,
-		name: "iPad Pro 3rd Gen",
-		variants: "2 Variants",
-		category: "Electronics",
-		price: "$1699.00",
-		status: "Canceled",
-		image: publicAsset("images/product/product-04.jpg"), // Replace with actual image URL
+		name: "Agua",
+		variants: "500 ml",
+		category: "Bebida",
+		price: "$2399.00",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/mini/00623200/00623215.jpg", // Replace with actual image URL
+		createDate: "06-07-2026",
 	},
 	{
 		id: 5,
-		name: "AirPods Pro 2nd Gen",
-		variants: "1 Variant",
-		category: "Accessories",
-		price: "$240.00",
-		status: "Delivered",
-		image: publicAsset("images/product/product-05.jpg"), // Replace with actual image URL
+		name: "Agua",
+		variants: "1.5 lts",
+		category: "Bebida",
+		price: "$2399.00",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/large/00582600/00582627.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
 	},
 ];
 
 export default function SectionRecentOrders() {
 	return (
-		<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+		<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/3 sm:px-6">
 			<div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-						Recent Orders
+						Ventas Recientes
 					</h3>
 				</div>
 
 				<div className="flex items-center gap-3">
-					<button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+					<button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200">
 						<svg
 							className="stroke-current fill-white dark:fill-gray-800"
 							width="20"
@@ -118,8 +112,8 @@ export default function SectionRecentOrders() {
 						</svg>
 						Filter
 					</button>
-					<button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-						See all
+					<button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200">
+						Ver todo
 					</button>
 				</div>
 			</div>
@@ -132,25 +126,25 @@ export default function SectionRecentOrders() {
 								isHeader
 								className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 							>
-								Products
+								Productos
 							</TableCell>
 							<TableCell
 								isHeader
 								className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 							>
-								Category
+								Categoría
 							</TableCell>
 							<TableCell
 								isHeader
 								className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 							>
-								Price
+								Precio
 							</TableCell>
 							<TableCell
 								isHeader
 								className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 							>
-								Status
+								Fecha
 							</TableCell>
 						</TableRow>
 					</TableHeader>
@@ -162,10 +156,10 @@ export default function SectionRecentOrders() {
 							<TableRow key={product.id} className="">
 								<TableCell className="py-3">
 									<div className="flex items-center gap-3">
-										<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+										<div className="h-12.5 w-12.5 overflow-hidden rounded-md">
 											<img
 												src={product.image}
-												className="h-[50px] w-[50px]"
+												className="h-12.5 w-12.5"
 												alt={product.name}
 											/>
 										</div>
@@ -180,24 +174,13 @@ export default function SectionRecentOrders() {
 									</div>
 								</TableCell>
 								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-									{product.price}
-								</TableCell>
-								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
 									{product.category}
 								</TableCell>
 								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-									<Badge
-										size="sm"
-										color={
-											product.status === "Delivered"
-												? "success"
-												: product.status === "Pending"
-													? "warning"
-													: "error"
-										}
-									>
-										{product.status}
-									</Badge>
+									{product.price}
+								</TableCell>
+								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+									{product.createDate}
 								</TableCell>
 							</TableRow>
 						))}

@@ -19,6 +19,7 @@ import UserProfiles from "./pages/UserProfiles";
 import Dashboards from "./pages/Administration/Dashboard/Dashboard";
 import Clients from "./pages/Administration/Clients/Clients";
 import Coachs from "./pages/Administration/Coachs/Coachs";
+import Products from "./pages/Administration/Products/Products";
 import Assistants from "./pages/Administration/Assistants/Assistants";
 
 // operations
@@ -43,7 +44,15 @@ export default function App() {
 								</ProtectedRoute>
 							}
 						>
-							<Route index path="/" element={<UserProfiles />} />
+							<Route
+								index
+								path="/"
+								element={
+									<ProtectedRoute requiredRoles={["admin", "client", "coach"]}>
+										<UserProfiles />
+									</ProtectedRoute>
+								}
+							/>
 
 							{/* profile Page */}
 							<Route
@@ -74,18 +83,26 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="assistants"
-									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
-											<Assistants />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
 									path="coachs"
 									element={
 										<ProtectedRoute requiredRoles={["admin", "coach"]}>
 											<Coachs />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="products"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Products />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="assistants"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Assistants />
 										</ProtectedRoute>
 									}
 								/>

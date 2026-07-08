@@ -5,7 +5,7 @@ export type ClientAssistant = {
 	document: string;
 	phoneNumber: string;
 	email: string;
-	createDate: string;
+	createDate: string; // Date of assistant
 	status: string;
 	nextPaid: string;
 };

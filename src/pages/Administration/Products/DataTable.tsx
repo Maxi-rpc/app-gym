@@ -2,18 +2,18 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { ClientAssistant } from "./types/ClientAssistant";
+import { Product } from "./types/Product";
 
 type SortConfig = {
-	key: keyof ClientAssistant;
+	key: keyof Product;
 	direction: "asc" | "desc";
 };
 
 type Props = {
-	listData: ClientAssistant[] | [];
+	listData: Product[] | [];
 	searchText: string;
-	onEdit?: (client: ClientAssistant) => void;
-	onDelet?: (client: ClientAssistant) => void;
+	onEdit?: (product: Product) => void;
+	onDelet?: (product: Product) => void;
 };
 
 export default function DataTable({
@@ -27,12 +27,12 @@ export default function DataTable({
 		direction: "asc",
 	});
 
-	const handleEdit = (client: ClientAssistant) => {
-		onEdit?.(client);
+	const handleEdit = (product: Product) => {
+		onEdit?.(product);
 	};
 
-	const handleDelete = (client: ClientAssistant) => {
-		onDelet?.(client);
+	const handleDelete = (product: Product) => {
+		onDelet?.(product);
 	};
 
 	const sortedData = [...listData].sort((a, b) => {
@@ -54,29 +54,31 @@ export default function DataTable({
 		return 0;
 	});
 
-	const filterData = (listData: ClientAssistant[]) => {
+	const filterData = (listData: Product[]) => {
 		if (!searchText.trim()) {
 			return listData;
 		}
 
 		const searchLower = searchText.toLowerCase();
 
-		return listData.filter((client) => {
-			const nameMatch = client.name.toLowerCase().includes(searchLower);
-			const lastnameMatch = client.lastname.toLowerCase().includes(searchLower);
+		return listData.filter((product) => {
+			const nameMatch = product.name.toLowerCase().includes(searchLower);
+			const lastnameMatch = product.variants
+				.toLowerCase()
+				.includes(searchLower);
 
 			return nameMatch || lastnameMatch;
 		});
 	};
 
-	const handleSort = (key: keyof ClientAssistant) => {
+	const handleSort = (key: keyof Product) => {
 		setSortConfig((prev) => ({
 			key,
 			direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
 		}));
 	};
 
-	const SortIcon = ({ column }: { column: keyof ClientAssistant }) => {
+	const SortIcon = ({ column }: { column: keyof Product }) => {
 		if (sortConfig.key !== column) {
 			return <span className="text-gray-400">↕</span>;
 		}
@@ -102,14 +104,6 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("createDate")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Fecha <SortIcon column="name" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
 								onClick={() => handleSort("name")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
@@ -118,10 +112,18 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("lastname")}
+								onClick={() => handleSort("variants")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Apellido <SortIcon column="lastname" />
+								Variantes <SortIcon column="variants" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("category")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Categoría <SortIcon column="category" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -134,10 +136,26 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("nextPaid")}
+								onClick={() => handleSort("image")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Próximo Pago <SortIcon column="nextPaid" />
+								Imagen <SortIcon column="image" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("createDate")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Fecha Creación <SortIcon column="createDate" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("amount")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Cantidad <SortIcon column="amount" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -148,9 +166,9 @@ export default function DataTable({
 					</tr>
 				</thead>
 				<tbody>
-					{filterData(sortedData).map((client, index) => (
+					{filterData(sortedData).map((product, index) => (
 						<tr
-							key={client.id}
+							key={product.id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
@@ -158,29 +176,41 @@ export default function DataTable({
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.id}
+								{product.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.createDate}
+								{product.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.name}
+								{product.variants}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.lastname}
+								{product.category}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
-									{client.status}
+									{product.status}
 								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.nextPaid}
+								<div className="h-12.5 w-12.5 overflow-hidden rounded-md">
+									<img
+										src={product.image}
+										className="h-12.5 w-12.5"
+										alt={product.name}
+									/>
+								</div>
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{product.createDate}
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{product.amount}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
 									<button
-										onClick={() => handleEdit(client)}
+										onClick={() => handleEdit(product)}
 										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
 										title="Editar"
 									>
@@ -188,7 +218,7 @@ export default function DataTable({
 									</button>
 
 									<button
-										onClick={() => handleDelete(client)}
+										onClick={() => handleDelete(product)}
 										className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
 										title="Eliminar"
 									>

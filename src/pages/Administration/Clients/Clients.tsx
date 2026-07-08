@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import PageMeta from "../../../components/common/PageMeta";
 
@@ -99,7 +99,7 @@ export default function Clients() {
 	const [listData, setListData] = useState<Client[] | []>([]);
 
 	const getData = () => {
-		console.log("getData");
+		console.log("Clients - getData");
 		setListData(mockData);
 	};
 
@@ -138,6 +138,10 @@ export default function Clients() {
 		setSelectData(client);
 		openModalDelete();
 	};
+
+	useEffect(() => {
+		getData();
+	}, []);
 
 	return (
 		<div>

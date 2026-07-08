@@ -29,6 +29,10 @@ export default function Dashboard() {
 				<div className="col-span-12 xl:col-span-7">
 					<SectionRecentOrders />
 				</div>
+
+				<div className="col-span-12 xl:col-span-5">
+					<SectionRecentOrders />
+				</div>
 			</div>
 		</div>
 	);

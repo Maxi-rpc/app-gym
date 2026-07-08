@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import PageMeta from "../../../components/common/PageMeta";
 
@@ -93,7 +93,7 @@ export default function Assistants() {
 	const [listData, setListData] = useState<ClientAssistant[] | []>([]);
 
 	const getData = () => {
-		console.log("getData");
+		console.log("Assistants - getData");
 		setListData(mockData);
 	};
 
@@ -132,6 +132,10 @@ export default function Assistants() {
 		setSelectData(client);
 		openModalDelete();
 	};
+
+	useEffect(() => {
+		getData();
+	}, []);
 
 	return (
 		<div>

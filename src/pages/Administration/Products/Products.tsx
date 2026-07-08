@@ -13,53 +13,73 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Coach } from "./types/Coach";
+import { Product } from "./types/Product";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 
-const mockData: Coach[] = [
+const mockData: Product[] = [
 	{
 		id: 1,
-		name: "Pepedon",
-		lastname: "Pepe",
-		document: "33333",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "11-01-2026",
+		name: "Topline",
+		variants: "Menta",
+		category: "Golosina",
+		cost: "$1000.00",
+		price: "$1300.00",
+		amount: "10",
 		status: "Activo",
-		updateDate: "11-01-2026",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/mini/00243600/00243610.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
+		updateDate: "",
 	},
 	{
 		id: 2,
-		name: "Pepe",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
+		name: "Agua",
+		variants: "1.5 lts",
+		category: "Bebida",
+		cost: "$1200.00",
+		price: "$1500.00",
+		amount: "10",
 		status: "Activo",
-		updateDate: "12-01-2026",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/large/00582600/00582627.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
+		updateDate: "",
 	},
 	{
 		id: 3,
-		name: "Pepito",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
+		name: "Agua",
+		variants: "500 ml",
+		category: "Bebida",
+		cost: "$1000.00",
+		price: "$1300.00",
+		amount: "10",
 		status: "Activo",
-		updateDate: "12-01-2026",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/mini/00623200/00623215.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
+		updateDate: "",
+	},
+	{
+		id: 4,
+		name: "Energizante Monster",
+		variants: "Mango loco",
+		category: "Bebida",
+		cost: "$1000.00",
+		price: "$1500.00",
+		amount: "10",
+		status: "Activo",
+		image:
+			"https://static.cotodigital3.com.ar/sitios/fotos/large/00490200/00490207.jpg", // Replace with actual image URL
+		createDate: "07-07-2026",
+		updateDate: "",
 	},
 ];
 
-export default function Coachs() {
+export default function Products() {
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -79,11 +99,11 @@ export default function Coachs() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Coach | null>(null);
-	const [listData, setListData] = useState<Coach[] | []>([]);
+	const [selectData, setSelectData] = useState<Product | null>(null);
+	const [listData, setListData] = useState<Product[] | []>([]);
 
 	const getData = () => {
-		console.log("Coachs - getData");
+		console.log("Products - getData");
 		setListData(mockData);
 	};
 
@@ -106,8 +126,8 @@ export default function Coachs() {
 		getData();
 	};
 
-	const handleEdit = (Coach: Coach) => {
-		setSelectData(Coach);
+	const handleEdit = (product: Product) => {
+		setSelectData(product);
 		openModalEdit();
 	};
 
@@ -118,8 +138,8 @@ export default function Coachs() {
 		getData();
 	};
 
-	const handleDelete = (Coach: Coach) => {
-		setSelectData(Coach);
+	const handleDelete = (product: Product) => {
+		setSelectData(product);
 		openModalDelete();
 	};
 
@@ -130,29 +150,29 @@ export default function Coachs() {
 	return (
 		<div>
 			<PageMeta
-				title="App Gym - Administration Coach"
-				description="Panel de administracion para Coaches"
+				title="App Gym - Administration Product"
+				description="Panel de administracion para productos"
 			/>
-			<PageBreadcrumb pageTitle="Coachs" />
+			<PageBreadcrumb pageTitle="Products" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-						Listado de Profesores
+						Listado de productos
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran los profesores registrados hasta la fecha actual.
+						Se muestran los productos registrados hasta la fecha actual.
 					</p>
 				</div>
 
 				{/* Search */}
 				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
 					<div className="space-y-6 flex-1">
-						<Label htmlFor="inputTwo">Buscar Profesor</Label>
+						<Label htmlFor="inputTwo">Buscar Producto</Label>
 						<Input
 							type="text"
 							id="inputTwo"
-							placeholder="nombre o appelido"
+							placeholder="nombre o variante"
 							value={searchText}
 							onChange={handleSearch}
 						/>
