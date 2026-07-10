@@ -53,8 +53,14 @@ const mainItems: NavItem[] = [
 		requiredRoles: ["admin", "coach"],
 		subItems: [
 			{
-				name: "Pagos",
+				name: "Suscripciones",
 				path: "/operations/payments",
+				requiredRoles: ["admin", "coach"],
+				pro: false,
+			},
+			{
+				name: "Ventas",
+				path: "/operations/sales",
 				requiredRoles: ["admin", "coach"],
 				pro: false,
 			},

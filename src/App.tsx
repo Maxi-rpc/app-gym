@@ -24,6 +24,7 @@ import Assistants from "./pages/Administration/Assistants/Assistants";
 
 // operations
 import Payments from "./pages/Operations/Payments/Payments";
+import Sales from "./pages/Operations/Sales/Sales";
 
 export default function App() {
 	return (
@@ -114,6 +115,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["admin", "coach"]}>
 											<Payments />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="sales"
+									element={
+										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<Sales />
 										</ProtectedRoute>
 									}
 								/>
