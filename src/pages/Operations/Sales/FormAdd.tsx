@@ -64,6 +64,12 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 		notes: "",
 		items: [],
 	});
+
+	const [formDataItem, setFormDataItem] = useState({
+		id: "",
+		quantity: "",
+	});
+
 	const handleClose = () => {
 		console.log("handleClose Modal");
 		onClose?.();
@@ -107,7 +113,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2">
 						<Label>Nota</Label>
 						<TextArea
 							value={formData.notes}
@@ -122,7 +128,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2">
 						<Label>Seleccionar Items</Label>
 						<Select
 							options={options}
@@ -136,8 +142,8 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Cantidad</Label>
 						<Input
 							type="text"
-							value={formData.document}
-							name="document"
+							value={formData.saleDate}
+							name="name"
 							onChange={handleChange}
 						/>
 					</div>

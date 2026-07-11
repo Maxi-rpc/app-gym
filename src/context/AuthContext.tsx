@@ -4,8 +4,10 @@ export interface User {
 	email: string;
 	name: string;
 	lastname: string;
+	dni: string;
 	phone: string;
 	roles: string[];
+	status: string; // Active, Blocked, Inactive
 	qrToken: string;
 }
 
@@ -92,7 +94,9 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				email: "admin@gym.com",
 				name: "Admin",
 				lastname: "User",
+				dni: "",
 				phone: "111112341",
+				status: "Active",
 				roles: ["admin"],
 				qrToken: "1234abcadmin",
 			},
@@ -103,7 +107,9 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				email: "client@gym.com",
 				name: "Client",
 				lastname: "User",
+				dni: "",
 				phone: "111112341",
+				status: "Active",
 				roles: ["client"],
 				qrToken: "1234abcclient",
 			},
@@ -114,7 +120,9 @@ async function mockLoginAPI(email: string, password: string): Promise<User> {
 				email: "coach@gym.com",
 				name: "Coach",
 				lastname: "User",
+				dni: "",
 				phone: "111112341",
+				status: "Active",
 				roles: ["coach"],
 				qrToken: "1234abccoach",
 			},

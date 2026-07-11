@@ -1,13 +1,47 @@
+import { useState } from "react";
+
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 
+import { EyeCloseIcon, EyeIcon } from "../../icons";
+
+import { useAuth } from "../../hooks/useAuth";
+
 export default function UserSecurityCard() {
+	const { user } = useAuth();
+	const [showPassword, setShowPassword] = useState(false);
+	const [error, setError] = useState("");
+	const [formData, setFormData] = useState({
+		email: user?.email,
+		password: "",
+		newPassword: "",
+	});
+
 	const { isOpen, openModal, closeModal } = useModal();
+
+	const handleChange = (event) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
+	};
+
 	const handleSave = () => {
 		// Handle save logic here
+		if (!formData.password || !formData.newPassword) {
+			setError("Por favor completa todos los campos*");
+			return;
+		}
+
+		if (formData.password == formData.newPassword) {
+			setError("Por favor la contraseña debe ser diferente");
+			return;
+		}
+
 		console.log("Saving changes...");
 		closeModal();
 	};
@@ -67,15 +101,65 @@ export default function UserSecurityCard() {
 					<form className="flex flex-col">
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+								<div className="col-span-2">
+									<Label>Email</Label>
+									<Input type="text" value={formData.email} disabled />
+								</div>
 								<div>
-									<Label>Password Actual</Label>
-									<Input type="password" value="Argentina" />
+									<Label>
+										Password Actual <span className="text-error-500">*</span>
+									</Label>
+									<div className="relative">
+										<Input
+											type={showPassword ? "text" : "password"}
+											name="password"
+											value={formData.password}
+											onChange={handleChange}
+										/>
+										<span
+											onClick={() => setShowPassword(!showPassword)}
+											className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+										>
+											{showPassword ? (
+												<EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+											) : (
+												<EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+											)}
+										</span>
+									</div>
 								</div>
 
 								<div>
-									<Label>Password Nueva</Label>
-									<Input type="password" value="Buenos Aires." />
+									<Label>
+										Password Nueva <span className="text-error-500">*</span>
+									</Label>
+									<div className="relative">
+										<Input
+											type={showPassword ? "text" : "password"}
+											name="newPassword"
+											value={formData.newPassword}
+											onChange={handleChange}
+										/>
+										<span
+											onClick={() => setShowPassword(!showPassword)}
+											className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+										>
+											{showPassword ? (
+												<EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+											) : (
+												<EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+											)}
+										</span>
+									</div>
 								</div>
+
+								{error && (
+									<div className="col-span-2 p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+										<p className="text-sm text-error-600 dark:text-error-400">
+											{error}
+										</p>
+									</div>
+								)}
 							</div>
 						</div>
 						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">

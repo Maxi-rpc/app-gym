@@ -19,6 +19,7 @@ import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
+import ModalDetail from "./ModalDetail";
 
 // mock
 const salesExample: Sale[] = [
@@ -191,6 +192,12 @@ export default function Sales() {
 		closeModal: closeModalDelete,
 	} = useModal();
 
+	const {
+		isOpen: isOpenDetail,
+		openModal: openModalDetail,
+		closeModal: closeModalDetail,
+	} = useModal();
+
 	const [searchText, setSearchText] = useState("");
 	const [selectData, setSelectData] = useState<SaleTableRow | null>(null);
 	const [listData, setListData] = useState<SaleTableRow[] | []>([]);
@@ -234,6 +241,11 @@ export default function Sales() {
 	const handleDelete = (item: SaleTableRow) => {
 		setSelectData(item);
 		openModalDelete();
+	};
+
+	const handleDetail = (item: SaleTableRow) => {
+		setSelectData(item);
+		openModalDetail();
 	};
 
 	useEffect(() => {
@@ -310,6 +322,14 @@ export default function Sales() {
 				isOpen={isOpenAdd}
 				onClose={closeModalAdd}
 				onSubmit={handleSave}
+			/>
+
+			{/* Modal Delete */}
+			<ModalDetail
+				isOpen={isOpenDetail}
+				onClose={closeModalDetail}
+				onSubmit={handleUpdate}
+				defaultData={selectData}
 			/>
 
 			{/* Modal Edit */}
