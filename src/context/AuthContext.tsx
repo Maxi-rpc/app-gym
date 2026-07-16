@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useState, useEffect } from "react";
 
+import { supabase } from "../utils/supabase";
+
 export interface User {
 	email: string;
 	name: string;
@@ -44,7 +46,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const login = async (email: string, password: string): Promise<void> => {
 		setIsLoading(true);
 		try {
+			const { data, error } = await supabase.auth.signInWithPassword({
+				email,
+				password,
+			});
+
+			if (error) {
+				console.log("Supabase error", error);
+				throw error;
+			}
+
+			console.log("Supabase data", data);
 			// Mock API - simular llamada al backend
+			// maxirpc2607@gmail.com, Maximiliano.26
 			const userData = await mockLoginAPI(email, password);
 			setUser(userData);
 			localStorage.setItem("user", JSON.stringify(userData));

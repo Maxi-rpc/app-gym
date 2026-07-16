@@ -20,6 +20,7 @@
     "@lineiconshq/react-lineicons": "^1.0.5",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/world": "^1.1.2",
+    "@supabase/supabase-js": "^2.110.2",
     "@yudiel/react-qr-scanner": "^2.6.0",
     "apexcharts": "^4.1.0",
     "clsx": "^2.1.1",
