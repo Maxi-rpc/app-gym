@@ -84,14 +84,21 @@ export default function UserDataCard() {
 									{profile?.profile?.last_name}
 								</p>
 							</div>
-							<div className="hidden xl:block"></div>
-							<div className="hidden xl:block"></div>
-							<div>
+							<div className="w-full">
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
 									Email
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
 									{profile?.profile?.email}
+								</p>
+							</div>
+							<div className="hidden xl:block"></div>
+							<div>
+								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+									Cumpleaños
+								</p>
+								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
+									{profile?.profile?.birth_date}
 								</p>
 							</div>
 							<div>

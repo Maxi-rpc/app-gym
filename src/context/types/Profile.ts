@@ -26,6 +26,7 @@ export interface Profile {
 	status_id: number;
 	updated_at: string;
 	qr_token: string;
+	birth_date: string;
 	status: Status;
 	user_roles: UserRole[];
 }
