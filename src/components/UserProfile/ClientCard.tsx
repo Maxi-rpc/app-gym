@@ -6,13 +6,13 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 
-import { employeeService } from "../../service/employee.service";
-import { EmployeeResponse } from "./types/Employee";
+import { clientService } from "../../service/client.service";
+import { ClientResponse } from "./types/Client";
 import { useAuth } from "../../hooks/useAuth";
 
-export default function EmployeeCard() {
+export default function ClientCard() {
 	const { profile } = useAuth();
-	const [employee, setEmployee] = useState<EmployeeResponse | null>(null);
+	const [client, setClient] = useState<ClientResponse | null>(null);
 	const { isOpen, openModal, closeModal } = useModal();
 	const handleSave = () => {
 		// Handle save logic here
@@ -20,22 +20,22 @@ export default function EmployeeCard() {
 		closeModal();
 	};
 
-	const loadEmployee = async (userId: string) => {
+	const loadClient = async (userId: string) => {
 		try {
-			const employeeData = await employeeService.getById(userId);
+			const clientData = await clientService.getById(userId);
 
-			setEmployee(employeeData);
+			setClient(clientData);
 		} catch (err) {
-			console.error("Error cargando employee", err);
+			console.error("Error cargando client", err);
 
-			setEmployee(null);
+			setClient(null);
 		}
 	};
 
 	useEffect(() => {
 		const getData = async () => {
 			if (profile?.profile?.id) {
-				await loadEmployee(profile?.profile?.id);
+				await loadClient(profile?.profile?.id);
 			}
 		};
 		getData();
@@ -47,7 +47,7 @@ export default function EmployeeCard() {
 				<div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 					<div>
 						<h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-							Empleado
+							Cliente
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
@@ -56,25 +56,34 @@ export default function EmployeeCard() {
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{employee?.employee?.hire_date}
+									{client?.client?.created_at}
 								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Especialidad
+									Altura y Peso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{employee?.employee?.specialist}
+									{client?.client?.height} , {client?.client?.weight}
 								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Observación
+									Contacto de Emergencia
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{employee?.employee?.observations}
+									{client?.client?.emergency_contact}
+								</p>
+							</div>
+
+							<div>
+								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+									Notas Medicas
+								</p>
+								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
+									{client?.client?.medical_notes}
 								</p>
 							</div>
 						</div>

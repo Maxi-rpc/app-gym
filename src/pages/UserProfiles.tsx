@@ -21,10 +21,10 @@ export default function UserProfiles() {
 				<div className="space-y-6">
 					<UserDataCard />
 					{hasRole("Admin") && <EmployeeCard />}
-					{hasRole("Profesor") && <EmployeeCard />}
+					{hasRole("Admin") && <ClientCard />}
 					{hasRole("Administración") && <p>Eres de Administración</p>}
+					{hasRole("Profesor") && <EmployeeCard />}
 					{hasRole("Cliente") && <ClientCard />}
-					<ClientCard />
 					<UserSecurityCard />
 				</div>
 			</div>
