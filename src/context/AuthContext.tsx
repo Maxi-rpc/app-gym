@@ -1,26 +1,26 @@
-import { createContext, ReactNode, useState, useEffect } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
+import { Session, User as SupabaseUser } from "@supabase/supabase-js";
 
 import { supabase } from "../utils/supabase";
+import { profileService } from "../service/profile.service.ts";
 
-export interface User {
-	email: string;
-	name: string;
-	lastname: string;
-	dni: string;
-	phone: string;
-	roles: string[];
-	status: string; // Active, Blocked, Inactive
-	qrToken: string;
-}
+import { ProfileResponse } from "./types/Profile.ts";
 
 export interface AuthContextType {
-	user: User | null;
+	session: Session | null;
+	authUser: SupabaseUser | null;
+	profile: ProfileResponse | null;
+
 	isLoading: boolean;
 	isAuthenticated: boolean;
+
 	login: (email: string, password: string) => Promise<void>;
-	logout: () => void;
+	logout: () => Promise<void>;
+
 	hasRole: (role: string) => boolean;
 	hasAnyRole: (roles: string[]) => boolean;
+
+	refreshProfile: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -28,126 +28,200 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	const [user, setUser] = useState<User | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
+	const [session, setSession] = useState<Session | null>(null);
+	const [authUser, setAuthUser] = useState<SupabaseUser | null>(null);
+	const [profile, setProfile] = useState<ProfileResponse | null>(null);
 
-	// Verificar si hay sesión guardada al cargar
-	useEffect(() => {
-		const savedUser = localStorage.getItem("user");
-		if (savedUser) {
-			try {
-				setUser(JSON.parse(savedUser));
-			} catch {
-				localStorage.removeItem("user");
-			}
+	const [isLoading, setIsLoading] = useState(true);
+
+	/**
+	 * Carga el perfil desde tu tabla profiles
+	 */
+	const loadProfile = async (userId: string) => {
+		try {
+			const profileData = await profileService.getByUserId(userId);
+
+			setProfile(profileData);
+		} catch (err) {
+			console.error("Error cargando profile", err);
+
+			setProfile(null);
 		}
+	};
+
+	/**
+	 * Login
+	 */
+	const login = async (email: string, password: string) => {
+		const { error } = await supabase.auth.signInWithPassword({
+			email,
+			password,
+		});
+
+		if (error) throw error;
+
+		// NO hacemos nada más.
+		// onAuthStateChange se encargará de cargar el profile.
+	};
+
+	/**
+	 * Logout
+	 */
+	const logout = async () => {
+		await supabase.auth.signOut();
+	};
+
+	/**
+	 * Recargar profile manualmente
+	 */
+	const refreshProfile = async () => {
+		if (!authUser) return;
+
+		await loadProfile(authUser.id);
+	};
+
+	/**
+	 * Escuchar cambios de autenticación
+	 */
+	useEffect(() => {
+		let mounted = true;
+
+		const initialize = async () => {
+			setIsLoading(true);
+
+			const {
+				data: { session },
+			} = await supabase.auth.getSession();
+
+			if (!mounted) return;
+
+			setSession(session);
+			setAuthUser(session?.user ?? null);
+
+			if (session?.user) {
+				await loadProfile(session.user.id);
+			}
+
+			if (mounted) {
+				setIsLoading(false);
+			}
+		};
+
+		initialize();
+
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange(async (_event, session) => {
+			setSession(session);
+			setAuthUser(session?.user ?? null);
+
+			if (session?.user) {
+				await loadProfile(session.user.id);
+			} else {
+				setProfile(null);
+			}
+		});
+
+		return () => {
+			mounted = false;
+			subscription.unsubscribe();
+		};
 	}, []);
 
-	const login = async (email: string, password: string): Promise<void> => {
-		setIsLoading(true);
-		try {
-			const { data, error } = await supabase.auth.signInWithPassword({
-				email,
-				password,
-			});
-
-			if (error) {
-				console.log("Supabase error", error);
-				throw error;
-			}
-
-			console.log("Supabase data", data);
-			// Mock API - simular llamada al backend
-			// maxirpc2607@gmail.com, Maximiliano.26
-			const userData = await mockLoginAPI(email, password);
-			setUser(userData);
-			localStorage.setItem("user", JSON.stringify(userData));
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const logout = () => {
-		setUser(null);
-		localStorage.removeItem("user");
-	};
-
 	const hasRole = (role: string): boolean => {
-		if (!user?.roles) return false;
-		return user.roles.includes(role);
+		return Boolean(
+			profile?.profile?.user_roles?.some(
+				(ur) => ur.role && ur.role.name === role,
+			),
+		);
 	};
 
 	const hasAnyRole = (roles: string[]): boolean => {
-		if (!user?.roles || !Array.isArray(roles)) return false;
-		return roles.some((role) => user.roles.includes(role));
+		if (!profile?.profile?.user_roles) return false;
+
+		return roles.some((r) =>
+			profile.profile.user_roles.some((ur) => ur.role && ur.role.name === r),
+		);
 	};
 
-	const value: AuthContextType = {
-		user,
-		isLoading,
-		isAuthenticated: !!user,
-		login,
-		logout,
-		hasRole,
-		hasAnyRole,
-	};
+	return (
+		<AuthContext.Provider
+			value={{
+				session,
+				authUser,
+				profile,
 
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+				isLoading,
+
+				isAuthenticated: !!session,
+
+				login,
+				logout,
+
+				hasRole,
+				hasAnyRole,
+
+				refreshProfile,
+			}}
+		>
+			{children}
+		</AuthContext.Provider>
+	);
 }
 
 // Mock API - reemplazar con llamada real al backend
-async function mockLoginAPI(email: string, password: string): Promise<User> {
-	// Simular delay de red
-	await new Promise((resolve) => setTimeout(resolve, 500));
+// async function mockLoginAPI(email: string, password: string): Promise<User> {
+// 	// Simular delay de red
+// 	await new Promise((resolve) => setTimeout(resolve, 500));
 
-	// Mock users database
-	const mockUsers: Record<string, { password: string; user: User }> = {
-		"admin@gym.com": {
-			password: "admin123",
-			user: {
-				email: "admin@gym.com",
-				name: "Admin",
-				lastname: "User",
-				dni: "",
-				phone: "111112341",
-				status: "Active",
-				roles: ["admin"],
-				qrToken: "1234abcadmin",
-			},
-		},
-		"client@gym.com": {
-			password: "client123",
-			user: {
-				email: "client@gym.com",
-				name: "Client",
-				lastname: "User",
-				dni: "",
-				phone: "111112341",
-				status: "Active",
-				roles: ["client"],
-				qrToken: "1234abcclient",
-			},
-		},
-		"coach@gym.com": {
-			password: "coach123",
-			user: {
-				email: "coach@gym.com",
-				name: "Coach",
-				lastname: "User",
-				dni: "",
-				phone: "111112341",
-				status: "Active",
-				roles: ["coach"],
-				qrToken: "1234abccoach",
-			},
-		},
-	};
+// 	// Mock users database
+// 	const mockUsers: Record<string, { password: string; user: User }> = {
+// 		"admin@gym.com": {
+// 			password: "admin123",
+// 			user: {
+// 				email: "admin@gym.com",
+// 				name: "Admin",
+// 				lastname: "User",
+// 				dni: "",
+// 				phone: "111112341",
+// 				status: "Active",
+// 				roles: ["admin"],
+// 				qr_token: "1234abcadmin",
+// 			},
+// 		},
+// 		"client@gym.com": {
+// 			password: "client123",
+// 			user: {
+// 				email: "client@gym.com",
+// 				name: "Client",
+// 				lastname: "User",
+// 				dni: "",
+// 				phone: "111112341",
+// 				status: "Active",
+// 				roles: ["client"],
+// 				qr_token: "1234abcclient",
+// 			},
+// 		},
+// 		"coach@gym.com": {
+// 			password: "coach123",
+// 			user: {
+// 				email: "coach@gym.com",
+// 				name: "Coach",
+// 				lastname: "User",
+// 				dni: "",
+// 				phone: "111112341",
+// 				status: "Active",
+// 				roles: ["coach"],
+// 				qr_token: "1234abccoach",
+// 			},
+// 		},
+// 	};
 
-	const mockUser = mockUsers[email];
+// 	const mockUser = mockUsers[email];
 
-	if (!mockUser || mockUser.password !== password) {
-		throw new Error("Email o contraseña incorrectos");
-	}
+// 	if (!mockUser || mockUser.password !== password) {
+// 		throw new Error("Email o contraseña incorrectos");
+// 	}
 
-	return mockUser.user;
-}
+// 	return mockUser.user;
+// }

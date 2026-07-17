@@ -32,7 +32,7 @@ export default function SignInForm() {
 		}
 
 		try {
-			await login(email, password);
+			await login(email, password); // maxirpc Maximiliano.26
 			navigate("/");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Error al iniciar sesión");

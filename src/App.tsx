@@ -50,7 +50,7 @@ export default function App() {
 								index
 								path="/"
 								element={
-									<ProtectedRoute requiredRoles={["admin", "client", "coach"]}>
+									<ProtectedRoute requiredRoles={["Admin", "Client", "Coach"]}>
 										<UserProfiles />
 									</ProtectedRoute>
 								}
@@ -60,7 +60,7 @@ export default function App() {
 							<Route
 								path="/profile"
 								element={
-									<ProtectedRoute requiredRoles={["admin", "client", "coach"]}>
+									<ProtectedRoute requiredRoles={["Admin", "Client", "Coach"]}>
 										<UserProfiles />
 									</ProtectedRoute>
 								}
@@ -71,7 +71,7 @@ export default function App() {
 								<Route
 									path="dashboard"
 									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+										<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 											<Dashboards />
 										</ProtectedRoute>
 									}
@@ -79,7 +79,7 @@ export default function App() {
 								<Route
 									path="clients"
 									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+										<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 											<Clients />
 										</ProtectedRoute>
 									}
@@ -87,7 +87,7 @@ export default function App() {
 								<Route
 									path="coachs"
 									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+										<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 											<Coachs />
 										</ProtectedRoute>
 									}
@@ -95,7 +95,7 @@ export default function App() {
 								<Route
 									path="products"
 									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+										<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 											<Products />
 										</ProtectedRoute>
 									}
@@ -103,7 +103,7 @@ export default function App() {
 								<Route
 									path="assistants"
 									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+										<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 											<Assistants />
 										</ProtectedRoute>
 									}
@@ -114,7 +114,7 @@ export default function App() {
 								<Route
 									path="payments"
 									element={
-										<ProtectedRoute requiredRoles={["admin", "coach"]}>
+										<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 											<Payments />
 										</ProtectedRoute>
 									}
@@ -123,7 +123,7 @@ export default function App() {
 									<Route
 										path=""
 										element={
-											<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 												<Sales />
 											</ProtectedRoute>
 										}
@@ -131,7 +131,7 @@ export default function App() {
 									<Route
 										path="create"
 										element={
-											<ProtectedRoute requiredRoles={["admin", "coach"]}>
+											<ProtectedRoute requiredRoles={["Admin", "Coach"]}>
 												<SalesCreate />
 											</ProtectedRoute>
 										}

@@ -4,13 +4,20 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import Badge from "../ui/badge/Badge";
 
 import { useAuth } from "../../hooks/useAuth";
 import QRCode from "react-qr-code";
 
 export default function UserDataCard() {
 	const { isOpen, openModal, closeModal } = useModal();
-	const { user } = useAuth();
+	const { profile } = useAuth();
+
+	const roleNames =
+		profile?.profile?.user_roles
+			?.map((ur) => ur.role?.name)
+			.filter(Boolean)
+			.join(", ") ?? "";
 
 	const handleSave = () => {
 		// Handle save logic here
@@ -25,7 +32,10 @@ export default function UserDataCard() {
 						<div className="mb-6 flex flex-col gap-5 sm:flex-row xl:items-center xl:justify-between">
 							<div className="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-center">
 								<div className="border-gray-20 overflow-hidden rounded border dark:border-gray-800">
-									<QRCode value={user?.qrToken || "no data"} size={100} />
+									<QRCode
+										value={profile?.profile?.qr_token || "no data"}
+										size={100}
+									/>
 								</div>
 								<div className="border-gray-20 overflow-hidden rounded-full border dark:border-gray-800">
 									<img
@@ -36,11 +46,14 @@ export default function UserDataCard() {
 								</div>
 								<div className="text-left">
 									<h4 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">
-										{user?.name} {user?.lastname}
+										{profile?.profile?.name} {profile?.profile?.last_name}{" "}
+										<Badge color="success">
+											{profile?.profile?.status.name}
+										</Badge>
 									</h4>
 									<div className="flex items-center gap-1 sm:gap-3">
 										<p className="text-sm text-gray-500 dark:text-gray-400">
-											{user?.roles}
+											{roleNames}
 										</p>
 										<div className="hidden h-3.5 w-px bg-gray-300 sm:block dark:bg-gray-700"></div>
 										<p className="text-sm text-gray-500 dark:text-gray-400">
@@ -56,7 +69,7 @@ export default function UserDataCard() {
 									Nombre
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{user?.name}
+									{profile?.profile?.name}
 								</p>
 							</div>
 							<div className="w-full">
@@ -64,7 +77,7 @@ export default function UserDataCard() {
 									Apellido
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{user?.lastname}
+									{profile?.profile?.last_name}
 								</p>
 							</div>
 							<div className="hidden xl:block"></div>
@@ -74,7 +87,7 @@ export default function UserDataCard() {
 									Email
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{user?.email}
+									{profile?.profile?.email}
 								</p>
 							</div>
 							<div>
@@ -82,7 +95,7 @@ export default function UserDataCard() {
 									Teléfono
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{user?.phone}
+									{profile?.profile?.phone}
 								</p>
 							</div>
 							<div>
@@ -90,7 +103,7 @@ export default function UserDataCard() {
 									Role
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{user?.roles}
+									{roleNames}
 								</p>
 							</div>
 							<div>
@@ -253,27 +266,22 @@ export default function UserDataCard() {
 								<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Nombre</Label>
-										<Input type="text" value={user?.name} />
+										<Input type="text" value={profile?.profile?.name} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Apellido</Label>
-										<Input type="text" value={user?.lastname} />
+										<Input type="text" value={profile?.profile?.last_name} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Email</Label>
-										<Input type="text" value={user?.email} />
+										<Input type="text" value={profile?.profile?.email} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Teléfono</Label>
-										<Input type="text" value={user?.phone} />
-									</div>
-
-									<div className="col-span-2">
-										<Label>Bio</Label>
-										<Input type="text" value="Team Manager" />
+										<Input type="text" value={profile?.profile?.phone || ""} />
 									</div>
 								</div>
 							</div>
