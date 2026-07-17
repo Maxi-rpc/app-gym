@@ -11,23 +11,23 @@ import { EyeCloseIcon, EyeIcon } from "../../icons";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function UserSecurityCard() {
-	const { user } = useAuth();
+	const { profile } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
 	const [formData, setFormData] = useState({
-		email: user?.email,
+		email: profile?.profile?.email,
 		password: "",
 		newPassword: "",
 	});
 
 	const { isOpen, openModal, closeModal } = useModal();
 
-	const handleChange = (event) => {
-		const { name, value } = event.target;
+	const handleChange = () => {
 		setFormData({
 			...formData,
-			[name]: value,
+			email: "",
 		});
+		console.log("editando data");
 	};
 
 	const handleSave = () => {

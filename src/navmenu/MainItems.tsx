@@ -34,12 +34,6 @@ const mainItems: NavItem[] = [
 				pro: false,
 			},
 			{
-				name: "Productos",
-				path: "/administration/products",
-				requiredRoles: ["Admin", "Coach"],
-				pro: false,
-			},
-			{
 				name: "Asistencias",
 				path: "/administration/assistants",
 				requiredRoles: ["Admin", "Coach"],

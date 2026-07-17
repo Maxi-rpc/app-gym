@@ -1,4 +1,4 @@
-import { publicAsset } from "../../utils/publicAsset";
+// import { publicAsset } from "../../utils/publicAsset";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -37,13 +37,17 @@ export default function UserDataCard() {
 										size={100}
 									/>
 								</div>
-								<div className="border-gray-20 overflow-hidden rounded-full border dark:border-gray-800">
+								{/* <div className="border-gray-20 overflow-hidden rounded-full border dark:border-gray-800">
 									<img
 										className="size-20"
 										alt="user"
 										src={publicAsset("images/user/owner.jpg")}
 									/>
+								</div> */}
+								<div className="mr-3 overflow-hidden rounded-full h-20 w-20 bg-brand-400 inline-flex items-center justify-center text-5xl font-medium text-white">
+									{profile?.profile?.name[0]}
 								</div>
+
 								<div className="text-left">
 									<h4 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">
 										{profile?.profile?.name} {profile?.profile?.last_name}{" "}

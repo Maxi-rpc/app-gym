@@ -24,8 +24,6 @@ import Assistants from "./pages/Administration/Assistants/Assistants";
 
 // operations
 import Payments from "./pages/Operations/Payments/Payments";
-import Sales from "./pages/Operations/Sales/Sales";
-import SalesCreate from "./pages/Operations/Sales/Create/Create";
 
 export default function App() {
 	return (
@@ -119,7 +117,7 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								<Route path="sales">
+								{/* <Route path="sales">
 									<Route
 										path=""
 										element={
@@ -136,7 +134,7 @@ export default function App() {
 											</ProtectedRoute>
 										}
 									/>
-								</Route>
+								</Route> */}
 							</Route>
 						</Route>
 

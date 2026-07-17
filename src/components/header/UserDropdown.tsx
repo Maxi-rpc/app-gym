@@ -1,4 +1,4 @@
-import { publicAsset } from "../../utils/publicAsset";
+// import { publicAsset } from "../../utils/publicAsset";
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
@@ -35,8 +35,12 @@ export default function UserDropdown() {
 				onClick={toggleDropdown}
 				className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
 			>
-				<span className="mr-3 overflow-hidden rounded-full h-11 w-11">
+				{/* <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
 					<img src={publicAsset("images/user/owner.jpg")} alt="User" />
+				</span> */}
+
+				<span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-brand-400 inline-flex items-center justify-center text-2xl font-medium text-white">
+					{profile?.profile?.name[0]}
 				</span>
 
 				<span className="block mr-1 font-medium text-theme-sm">
