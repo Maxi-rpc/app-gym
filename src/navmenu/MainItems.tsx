@@ -8,35 +8,35 @@ const mainItems: NavItem[] = [
 		icon: <UserCircleIcon />,
 		name: "Perfil",
 		path: "/profile",
-		requiredRoles: ["Admin", "Client", "Coach"],
+		requiredRoles: ["Admin", "Cliente", "Profesor"],
 	},
 	{
 		icon: <PieChartIcon />,
 		name: "Dashboard",
 		path: "/administration/dashboard",
-		requiredRoles: ["Admin", "Coach"],
+		requiredRoles: ["Admin", "Profesor"],
 	},
 	{
 		icon: <GridIcon />,
 		name: "Administración",
-		requiredRoles: ["Admin", "Coach"],
+		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
 				name: "Clientes",
 				path: "/administration/clients",
-				requiredRoles: ["Admin", "Coach"],
+				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
 				name: "Profesores",
 				path: "/administration/coachs",
-				requiredRoles: ["Admin", "Coach"],
+				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
 				name: "Asistencias",
 				path: "/administration/assistants",
-				requiredRoles: ["Admin", "Coach"],
+				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 		],
@@ -44,18 +44,18 @@ const mainItems: NavItem[] = [
 	{
 		icon: <ListIcon />,
 		name: "Operaciones",
-		requiredRoles: ["Admin", "Coach"],
+		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
 				name: "Suscripciones",
 				path: "/operations/payments",
-				requiredRoles: ["Admin", "Coach"],
+				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
 				name: "Ventas",
 				path: "/operations/sales",
-				requiredRoles: ["Admin", "Coach"],
+				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 		],
