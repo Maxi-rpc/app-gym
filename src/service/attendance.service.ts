@@ -12,12 +12,15 @@ async function getById(id: string) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("get-client-by-id", {
-		body: { id },
-		headers: {
-			Authorization: `Bearer ${session_token}`,
+	const { data, error } = await supabase.functions.invoke(
+		"get-employee-by-id",
+		{
+			body: { id },
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
 		},
-	});
+	);
 
 	if (error) throw error;
 	return data;
@@ -33,34 +36,36 @@ async function getAll() {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("get-client-all", {
-		headers: {
-			Authorization: `Bearer ${session_token}`,
+	const { data, error } = await supabase.functions.invoke(
+		"get-attendance-all",
+		{
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
+			method: "GET",
 		},
-		method: "GET",
-	});
+	);
 
 	if (error) throw error;
-	return data?.clients;
+	return data?.attendances;
 }
 
 async function create() {
-	console.log("clientService.create");
+	console.log("attendanceService.create");
 }
 
 async function update() {
-	console.log("clientService.update");
+	console.log("attendanceService.update");
 }
 
 async function remove() {
-	console.log("clientService.remove");
+	console.log("attendanceService.remove");
 }
 
-export const clientService = {
+export const attendanceService = {
 	getAll,
 	getById,
 	create,
 	update,
 	remove,
 };
-

@@ -12,12 +12,15 @@ async function getById(id: string) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("get-client-by-id", {
-		body: { id },
-		headers: {
-			Authorization: `Bearer ${session_token}`,
+	const { data, error } = await supabase.functions.invoke(
+		"get-employee-by-id",
+		{
+			body: { id },
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
 		},
-	});
+	);
 
 	if (error) throw error;
 	return data;
@@ -33,34 +36,36 @@ async function getAll() {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("get-client-all", {
-		headers: {
-			Authorization: `Bearer ${session_token}`,
+	const { data, error } = await supabase.functions.invoke(
+		"get-membership-payments-all",
+		{
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
+			method: "GET",
 		},
-		method: "GET",
-	});
+	);
 
 	if (error) throw error;
-	return data?.clients;
+	return data?.membership_payments;
 }
 
 async function create() {
-	console.log("clientService.create");
+	console.log("paymentsService.create");
 }
 
 async function update() {
-	console.log("clientService.update");
+	console.log("paymentsService.update");
 }
 
 async function remove() {
-	console.log("clientService.remove");
+	console.log("paymentsService.remove");
 }
 
-export const clientService = {
+export const paymentsService = {
 	getAll,
 	getById,
 	create,
 	update,
 	remove,
 };
-

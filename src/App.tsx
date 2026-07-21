@@ -17,13 +17,14 @@ import UserProfiles from "./pages/UserProfiles";
 
 // admin
 import Dashboards from "./pages/Administration/Dashboard/Dashboard";
-import Clients from "./pages/Administration/Clients/Clients";
-import Coachs from "./pages/Administration/Coachs/Coachs";
 import Products from "./pages/Administration/Products/Products";
-import Assistants from "./pages/Administration/Assistants/Assistants";
+
+import Clients from "./pages/Clients/Clients";
+import Coachs from "./pages/Coachs/Coachs";
+import Assistants from "./pages/Assistants/Assistants";
 
 // operations
-import Payments from "./pages/Operations/Payments/Payments";
+import Payments from "./pages/Payments/Payments";
 
 export default function App() {
 	return (
@@ -92,6 +93,30 @@ export default function App() {
 								/>
 							</Route>
 
+							{/* Assistant Page */}
+							<Route path="/assistants">
+								<Route
+									path="list"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<Assistants />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+
+							{/* Payments Page */}
+							<Route path="/payments">
+								<Route
+									path="list"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<Payments />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+
 							{/* Admin Clients Page */}
 							<Route path="/administration">
 								<Route
@@ -108,25 +133,6 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<Products />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="assistants"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<Assistants />
-										</ProtectedRoute>
-									}
-								/>
-							</Route>
-							{/* Paid Page */}
-							<Route path="/operations">
-								<Route
-									path="payments"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<Payments />
 										</ProtectedRoute>
 									}
 								/>

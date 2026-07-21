@@ -44,13 +44,13 @@ const mainItems: NavItem[] = [
 		subItems: [
 			{
 				name: "Registrar",
-				path: "/administration/clients",
+				path: "/assistants/register",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
 				name: "Historial",
-				path: "/administration/coachs",
+				path: "/assistants/list",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
@@ -63,13 +63,13 @@ const mainItems: NavItem[] = [
 		subItems: [
 			{
 				name: "Registrar",
-				path: "/administration/clients",
+				path: "/payments/register",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
 				name: "Historial",
-				path: "/administration/coachs",
+				path: "/payments/list",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
