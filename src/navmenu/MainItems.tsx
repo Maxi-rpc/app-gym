@@ -1,15 +1,18 @@
 // Assume these icons are imported from an icon library
-import { GridIcon, ListIcon, UserCircleIcon, PieChartIcon } from "../icons";
+import { UserCircleIcon, PieChartIcon } from "../icons";
+import { Lineicons } from "@lineiconshq/react-lineicons";
+import {
+	UserMultiple4Outlined,
+	Dumbbell1Outlined,
+	CheckCircle1Outlined,
+	CreditCardMultipleOutlined,
+	BarChart4Outlined,
+	Gear1Outlined,
+} from "@lineiconshq/free-icons";
 
 import { NavItem } from "./types/NavItem";
 
 const mainItems: NavItem[] = [
-	{
-		icon: <UserCircleIcon />,
-		name: "Perfil",
-		path: "/profile",
-		requiredRoles: ["Admin", "Cliente", "Profesor"],
-	},
 	{
 		icon: <PieChartIcon />,
 		name: "Dashboard",
@@ -17,43 +20,92 @@ const mainItems: NavItem[] = [
 		requiredRoles: ["Admin", "Profesor"],
 	},
 	{
-		icon: <GridIcon />,
-		name: "Administración",
+		icon: <UserCircleIcon />,
+		name: "Perfil",
+		path: "/profile",
+		requiredRoles: ["Admin", "Cliente", "Profesor"],
+	},
+	{
+		icon: <Lineicons icon={UserMultiple4Outlined} size={40} />,
+		name: "Clientes",
+		path: "/clients",
+		requiredRoles: ["Admin", "Profesor"],
+	},
+	{
+		icon: <Lineicons icon={Dumbbell1Outlined} size={40} />,
+		name: "Profesores",
+		path: "/coachs",
+		requiredRoles: ["Admin", "Profesor"],
+	},
+	{
+		icon: <Lineicons icon={CheckCircle1Outlined} size={40} />,
+		name: "Asistencias",
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
-				name: "Clientes",
+				name: "Registrar",
 				path: "/administration/clients",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
-				name: "Profesores",
+				name: "Historial",
 				path: "/administration/coachs",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-			{
-				name: "Asistencias",
-				path: "/administration/assistants",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 		],
 	},
 	{
-		icon: <ListIcon />,
-		name: "Operaciones",
+		icon: <Lineicons icon={CreditCardMultipleOutlined} size={40} />,
+		name: "Pagos",
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
-				name: "Suscripciones",
+				name: "Registrar",
+				path: "/administration/clients",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Historial",
+				path: "/administration/coachs",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+		],
+	},
+	{
+		icon: <Lineicons icon={BarChart4Outlined} size={40} />,
+		name: "Reportes",
+		path: "/coachs",
+		requiredRoles: ["Admin", "Profesor"],
+	},
+	{
+		icon: <Lineicons icon={Gear1Outlined} size={40} />,
+		name: "Configuración",
+		requiredRoles: ["Admin", "Profesor"],
+		subItems: [
+			{
+				name: "Usuarios",
 				path: "/operations/payments",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
-				name: "Ventas",
+				name: "Roles",
+				path: "/operations/sales",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Membresías",
+				path: "/operations/sales",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Preferencias",
 				path: "/operations/sales",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,

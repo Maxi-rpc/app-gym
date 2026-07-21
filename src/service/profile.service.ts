@@ -1,6 +1,6 @@
 import { supabase } from "../utils/supabase";
 
-async function getByUserId(id: string) {
+async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
 	// Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
 	const { data: sessionData, error: sessionError } =
@@ -12,21 +12,17 @@ async function getByUserId(id: string) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke(
-		"get-profile-with-status",
-		{
-			body: { id },
-			headers: {
-				Authorization: `Bearer ${session_token}`,
-			},
+	const { data, error } = await supabase.functions.invoke("get-profile-by-id", {
+		body: { id },
+		headers: {
+			Authorization: `Bearer ${session_token}`,
 		},
-	);
+	});
 
 	if (error) throw error;
 	return data;
 }
 
 export const profileService = {
-	getByUserId,
+	getById,
 };
-

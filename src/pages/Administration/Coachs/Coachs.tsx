@@ -14,50 +14,12 @@ import {
 } from "@lineiconshq/free-icons";
 
 import { Coach } from "./types/Coach";
+import { employeeService } from "../../../service/employee.service";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
-
-const mockData: Coach[] = [
-	{
-		id: 1,
-		name: "Pepedon",
-		lastname: "Pepe",
-		document: "33333",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "11-01-2026",
-		status: "Activo",
-		updateDate: "11-01-2026",
-	},
-	{
-		id: 2,
-		name: "Pepe",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
-		status: "Activo",
-		updateDate: "12-01-2026",
-	},
-	{
-		id: 3,
-		name: "Pepito",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
-		status: "Activo",
-		updateDate: "12-01-2026",
-	},
-];
 
 export default function Coachs() {
 	const {
@@ -82,9 +44,14 @@ export default function Coachs() {
 	const [selectData, setSelectData] = useState<Coach | null>(null);
 	const [listData, setListData] = useState<Coach[] | []>([]);
 
-	const getData = () => {
+	const getData = async () => {
 		console.log("Coachs - getData");
-		setListData(mockData);
+		try {
+			const data = await employeeService.getAll();
+			setListData(data);
+		} catch (error) {
+			console.error("Error getData", error);
+		}
 	};
 
 	const handleUpdate = () => {

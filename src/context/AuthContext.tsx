@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	 */
 	const loadProfile = async (userId: string) => {
 		try {
-			const profileData = await profileService.getByUserId(userId);
+			const profileData = await profileService.getById(userId);
 
 			setProfile(profileData);
 		} catch (err) {

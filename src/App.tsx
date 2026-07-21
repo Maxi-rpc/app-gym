@@ -68,6 +68,30 @@ export default function App() {
 								}
 							/>
 
+							{/* Client Page */}
+							<Route path="/clients">
+								<Route
+									path=""
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<Clients />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+
+							{/* Coach Page */}
+							<Route path="/coachs">
+								<Route
+									path=""
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<Coachs />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+
 							{/* Admin Clients Page */}
 							<Route path="/administration">
 								<Route
@@ -78,22 +102,7 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								<Route
-									path="clients"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<Clients />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="coachs"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<Coachs />
-										</ProtectedRoute>
-									}
-								/>
+
 								<Route
 									path="products"
 									element={
@@ -121,24 +130,6 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								{/* <Route path="sales">
-									<Route
-										path=""
-										element={
-											<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-												<Sales />
-											</ProtectedRoute>
-										}
-									/>
-									<Route
-										path="create"
-										element={
-											<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-												<SalesCreate />
-											</ProtectedRoute>
-										}
-									/>
-								</Route> */}
 							</Route>
 						</Route>
 

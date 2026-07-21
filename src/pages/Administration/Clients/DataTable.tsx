@@ -23,7 +23,7 @@ export default function DataTable({
 	onDelet,
 }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
-		key: "id",
+		key: "user_id",
 		direction: "asc",
 	});
 
@@ -62,8 +62,12 @@ export default function DataTable({
 		const searchLower = searchText.toLowerCase();
 
 		return listData.filter((client) => {
-			const nameMatch = client.name.toLowerCase().includes(searchLower);
-			const lastnameMatch = client.lastname.toLowerCase().includes(searchLower);
+			const nameMatch = client.profile?.name
+				.toLowerCase()
+				.includes(searchLower);
+			const lastnameMatch = client.profile?.last_name
+				.toLowerCase()
+				.includes(searchLower);
 
 			return nameMatch || lastnameMatch;
 		});
@@ -94,58 +98,58 @@ export default function DataTable({
 					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("id")}
+								onClick={() => handleSort("user_id")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								ID <SortIcon column="id" />
+								User ID <SortIcon column="user_id" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("name")}
+								onClick={() => handleSort("profile")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Nombre <SortIcon column="name" />
+								Nombre <SortIcon column="profile" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("lastname")}
+								onClick={() => handleSort("profile")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Apellido <SortIcon column="lastname" />
+								Apellido <SortIcon column="profile" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("createDate")}
+								onClick={() => handleSort("created_at")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Fecha Creación <SortIcon column="createDate" />
+								Fecha Creación <SortIcon column="created_at" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("status")}
+								onClick={() => handleSort("profile")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Estado <SortIcon column="status" />
+								Estado <SortIcon column="profile" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("nextPaid")}
+								onClick={() => handleSort("profile")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Próximo Pago <SortIcon column="nextPaid" />
+								Próximo Pago <SortIcon column="profile" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("updateDate")}
+								onClick={() => handleSort("updated_at")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Actualizado <SortIcon column="updateDate" />
+								Actualizado <SortIcon column="updated_at" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -158,7 +162,7 @@ export default function DataTable({
 				<tbody>
 					{filterData(sortedData).map((client, index) => (
 						<tr
-							key={client.id}
+							key={client.user_id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
@@ -166,27 +170,27 @@ export default function DataTable({
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.id}
+								{client.user_id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.name}
+								{client.profile?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.lastname}
+								{client.profile?.last_name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.createDate}
+								{client.created_at}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
-									{client.status}
+									{client.profile?.status?.name}
 								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.nextPaid}
+								en proceso
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.updateDate}
+								{client.updated_at}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">

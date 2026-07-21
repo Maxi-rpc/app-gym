@@ -26,6 +26,43 @@ async function getById(id: string) {
 	return data;
 }
 
+async function getAll() {
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke("get-employee-all", {
+		headers: {
+			Authorization: `Bearer ${session_token}`,
+		},
+		method: "GET",
+	});
+
+	if (error) throw error;
+	return data?.employeers;
+}
+
+async function create() {
+	console.log("clientService.create");
+}
+
+async function update() {
+	console.log("clientService.update");
+}
+
+async function remove() {
+	console.log("clientService.remove");
+}
+
 export const employeeService = {
+	getAll,
 	getById,
+	create,
+	update,
+	remove,
 };

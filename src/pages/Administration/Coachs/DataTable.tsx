@@ -4,8 +4,16 @@ import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
 import { Coach } from "./types/Coach";
 
+type SortKey =
+	| "userId"
+	| "name"
+	| "lastName"
+	| "status"
+	| "createdAt"
+	| "updatedAt";
+
 type SortConfig = {
-	key: keyof Coach;
+	key: SortKey;
 	direction: "asc" | "desc";
 };
 
@@ -23,7 +31,7 @@ export default function DataTable({
 	onDelet,
 }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
-		key: "id",
+		key: "userId",
 		direction: "asc",
 	});
 
@@ -43,40 +51,53 @@ export default function DataTable({
 		const searchLower = searchText.toLowerCase();
 
 		return listData.filter((coach) => {
-			const nameMatch = coach.name.toLowerCase().includes(searchLower);
-			const lastnameMatch = coach.lastname.toLowerCase().includes(searchLower);
+			const nameMatch = coach.profile?.name
+				?.toLowerCase()
+				.includes(searchLower);
+			const lastnameMatch = coach.profile?.last_name
+				?.toLowerCase()
+				.includes(searchLower);
 
 			return nameMatch || lastnameMatch;
 		});
 	};
 
+	const getSortValue = (coach: Coach, key: SortKey): string | number => {
+		switch (key) {
+			case "userId":
+				return coach.user_id;
+			case "name":
+				return coach.profile?.name ?? "";
+			case "lastName":
+				return coach.profile?.last_name ?? "";
+			case "status":
+				return coach.profile?.status?.name ?? "";
+			case "createdAt":
+				return new Date(coach.created_at).getTime() || 0;
+			case "updatedAt":
+				return new Date(coach.updated_at).getTime() || 0;
+		}
+	};
+
 	const sortedData = [...listData].sort((a, b) => {
-		const aValue = a[sortConfig.key];
-		const bValue = b[sortConfig.key];
+		const aValue = getSortValue(a, sortConfig.key);
+		const bValue = getSortValue(b, sortConfig.key);
+		const comparison =
+			typeof aValue === "string" && typeof bValue === "string"
+				? aValue.localeCompare(bValue, undefined, { sensitivity: "base" })
+				: Number(aValue) - Number(bValue);
 
-		if (typeof aValue === "string") {
-			return sortConfig.direction === "asc"
-				? aValue.localeCompare(bValue as string)
-				: (bValue as string).localeCompare(aValue);
-		}
-
-		if (typeof aValue === "number") {
-			return sortConfig.direction === "asc"
-				? (aValue as number) - (bValue as number)
-				: (bValue as number) - (aValue as number);
-		}
-
-		return 0;
+		return sortConfig.direction === "asc" ? comparison : -comparison;
 	});
 
-	const handleSort = (key: keyof Coach) => {
+	const handleSort = (key: SortKey) => {
 		setSortConfig((prev) => ({
 			key,
 			direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
 		}));
 	};
 
-	const SortIcon = ({ column }: { column: keyof Coach }) => {
+	const SortIcon = ({ column }: { column: SortKey }) => {
 		if (sortConfig.key !== column) {
 			return <span className="text-gray-400">↕</span>;
 		}
@@ -94,10 +115,10 @@ export default function DataTable({
 					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("id")}
+								onClick={() => handleSort("userId")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								ID <SortIcon column="id" />
+								User ID <SortIcon column="userId" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -110,18 +131,18 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("lastname")}
+								onClick={() => handleSort("lastName")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Apellido <SortIcon column="lastname" />
+								Apellido <SortIcon column="lastName" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("createDate")}
+								onClick={() => handleSort("createdAt")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Fecha Creación <SortIcon column="createDate" />
+								Fecha Creación <SortIcon column="createdAt" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -134,10 +155,10 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("updateDate")}
+								onClick={() => handleSort("updatedAt")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Actualizado <SortIcon column="updateDate" />
+								Actualizado <SortIcon column="updatedAt" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -150,7 +171,7 @@ export default function DataTable({
 				<tbody>
 					{filterData(sortedData).map((Coach, index) => (
 						<tr
-							key={Coach.id}
+							key={Coach.user_id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
@@ -158,24 +179,24 @@ export default function DataTable({
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Coach.id}
+								{Coach.user_id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Coach.name}
+								{Coach.profile?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Coach.lastname}
+								{Coach.profile?.last_name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Coach.createDate}
+								{Coach.created_at}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
-									{Coach.status}
+									{Coach.profile?.status?.name}
 								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{Coach.updateDate}
+								{Coach.updated_at}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">

@@ -14,66 +14,12 @@ import {
 } from "@lineiconshq/free-icons";
 
 import { Client } from "./types/Client";
+import { clientService } from "../../../service/client.service";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
-
-const mockData: Client[] = [
-	{
-		id: 1,
-		name: "Pepedon",
-		lastname: "Pepe",
-		document: "33333",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "11-01-2026",
-		status: "Activo",
-		nextPaid: "11-02-2026",
-		updateDate: "11-01-2026",
-	},
-	{
-		id: 2,
-		name: "Pepe",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
-		status: "Activo",
-		nextPaid: "12-02-2026",
-		updateDate: "12-01-2026",
-	},
-	{
-		id: 3,
-		name: "Pepito",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
-		status: "Activo",
-		nextPaid: "12-02-2026",
-		updateDate: "12-01-2026",
-	},
-	{
-		id: 4,
-		name: "Pepa",
-		lastname: "Pepito",
-		document: "",
-		birthDate: "",
-		phoneNumber: "",
-		email: "pepe@test.com",
-		createDate: "12-01-2026",
-		status: "Activo",
-		nextPaid: "12-02-2026",
-		updateDate: "12-01-2026",
-	},
-];
 
 export default function Clients() {
 	const {
@@ -98,9 +44,14 @@ export default function Clients() {
 	const [selectData, setSelectData] = useState<Client | null>(null);
 	const [listData, setListData] = useState<Client[] | []>([]);
 
-	const getData = () => {
+	const getData = async () => {
 		console.log("Clients - getData");
-		setListData(mockData);
+		try {
+			const data = await clientService.getAll();
+			setListData(data);
+		} catch (error) {
+			console.error("Error getData", error);
+		}
 	};
 
 	const handleUpdate = () => {

@@ -1,12 +1,14 @@
-export type Coach = {
-	id: number;
-	name: string;
-	lastname: string;
-	document: string;
-	birthDate: string;
-	phoneNumber: string;
-	email: string;
-	createDate: string;
-	status: string;
-	updateDate: string;
-};
+import { Profile } from "../../../../context/types/Profile";
+
+export interface Coach {
+	user_id: string;
+	created_at: string;
+	salary: string | null;
+	hire_date: string;
+	specialist: string;
+	employee_number: string;
+	observations: string;
+	updated_at: string;
+	profile: Profile;
+}
+
