@@ -12,6 +12,7 @@ import ClientCard from "./ClientCard";
 import ClientProfileCard from "./ClientProfileCard";
 import ClientMembershipCard from "./Membership/ClientMembershipCard";
 import ClientMembershipPaymentsCard from "./Payments/ClientMembershipPaymentsCard";
+import ClientAttemdamceCard from "./Attendance/ClientAttemdamceCard";
 import Tabs from "./Tabs";
 
 interface ParamsUsuario {
@@ -60,6 +61,9 @@ export default function ClientDetails() {
 						}
 						paymentContent={
 							profile ? <ClientMembershipPaymentsCard id={profile.id} /> : null
+						}
+						attendanceContent={
+							profile ? <ClientAttemdamceCard id={profile.id} /> : null
 						}
 					/>
 				</div>

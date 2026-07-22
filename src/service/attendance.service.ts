@@ -13,7 +13,7 @@ async function getById(id: string) {
 
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke(
-		"get-employee-by-id",
+		"get-attendance-by-id",
 		{
 			body: { id },
 			headers: {
@@ -23,7 +23,7 @@ async function getById(id: string) {
 	);
 
 	if (error) throw error;
-	return data;
+	return data?.attendances;
 }
 
 async function getAll() {
@@ -64,7 +64,7 @@ async function remove() {
 
 export const attendanceService = {
 	getAll,
-	getById, // to do
+	getById,
 	create, // to do
 	update, // to do
 	remove, // to do
