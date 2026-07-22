@@ -17,9 +17,10 @@ import UserProfiles from "./pages/UserProfiles";
 
 // admin
 import Dashboards from "./pages/Administration/Dashboard/Dashboard";
-import Products from "./pages/Administration/Products/Products";
 
 import Clients from "./pages/Clients/Clients";
+import ClientDetails from "./pages/Clients/Details/ClientDetails";
+
 import Coachs from "./pages/Coachs/Coachs";
 import Assistants from "./pages/Assistants/Assistants";
 
@@ -79,6 +80,14 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
+								<Route
+									path=":id"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ClientDetails />
+										</ProtectedRoute>
+									}
+								/>
 							</Route>
 
 							{/* Coach Page */}
@@ -124,15 +133,6 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<Dashboards />
-										</ProtectedRoute>
-									}
-								/>
-
-								<Route
-									path="products"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<Products />
 										</ProtectedRoute>
 									}
 								/>

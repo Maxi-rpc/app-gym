@@ -7,7 +7,3 @@ export interface Client {
 	medical_notes: string | null;
 	updated_at: string;
 }
-
-export interface ClientResponse {
-	client: Client;
-}

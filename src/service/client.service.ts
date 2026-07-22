@@ -20,7 +20,7 @@ async function getById(id: string) {
 	});
 
 	if (error) throw error;
-	return data;
+	return data?.client;
 }
 
 async function getAll() {
@@ -59,8 +59,7 @@ async function remove() {
 export const clientService = {
 	getAll,
 	getById,
-	create,
-	update,
-	remove,
+	create, // to do
+	update, // to do
+	remove, // to do
 };
-

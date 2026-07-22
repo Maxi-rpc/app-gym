@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
+import {
+	Trash3Outlined,
+	Pencil1Outlined,
+	Search1Outlined,
+} from "@lineiconshq/free-icons";
 
 import { Client } from "./types/Client";
 
@@ -14,6 +18,7 @@ type Props = {
 	searchText: string;
 	onEdit?: (client: Client) => void;
 	onDelet?: (client: Client) => void;
+	onView?: (client: Client) => void;
 };
 
 export default function DataTable({
@@ -21,11 +26,16 @@ export default function DataTable({
 	searchText,
 	onEdit,
 	onDelet,
+	onView,
 }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
 		key: "user_id",
 		direction: "asc",
 	});
+
+	const handleView = (client: Client) => {
+		onView?.(client);
+	};
 
 	const handleEdit = (client: Client) => {
 		onEdit?.(client);
@@ -194,6 +204,14 @@ export default function DataTable({
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
+									<button
+										onClick={() => handleView(client)}
+										className="text-grey-500 hover:text-gey-700 dark:hover:text-gey-300 transition-colors"
+										title="Editar"
+									>
+										<Lineicons icon={Search1Outlined} size={20} />
+									</button>
+
 									<button
 										onClick={() => handleEdit(client)}
 										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"

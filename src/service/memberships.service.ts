@@ -1,6 +1,6 @@
 import { supabase } from "../utils/supabase";
 
-async function getById(id: string) {
+async function getByClientId(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
 	// Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
 	const { data: sessionData, error: sessionError } =
@@ -13,7 +13,7 @@ async function getById(id: string) {
 
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke(
-		"get-employee-by-id",
+		"get-memberships-client-by-id",
 		{
 			body: { id },
 			headers: {
@@ -23,48 +23,28 @@ async function getById(id: string) {
 	);
 
 	if (error) throw error;
-	return data;
+	return data?.memberships;
 }
 
 async function getAll() {
-	const { data: sessionData, error: sessionError } =
-		await supabase.auth.getSession();
-
-	if (sessionError) throw sessionError;
-	if (!sessionData?.session) throw new Error("No hay sesión activa");
-
-	const session_token = sessionData.session.access_token;
-
-	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke(
-		"get-membership-payments-all",
-		{
-			headers: {
-				Authorization: `Bearer ${session_token}`,
-			},
-			method: "GET",
-		},
-	);
-
-	if (error) throw error;
-	return data?.membership_payments;
+	console.log("membershipsService.getAll");
 }
 
 async function create() {
-	console.log("paymentsService.create");
+	console.log("membershipsService.create");
 }
 
 async function update() {
-	console.log("paymentsService.update");
+	console.log("membershipsService.update");
 }
 
 async function remove() {
-	console.log("paymentsService.remove");
+	console.log("membershipsService.remove");
 }
 
-export const paymentsService = {
+export const membershipsService = {
 	getAll, // to do
-	getById,
+	getByClientId,
 	create, // to do
 	update, // to do
 	remove, // to do

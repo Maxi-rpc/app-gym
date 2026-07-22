@@ -1,4 +1,6 @@
 import { SetStateAction, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 
@@ -43,6 +45,7 @@ export default function Clients() {
 	const [searchText, setSearchText] = useState("");
 	const [selectData, setSelectData] = useState<Client | null>(null);
 	const [listData, setListData] = useState<Client[] | []>([]);
+	const navigate = useNavigate();
 
 	const getData = async () => {
 		console.log("Clients - getData");
@@ -88,6 +91,10 @@ export default function Clients() {
 	const handleDelete = (client: Client) => {
 		setSelectData(client);
 		openModalDelete();
+	};
+
+	const handleDetail = (client: Client) => {
+		navigate(`/clients/${client?.user_id}`);
 	};
 
 	useEffect(() => {
@@ -154,6 +161,7 @@ export default function Clients() {
 				<DataTable
 					listData={listData}
 					searchText={searchText}
+					onView={handleDetail}
 					onEdit={handleEdit}
 					onDelet={handleDelete}
 				/>

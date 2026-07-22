@@ -7,12 +7,12 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 
 import { clientService } from "../../service/client.service";
-import { ClientResponse } from "./types/Client";
+import { Client } from "./types/Client";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function ClientCard() {
 	const { profile } = useAuth();
-	const [client, setClient] = useState<ClientResponse | null>(null);
+	const [client, setClient] = useState<Client | null>(null);
 	const { isOpen, openModal, closeModal } = useModal();
 	const handleSave = () => {
 		// Handle save logic here
@@ -56,7 +56,7 @@ export default function ClientCard() {
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{client?.client?.created_at}
+									{client?.created_at}
 								</p>
 							</div>
 
@@ -65,7 +65,7 @@ export default function ClientCard() {
 									Altura y Peso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{client?.client?.height} , {client?.client?.weight}
+									{client?.height} , {client?.weight}
 								</p>
 							</div>
 
@@ -74,7 +74,7 @@ export default function ClientCard() {
 									Contacto de Emergencia
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{client?.client?.emergency_contact}
+									{client?.emergency_contact}
 								</p>
 							</div>
 
@@ -83,7 +83,7 @@ export default function ClientCard() {
 									Notas Medicas
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{client?.client?.medical_notes}
+									{client?.medical_notes}
 								</p>
 							</div>
 						</div>

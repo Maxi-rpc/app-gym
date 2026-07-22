@@ -62,7 +62,7 @@ async function remove() {
 export const employeeService = {
 	getAll,
 	getById,
-	create,
-	update,
-	remove,
+	create, // to do
+	update, // to do
+	remove, // to do
 };

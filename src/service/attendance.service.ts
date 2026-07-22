@@ -64,8 +64,8 @@ async function remove() {
 
 export const attendanceService = {
 	getAll,
-	getById,
-	create,
-	update,
-	remove,
+	getById, // to do
+	create, // to do
+	update, // to do
+	remove, // to do
 };
