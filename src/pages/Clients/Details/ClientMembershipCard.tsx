@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
+
+import Label from "../../../components/form/Label";
+import Input from "../../../components/form/input/InputField";
 
 import { Membership } from "../types/Membership";
 import { membershipsService } from "../../../service/memberships.service";
+
+import MembershipsTable from "./MembershipsTable";
 
 interface Props {
 	id: string;
@@ -12,8 +17,13 @@ export default function ClientMembershipCard({ id }: Props) {
 	const [listMembership, setListMembership] = useState<Membership[] | null>(
 		null,
 	);
+	const [searchText, setSearchText] = useState("");
 
-	const getData = async (id) => {
+	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
+		setSearchText(e.target.value);
+	};
+
+	const getData = async (id: string) => {
 		console.log("memberships - getData");
 		try {
 			const data = await membershipsService.getByClientId(id);
@@ -95,6 +105,23 @@ export default function ClientMembershipCard({ id }: Props) {
 									{memberships?.observations}
 								</p>
 							</div>
+							<div className="col-span-2"></div>
+						</div>
+
+						<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3 my-2">
+							<div className="space-y-6 flex-1">
+								<Label htmlFor="inputTwo">Buscar Pago</Label>
+								<Input
+									type="text"
+									id="inputTwo"
+									placeholder="Ingresar fecha, estado"
+									value={searchText}
+									onChange={handleSearch}
+								/>
+							</div>
+						</div>
+						<div>
+							<MembershipsTable searchText="" listData={listMembership || []} />
 						</div>
 					</div>
 				</div>

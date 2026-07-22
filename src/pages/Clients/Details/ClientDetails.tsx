@@ -11,18 +11,19 @@ import { clientService } from "../../../service/client.service";
 import ClientCard from "./ClientCard";
 import ClientProfileCard from "./ClientProfileCard";
 import ClientMembershipCard from "./ClientMembershipCard";
+import Tabs from "./Tabs";
 
 interface ParamsUsuario {
 	id: string | undefined;
 }
 
-export default function Clients() {
+export default function ClientDetails() {
 	const { id } = useParams<ParamsUsuario>();
 
 	const [data, setData] = useState<Client | null>(null);
 	const [profile, setProfile] = useState<Profile | null>(null);
 
-	const getData = async (id) => {
+	const getData = async (id: string) => {
 		try {
 			const client = await clientService.getById(id);
 			setData(client);
@@ -33,7 +34,9 @@ export default function Clients() {
 	};
 
 	useEffect(() => {
-		getData(id);
+		if (id) {
+			getData(id);
+		}
 	}, [id]);
 
 	return (
@@ -50,7 +53,11 @@ export default function Clients() {
 				<div className="space-y-6">
 					<ClientProfileCard data={profile} />
 					<ClientCard data={data} />
-					<ClientMembershipCard id={profile?.id} />
+					<Tabs
+						membershipContent={
+							profile ? <ClientMembershipCard id={profile.id} /> : null
+						}
+					/>
 				</div>
 			</div>
 		</div>

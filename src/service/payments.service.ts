@@ -1,6 +1,6 @@
 import { supabase } from "../utils/supabase";
 
-async function getById(id: string) {
+async function getByClient(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
 	// Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
 	const { data: sessionData, error: sessionError } =
@@ -13,7 +13,7 @@ async function getById(id: string) {
 
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke(
-		"get-employee-by-id",
+		"get-membership-payments-by-id",
 		{
 			body: { id },
 			headers: {
@@ -23,7 +23,7 @@ async function getById(id: string) {
 	);
 
 	if (error) throw error;
-	return data;
+	return data?.membership_payments;
 }
 
 async function getAll() {
@@ -63,8 +63,8 @@ async function remove() {
 }
 
 export const paymentsService = {
-	getAll, // to do
-	getById,
+	getAll,
+	getByClient,
 	create, // to do
 	update, // to do
 	remove, // to do
