@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
-import Select from "../../components/form/Select";
 import Button from "../../components/ui/button/Button";
 
 import { Client } from "../../service/types/Client";
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
-	console.log(defaultData);
 	const [formData, setFormData] = useState({
 		name: defaultData?.profile?.name,
 		last_name: defaultData?.profile?.last_name,
