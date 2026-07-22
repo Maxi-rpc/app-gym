@@ -70,7 +70,15 @@ export default function ClientAttemdamceCard({ id }: Props) {
 									Acceso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{attendance?.access_granted}
+									<span
+										className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+											attendance?.access_granted
+												? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+												: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+										}`}
+									>
+										{attendance?.access_granted ? "Si" : "No"}
+									</span>
 								</p>
 							</div>
 

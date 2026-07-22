@@ -4,13 +4,10 @@ import { Attendance } from "../../types/Attendance";
 
 type SortKey =
 	| "id"
-	| "service"
-	| "startDate"
-	| "endDate"
-	| "nextDueDate"
-	| "paymentMethod"
-	| "createdAt"
-	| "observations";
+	| "checkInAt"
+	| "checkOutAt"
+	| "accessGranted"
+	| "accessReason";
 
 type SortConfig = {
 	key: SortKey;
@@ -24,7 +21,7 @@ type Props = {
 
 export default function AttendanceTable({ listData, searchText }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
-		key: "createdAt",
+		key: "checkInAt",
 		direction: "desc",
 	});
 
@@ -35,20 +32,14 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 		switch (key) {
 			case "id":
 				return attendance.id;
-			case "service":
-				return attendance.membership?.service?.name ?? "";
-			case "startDate":
+			case "checkInAt":
 				return new Date(attendance.check_in_at).getTime() || 0;
-			case "endDate":
+			case "checkOutAt":
 				return new Date(attendance.check_out_at).getTime() || 0;
-			case "nextDueDate":
-				return new Date(attendance.next_due_date).getTime() || 0;
-			case "paymentMethod":
-				return attendance.access_granted ?? "";
-			case "createdAt":
-				return new Date(attendance.created_at).getTime() || 0;
-			case "observations":
-				return attendance.created_by_profile?.name ?? "";
+			case "accessGranted":
+				return String(attendance.access_granted);
+			case "accessReason":
+				return attendance.access_reason ?? "";
 		}
 	};
 
@@ -63,19 +54,17 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 		return sortConfig.direction === "asc" ? comparison : -comparison;
 	});
 
-	const filteredData = sortedData.filter((payments) => {
+	const filteredData = sortedData.filter((attendance) => {
 		if (!searchText.trim()) {
 			return true;
 		}
 
 		const searchLower = searchText.toLowerCase();
 		return [
-			payments.id,
-			payments.membership?.service?.name,
-			payments.observations,
-			payments.payment_date,
-			payments.next_due_date,
-			payments.next_due_date,
+			attendance.id,
+			attendance.check_in_at,
+			attendance.access_granted,
+			attendance.access_reason,
 		]
 			.filter((value): value is string => Boolean(value))
 			.some((value) => value.toLowerCase().includes(searchLower));
@@ -103,13 +92,10 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 
 	const columns: { key: SortKey; label: string }[] = [
 		{ key: "id", label: "ID" },
-		{ key: "service", label: "Servicio" },
-		{ key: "startDate", label: "Fecha de inicio" },
-		{ key: "endDate", label: "Fecha de fin" },
-		{ key: "nextDueDate", label: "Próximo vencimiento" },
-		{ key: "paymentMethod", label: "Método de Pago" },
-		{ key: "createdAt", label: "Creada" },
-		{ key: "observations", label: "Observaciones" },
+		{ key: "checkInAt", label: "Check In" },
+		{ key: "checkOutAt", label: "Check Out" },
+		{ key: "accessGranted", label: "Acceso" },
+		{ key: "accessReason", label: "Razón" },
 	];
 
 	return (
@@ -131,38 +117,37 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{filteredData.map((payment, index) => (
+					{filteredData.map((attendance, index) => (
 						<tr
 							className={`border-b border-gray-200 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-white/8 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
 									: "bg-gray-50 dark:bg-white/5"
 							}`}
-							key={payment.id}
+							key={attendance.id}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.id}
+								{attendance.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.membership?.service?.name}
+								{attendance?.check_in_at}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.created_at}
+								{attendance?.check_out_at}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.next_due_date}
+								<span
+									className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+										attendance?.access_granted
+											? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+											: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+									}`}
+								>
+									{attendance?.access_granted ? "Si" : "No"}
+								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.next_due_date}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.status?.name}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.created_at}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.observations}
+								{attendance?.access_reason}
 							</td>
 						</tr>
 					))}
