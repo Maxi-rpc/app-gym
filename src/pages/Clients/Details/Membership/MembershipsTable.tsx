@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Membership } from "../types/Membership";
+import { Membership } from "../../types/Membership";
 
 type SortKey =
 	| "id"

@@ -16,7 +16,7 @@ import ClientAttemdamceCard from "./Attendance/ClientAttemdamceCard";
 import Tabs from "./Tabs";
 
 interface ParamsUsuario {
-	id: string | undefined;
+	id: string | undefined | null;
 }
 
 export default function ClientDetails() {
