@@ -10,7 +10,8 @@ import { clientService } from "../../../service/client.service";
 
 import ClientCard from "./ClientCard";
 import ClientProfileCard from "./ClientProfileCard";
-import ClientMembershipCard from "./ClientMembershipCard";
+import ClientMembershipCard from "./Membership/ClientMembershipCard";
+import ClientMembershipPaymentsCard from "./Payments/ClientMembershipPaymentsCard";
 import Tabs from "./Tabs";
 
 interface ParamsUsuario {
@@ -56,6 +57,9 @@ export default function ClientDetails() {
 					<Tabs
 						membershipContent={
 							profile ? <ClientMembershipCard id={profile.id} /> : null
+						}
+						paymentContent={
+							profile ? <ClientMembershipPaymentsCard id={profile.id} /> : null
 						}
 					/>
 				</div>

@@ -11,6 +11,7 @@ type Tab = {
 
 type Props = {
 	membershipContent?: ReactNode;
+	paymentContent?: ReactNode;
 };
 
 const tabs: Tab[] = [
@@ -37,7 +38,7 @@ const tabs: Tab[] = [
 	},
 ];
 
-export default function Tabs({ membershipContent }: Props) {
+export default function Tabs({ membershipContent, paymentContent }: Props) {
 	const [activeTab, setActiveTab] = useState<TabId>("membership");
 	const tabListId = useId();
 	const selectedTab = tabs.find((tab) => tab.id === activeTab) ?? tabs[0];
@@ -89,6 +90,10 @@ export default function Tabs({ membershipContent }: Props) {
 				</p>
 				{activeTab === "membership" && membershipContent ? (
 					<div className="mt-4">{membershipContent}</div>
+				) : null}
+
+				{activeTab === "payments" && paymentContent ? (
+					<div className="mt-4">{paymentContent}</div>
 				) : null}
 			</div>
 		</div>

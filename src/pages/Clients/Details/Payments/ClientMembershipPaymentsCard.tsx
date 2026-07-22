@@ -1,22 +1,20 @@
 import { useState, useEffect, SetStateAction } from "react";
 
-import Label from "../../../components/form/Label";
-import Input from "../../../components/form/input/InputField";
+import Label from "../../../../components/form/Label";
+import Input from "../../../../components/form/input/InputField";
 
-import { Membership } from "../types/Membership";
-import { membershipsService } from "../../../service/memberships.service";
+import { Payments } from "../../types/Payments";
+import { paymentsService } from "../../../../service/payments.service";
 
-import MembershipsTable from "./MembershipsTable";
+import MembershipsPaymentsTable from "./MembershipsPaymentsTable";
 
 interface Props {
 	id: string;
 }
 
-export default function ClientMembershipCard({ id }: Props) {
-	const [memberships, setMemberships] = useState<Membership | null>(null);
-	const [listMembership, setListMembership] = useState<Membership[] | null>(
-		null,
-	);
+export default function ClientMembershipPaymentsCard({ id }: Props) {
+	const [payment, setPayment] = useState<Payments | null>(null);
+	const [listPayments, setListPayments] = useState<Payments[] | null>(null);
 	const [searchText, setSearchText] = useState("");
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
@@ -24,15 +22,10 @@ export default function ClientMembershipCard({ id }: Props) {
 	};
 
 	const getData = async (id: string) => {
-		console.log("memberships - getData");
 		try {
-			const data = await membershipsService.getByClientId(id);
-			setListMembership(data);
-			data.filter((item: Membership) => {
-				if (item?.active) {
-					setMemberships(item);
-				}
-			});
+			const data = await paymentsService.getByClient(id);
+			setListPayments(data);
+			setPayment(data[0]);
 		} catch (error) {
 			console.error("Error getData", error);
 		}
@@ -48,61 +41,52 @@ export default function ClientMembershipCard({ id }: Props) {
 				<div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 					<div>
 						<h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6 mb-3">
-							Datos de Membresía
+							Datos de Último Pago
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 sm:grid-cols-2 lg:gap-7 2xl:gap-x-32">
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Fecha de Ingreso
+									Fecha de Pago
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.created_at}
+									{payment?.payment_date}
 								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Fecha de Fin
+									Próximo Vencimiento
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.end_date}
+									{payment?.next_due_date}
 								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Estado
+									Monto
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{String(memberships?.active)}
+									{payment?.amount_paid}
 								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Próximo vencimiento
+									Método de Pago
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.next_due_date}
+									{payment?.payment_method?.name}
 								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Servicio
+									Estatus
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.service?.name}
-								</p>
-							</div>
-
-							<div>
-								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Obvervación
-								</p>
-								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.observations}
+									{payment?.status?.name}
 								</p>
 							</div>
 							<div className="col-span-2"></div>
@@ -121,7 +105,10 @@ export default function ClientMembershipCard({ id }: Props) {
 							</div>
 						</div>
 						<div>
-							<MembershipsTable searchText="" listData={listMembership || []} />
+							<MembershipsPaymentsTable
+								searchText=""
+								listData={listPayments || []}
+							/>
 						</div>
 					</div>
 				</div>
