@@ -4,7 +4,7 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 
-import { clientService} from "../../service/client.service";
+import { clientService } from "../../service/client.service";
 
 type Props = {
 	onSubmit?: () => void;
@@ -41,7 +41,6 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 			return;
 		}
 
-		console.log("handleSubmit Modal");
 		const resp = await clientService.create(formData);
 
 		console.log("handleSave", resp);
@@ -54,7 +53,6 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 			...formData,
 			[name]: value,
 		});
-		console.log(name, value);
 	};
 
 	return (

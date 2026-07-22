@@ -5,19 +5,7 @@ import Input from "../../components/form/input/InputField";
 import Select from "../../components/form/Select";
 import Button from "../../components/ui/button/Button";
 
-type Client = {
-	id: number;
-	name: string;
-	lastname: string;
-	document: string;
-	birthDate: string;
-	phoneNumber: string;
-	email: string;
-	createDate: string;
-	status: string;
-	nextPaid: string;
-	updateDate: string;
-};
+import { Client } from "../../service/types/Client";
 
 type Props = {
 	onSubmit?: () => void;
@@ -26,14 +14,18 @@ type Props = {
 };
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
+	console.log(defaultData);
 	const [formData, setFormData] = useState({
-		name: defaultData?.name,
-		lastname: defaultData?.lastname,
-		document: defaultData?.document,
-		birthDate: defaultData?.birthDate,
-		phoneNumber: defaultData?.phoneNumber,
-		email: defaultData?.email,
-		status: defaultData?.status,
+		name: defaultData?.profile?.name,
+		last_name: defaultData?.profile?.last_name,
+		document: defaultData?.profile?.document,
+		phone: defaultData?.profile?.phone,
+		birth_date: defaultData?.profile?.birth_date,
+		email: defaultData?.profile?.email,
+		height: defaultData?.height,
+		weight: defaultData?.weight,
+		emergency_contact: defaultData?.emergency_contact,
+		medical_notes: defaultData?.medical_notes,
 	});
 	const handleClose = () => {
 		console.log("handleClose Modal");
@@ -45,26 +37,12 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 		onSubmit?.();
 	};
 
-	const options = [
-		{ value: "activo", label: "Activo" },
-		{ value: "inactivo", label: "Inactivo" },
-	];
-
-	const handleSelectChange = (value: string) => {
-		console.log("Selected value:", value);
-		setFormData({
-			...formData,
-			status: value,
-		});
-	};
-
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 		setFormData({
 			...formData,
 			[name]: value,
 		});
-		console.log(name, value);
 	};
 
 	return (
@@ -85,8 +63,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Apellido</Label>
 						<Input
 							type="text"
-							value={formData.lastname}
-							name="lastname"
+							value={formData.last_name}
+							name="last_name"
 							onChange={handleChange}
 						/>
 					</div>
@@ -105,8 +83,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="text"
-							value={formData.birthDate}
-							name="birthDate"
+							value={formData.birth_date}
+							name="birth_date"
 							onChange={handleChange}
 						/>
 					</div>
@@ -115,8 +93,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
-							value={formData.phoneNumber}
-							name="phoneNumber"
+							value={formData.phone}
+							name="phone"
 							onChange={handleChange}
 						/>
 					</div>
@@ -128,17 +106,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 							value={formData.email}
 							name="email"
 							onChange={handleChange}
-						/>
-					</div>
-
-					<div>
-						<Label>Estado</Label>
-						<Select
-							options={options}
-							placeholder="Seleccionar Estado"
-							onChange={handleSelectChange}
-							className="dark:bg-dark-900"
-							defaultValue={formData.status}
 						/>
 					</div>
 				</div>
