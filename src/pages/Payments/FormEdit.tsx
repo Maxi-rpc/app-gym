@@ -4,22 +4,17 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 
-import { Client } from "../../service/types/Client";
+import { Membership_payment } from "../../service/types/Payments";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: Client | null;
+	defaultData: Membership_payment | null;
 };
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
-	const [formData, setFormData] = useState({
-		height: defaultData?.height,
-		weight: defaultData?.weight,
-		emergency_contact: defaultData?.emergency_contact,
-		medical_notes: defaultData?.medical_notes,
-		profile: defaultData?.profile,
-	});
+	console.log(defaultData);
+	const [formData, setFormData] = useState({});
 	const handleClose = () => {
 		console.log("handleClose Modal");
 		onClose?.();
@@ -47,12 +42,12 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Nombre</Label>
 						<Input
 							type="text"
-							value={formData.height}
+							value={"nada"}
 							name="name"
 							onChange={handleChange}
 						/>
 					</div>
-
+					{/*
 					<div>
 						<Label>Apellido</Label>
 						<Input
@@ -81,7 +76,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 							name="birthDate"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<div className="flex items-center gap-3 px-2 mt-6 justify-end">

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { Membership_payment } from "./types/Payments";
+import { Membership_payment } from "../../service/types/Payments";
 
 type SortKey =
 	| "id"
@@ -69,15 +69,22 @@ export default function DataTable({
 		key: SortKey,
 	): string | number => {
 		switch (key) {
-			case "id": return payment.id;
-			case "name": return payment.membership?.client?.profile?.name ?? "";
-			case "lastName": return payment.membership?.client?.profile?.last_name ?? "";
-			case "createdAt": return new Date(payment.created_at).getTime() || 0;
-			case "status": return payment.payment_status?.name ?? "";
-			case "nextDueDate": return new Date(payment.next_due_date).getTime() || 0;
+			case "id":
+				return payment.id;
+			case "name":
+				return payment.membership?.client?.profile?.name ?? "";
+			case "lastName":
+				return payment.membership?.client?.profile?.last_name ?? "";
+			case "createdAt":
+				return new Date(payment.created_at).getTime() || 0;
+			case "status":
+				return payment.payment_status?.name ?? "";
+			case "nextDueDate":
+				return new Date(payment.next_due_date).getTime() || 0;
 			case "registeredBy":
 				return `${payment.employee?.profile?.name ?? ""} ${payment.employee?.profile?.last_name ?? ""}`.trim();
-			case "updatedAt": return new Date(payment.updated_at).getTime() || 0;
+			case "updatedAt":
+				return new Date(payment.updated_at).getTime() || 0;
 		}
 	};
 

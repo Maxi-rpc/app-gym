@@ -13,7 +13,7 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Membership_payment } from "./types/Payments";
+import { Membership_payment } from "../../service/types/Payments";
 import { paymentsService } from "../../service/payments.service";
 
 import DataTable from "./DataTable";
