@@ -10,39 +10,24 @@ import Badge from "../ui/badge/Badge";
 
 import { useAuth } from "../../hooks/useAuth";
 import QRCode from "react-qr-code";
-import { clientService } from "../../service/client.service";
-import { employeeService } from "../../service/employee.service";
+
+import { profileService } from "../../service/profile.service";
 
 export default function UserDataCard() {
 	const { isOpen, openModal, closeModal } = useModal();
-	const { profile, hasRole } = useAuth();
-	console.log(profile?.id);
-	const [profileData, setProfileData] = useState({
-		id: "",
-		email: "",
-		name: "",
-		last_name: "",
-		document: "",
-		phone: "",
-		image: "",
-		status_id: "",
-		birth_date: "", // profile
-	});
+	const { profile } = useAuth();
+	const [error, setError] = useState("");
+	const [message, setMessage] = useState("");
 
-	const [employeeData, setEmployeeData] = useState({
-		user_id: "", // employee
-		salary: "",
-		hire_date: "",
-		specialist: "",
-		employee_number: "",
-		observations: "",
-	});
-
-	const [clientData, setClientData] = useState({
-		height: "", // client
-		weight: "",
-		emergency_contact: "",
-		medical_notes: "",
+	const [formData, setFormData] = useState({
+		id: profile?.id,
+		email: profile?.email,
+		name: profile?.name,
+		last_name: profile?.last_name,
+		document: profile?.document,
+		phone: profile?.phone,
+		image: profile?.image,
+		birth_date: profile?.birth_date,
 	});
 
 	const roleNames =
@@ -52,17 +37,14 @@ export default function UserDataCard() {
 			.join(", ") ?? "";
 
 	const handleSave = async () => {
-		// Handle save logic here
-		console.log("Saving changes...");
-		if (hasRole("Admin") || hasRole("Profesor") || hasRole("Administración")) {
-			const resp = await employeeService.update(formData);
-			console.log(resp);
+		setError("");
+		const resp = await profileService.update(formData);
+		if (resp.data) {
+			setMessage(resp?.data?.message);
 		}
-		if (hasRole("Cliente")) {
-			const resp = await clientService.update(formData);
-			console.log(resp);
+		if (resp.error) {
+			setError(resp?.error?.message);
 		}
-		closeModal();
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +53,6 @@ export default function UserDataCard() {
 			...formData,
 			[name]: value,
 		});
-		console.log(name, value);
 	};
 
 	return (
@@ -322,27 +303,52 @@ export default function UserDataCard() {
 								<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Nombre</Label>
-										<Input type="text" value={profile?.name} />
+										<Input
+											type="text"
+											value={formData?.name}
+											name="name"
+											onChange={handleChange}
+										/>
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Apellido</Label>
-										<Input type="text" value={profile?.last_name} />
+										<Input
+											type="text"
+											value={formData?.last_name}
+											name="last_name"
+											onChange={handleChange}
+										/>
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Email</Label>
-										<Input type="text" value={profile?.email} />
+										<Input
+											type="text"
+											value={formData?.email}
+											name="email"
+											onChange={handleChange}
+										/>
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Documento</Label>
-										<Input type="text" value={profile?.document || ""} />
+										<Input
+											type="text"
+											value={formData?.document || ""}
+											name="document"
+											onChange={handleChange}
+										/>
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Teléfono</Label>
-										<Input type="text" value={profile?.phone || ""} />
+										<Input
+											type="text"
+											value={formData?.phone || ""}
+											name="phone"
+											onChange={handleChange}
+										/>
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
@@ -350,8 +356,28 @@ export default function UserDataCard() {
 										<Input
 											type="text"
 											placeholder="AAAA-MM-DD"
-											value={profile?.birth_date || ""}
+											value={formData?.birth_date}
+											name="birth_date"
+											onChange={handleChange}
 										/>
+									</div>
+
+									<div className="col-span-2">
+										{message && (
+											<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
+												<p className="text-sm text-success-600 dark:text-success-400">
+													{message}
+												</p>
+											</div>
+										)}
+
+										{error && (
+											<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+												<p className="text-sm text-error-600 dark:text-error-400">
+													{error}
+												</p>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
