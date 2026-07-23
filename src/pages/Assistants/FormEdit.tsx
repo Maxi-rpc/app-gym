@@ -2,9 +2,8 @@ import React, { useState } from "react";
 
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
-import Select from "../../components/form/Select";
 import Button from "../../components/ui/button/Button";
-import { ClientAssistant } from "./types/ClientAssistant";
+import { ClientAssistant } from "../../service/types/ClientAssistant";
 
 type Props = {
 	onSubmit?: () => void;
@@ -14,13 +13,13 @@ type Props = {
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [formData, setFormData] = useState({
-		name: defaultData?.name,
-		lastname: defaultData?.lastname,
-		document: defaultData?.document,
-		nextPaid: defaultData?.nextPaid,
-		phoneNumber: defaultData?.phoneNumber,
-		email: defaultData?.email,
-		status: defaultData?.status,
+		check_in_at: defaultData?.check_in_at,
+		check_out_at: defaultData?.check_out_at,
+		access_granted: defaultData?.access_granted,
+		access_reason: defaultData?.access_reason,
+		user: defaultData?.user,
+		membership: defaultData?.membership,
+		created_by_profile: defaultData?.created_by_profile,
 	});
 	const handleClose = () => {
 		console.log("handleClose Modal");
@@ -32,26 +31,12 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 		onSubmit?.();
 	};
 
-	const options = [
-		{ value: "activo", label: "Activo" },
-		{ value: "inactivo", label: "Inactivo" },
-	];
-
-	const handleSelectChange = (value: string) => {
-		console.log("Selected value:", value);
-		setFormData({
-			...formData,
-			status: value,
-		});
-	};
-
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 		setFormData({
 			...formData,
 			[name]: value,
 		});
-		console.log(name, value);
 	};
 
 	return (
@@ -59,21 +44,21 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 			<div className="px-2 overflow-y-auto custom-scrollbar">
 				<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
 					<div>
-						<Label>Nombre</Label>
+						<Label>Check In</Label>
 						<Input
 							type="text"
-							value={formData.name}
-							name="name"
+							value={formData.check_in_at}
+							name="check_in_at"
 							onChange={handleChange}
 						/>
 					</div>
 
 					<div>
-						<Label>Apellido</Label>
+						<Label>Check Out</Label>
 						<Input
 							type="text"
-							value={formData.lastname}
-							name="lastname"
+							value={formData.check_out_at}
+							name="check_out_at"
 							onChange={handleChange}
 						/>
 					</div>
@@ -82,50 +67,19 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Documento</Label>
 						<Input
 							type="text"
-							value={formData.document}
-							name="document"
+							value={String(formData.access_granted)}
+							name="access_granted"
 							onChange={handleChange}
 						/>
 					</div>
 
 					<div>
-						<Label>Próximo Pago</Label>
+						<Label>Razón</Label>
 						<Input
 							type="text"
-							value={formData.nextPaid}
-							name="nextPaid"
+							value={formData.access_reason}
+							name="access_reason"
 							onChange={handleChange}
-						/>
-					</div>
-
-					<div>
-						<Label>Teléfono</Label>
-						<Input
-							type="text"
-							value={formData.phoneNumber}
-							name="phoneNumber"
-							onChange={handleChange}
-						/>
-					</div>
-
-					<div>
-						<Label>Email</Label>
-						<Input
-							type="text"
-							value={formData.email}
-							name="email"
-							onChange={handleChange}
-						/>
-					</div>
-
-					<div>
-						<Label>Estado</Label>
-						<Select
-							options={options}
-							placeholder="Seleccionar Estado"
-							onChange={handleSelectChange}
-							className="dark:bg-dark-900"
-							defaultValue={formData.status}
 						/>
 					</div>
 				</div>

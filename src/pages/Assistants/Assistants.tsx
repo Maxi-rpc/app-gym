@@ -13,7 +13,7 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { ClientAssistant } from "./types/ClientAssistant";
+import { ClientAssistant } from "../../service/types/ClientAssistant";
 import { attendanceService } from "../../service/attendance.service";
 
 import DataTable from "./DataTable";

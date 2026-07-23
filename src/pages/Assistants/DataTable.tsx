@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { ClientAssistant } from "./types/ClientAssistant";
+import { ClientAssistant } from "../../service/types/ClientAssistant";
 
 type CustomRowProp = {
 	value: boolean;
