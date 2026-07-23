@@ -13,7 +13,7 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Coach } from "../../service/types/Coach";
+import { Employee } from "../../service/types/Employee";
 import { employeeService } from "../../service/employee.service";
 
 import DataTable from "./DataTable";
@@ -41,11 +41,11 @@ export default function Coachs() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Coach | null>(null);
-	const [listData, setListData] = useState<Coach[] | []>([]);
+	const [selectData, setSelectData] = useState<Employee | null>(null);
+	const [listData, setListData] = useState<Employee[] | []>([]);
 
 	const getData = async () => {
-		console.log("Coachs - getData");
+		console.log("Employee - getData");
 		try {
 			const data = await employeeService.getAll();
 			setListData(data);
@@ -73,8 +73,8 @@ export default function Coachs() {
 		getData();
 	};
 
-	const handleEdit = (Coach: Coach) => {
-		setSelectData(Coach);
+	const handleEdit = (Employee: Employee) => {
+		setSelectData(Employee);
 		openModalEdit();
 	};
 
@@ -85,8 +85,8 @@ export default function Coachs() {
 		getData();
 	};
 
-	const handleDelete = (Coach: Coach) => {
-		setSelectData(Coach);
+	const handleDelete = (Employee: Employee) => {
+		setSelectData(Employee);
 		openModalDelete();
 	};
 

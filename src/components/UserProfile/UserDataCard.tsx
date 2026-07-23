@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // import { publicAsset } from "../../utils/publicAsset";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
@@ -8,10 +10,40 @@ import Badge from "../ui/badge/Badge";
 
 import { useAuth } from "../../hooks/useAuth";
 import QRCode from "react-qr-code";
+import { clientService } from "../../service/client.service";
+import { employeeService } from "../../service/employee.service";
 
 export default function UserDataCard() {
 	const { isOpen, openModal, closeModal } = useModal();
-	const { profile } = useAuth();
+	const { profile, hasRole } = useAuth();
+	console.log(profile?.profile.id);
+	const [profileData, setProfileData] = useState({
+		id: "",
+		email: "",
+		name: "",
+		last_name: "",
+		document: "",
+		phone: "",
+		image: "",
+		status_id: "",
+		birth_date: "", // profile
+	});
+
+	const [employeeData, setEmployeeData] = useState({
+		user_id: "", // employee
+		salary: "",
+		hire_date: "",
+		specialist: "",
+		employee_number: "",
+		observations: "",
+	});
+
+	const [clientData, setClientData] = useState({
+		height: "", // client
+		weight: "",
+		emergency_contact: "",
+		medical_notes: "",
+	});
 
 	const roleNames =
 		profile?.profile?.user_roles
@@ -19,11 +51,29 @@ export default function UserDataCard() {
 			.filter(Boolean)
 			.join(", ") ?? "";
 
-	const handleSave = () => {
+	const handleSave = async () => {
 		// Handle save logic here
 		console.log("Saving changes...");
+		if (hasRole("Admin") || hasRole("Profesor") || hasRole("Administración")) {
+			const resp = await employeeService.update(formData);
+			console.log(resp);
+		}
+		if (hasRole("Cliente")) {
+			const resp = await clientService.update(formData);
+			console.log(resp);
+		}
 		closeModal();
 	};
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
+		console.log(name, value);
+	};
+
 	return (
 		<>
 			<div className="mb-6 rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
@@ -60,9 +110,9 @@ export default function UserDataCard() {
 											{roleNames}
 										</p>
 										<div className="hidden h-3.5 w-px bg-gray-300 sm:block dark:bg-gray-700"></div>
-										<p className="text-sm text-gray-500 dark:text-gray-400">
+										{/* <p className="text-sm text-gray-500 dark:text-gray-400">
 											Buenos Aires, Argentina.
-										</p>
+										</p> */}
 									</div>
 								</div>
 							</div>
@@ -117,7 +167,7 @@ export default function UserDataCard() {
 									{roleNames}
 								</p>
 							</div>
-							<div>
+							{/* <div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
 									Redes Sociales
 								</p>
@@ -195,7 +245,7 @@ export default function UserDataCard() {
 										</svg>
 									</a>
 								</div>
-							</div>
+							</div> */}
 						</div>
 					</div>
 					<div>
@@ -236,7 +286,7 @@ export default function UserDataCard() {
 					</div>
 					<form className="flex flex-col">
 						<div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
-							<div>
+							{/* <div>
 								<h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
 									Redes Sociales
 								</h5>
@@ -268,7 +318,7 @@ export default function UserDataCard() {
 										<Input type="text" value="https://instagram.com/PimjoHQ" />
 									</div>
 								</div>
-							</div>
+							</div> */}
 							<div className="mt-7">
 								<h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
 									Información personal
@@ -291,8 +341,25 @@ export default function UserDataCard() {
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
+										<Label>Documento</Label>
+										<Input
+											type="text"
+											value={profile?.profile?.document || ""}
+										/>
+									</div>
+
+									<div className="col-span-2 lg:col-span-1">
 										<Label>Teléfono</Label>
 										<Input type="text" value={profile?.profile?.phone || ""} />
+									</div>
+
+									<div className="col-span-2 lg:col-span-1">
+										<Label>Fecha de Cumpleaños</Label>
+										<Input
+											type="text"
+											placeholder="AAAA-MM-DD"
+											value={profile?.profile?.birth_date || ""}
+										/>
 									</div>
 								</div>
 							</div>

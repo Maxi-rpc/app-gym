@@ -1,14 +1,13 @@
 import { Profile } from "../../context/types/Profile";
 
-export interface Coach {
+export interface Employee {
 	user_id: string;
-	created_at: string;
+	created_at?: string;
 	salary: string | null;
 	hire_date: string;
 	specialist: string;
 	employee_number: string;
 	observations: string;
-	updated_at: string;
+	updated_at?: string;
 	profile: Profile;
 }
-

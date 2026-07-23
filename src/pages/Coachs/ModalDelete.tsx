@@ -1,13 +1,13 @@
 import { Modal } from "../../components/ui/modal";
 import FormDelete from "./FormDelete";
 
-import { Coach } from "../../service/types/Coach";
+import { Employee } from "../../service/types/Employee";
 
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: () => void | undefined;
-	defaultData: Coach | null;
+	defaultData: Employee | null;
 };
 
 export default function ModalDelete({
@@ -21,7 +21,8 @@ export default function ModalDelete({
 			<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 				<div className="px-2 pr-14">
 					<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-						Eliminar Registro: {defaultData?.profile?.name} {defaultData?.profile?.last_name}
+						Eliminar Registro: {defaultData?.profile?.name}{" "}
+						{defaultData?.profile?.last_name}
 					</h4>
 				</div>
 

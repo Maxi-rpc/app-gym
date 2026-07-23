@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
-import { Coach } from "../../service/types/Coach";
+import { Employee } from "../../service/types/Employee";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: Coach | null;
+	defaultData: Employee | null;
 };
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {

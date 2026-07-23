@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { Coach } from "../../service/types/Coach";
+import { Employee } from "../../service/types/Employee";
 
 type SortKey =
 	| "userId"
@@ -18,10 +18,10 @@ type SortConfig = {
 };
 
 type Props = {
-	listData: Coach[] | [];
+	listData: Employee[] | [];
 	searchText: string;
-	onEdit?: (Coach: Coach) => void;
-	onDelet?: (Coach: Coach) => void;
+	onEdit?: (Employee: Employee) => void;
+	onDelet?: (Employee: Employee) => void;
 };
 
 export default function DataTable({
@@ -35,26 +35,26 @@ export default function DataTable({
 		direction: "asc",
 	});
 
-	const handleEdit = (Coach: Coach) => {
-		onEdit?.(Coach);
+	const handleEdit = (Employee: Employee) => {
+		onEdit?.(Employee);
 	};
 
-	const handleDelete = (Coach: Coach) => {
-		onDelet?.(Coach);
+	const handleDelete = (Employee: Employee) => {
+		onDelet?.(Employee);
 	};
 
-	const filterData = (listData: Coach[]) => {
+	const filterData = (listData: Employee[]) => {
 		if (!searchText.trim()) {
 			return listData;
 		}
 
 		const searchLower = searchText.toLowerCase();
 
-		return listData.filter((coach) => {
-			const nameMatch = coach.profile?.name
+		return listData.filter((employee) => {
+			const nameMatch = employee.profile?.name
 				?.toLowerCase()
 				.includes(searchLower);
-			const lastnameMatch = coach.profile?.last_name
+			const lastnameMatch = employee.profile?.last_name
 				?.toLowerCase()
 				.includes(searchLower);
 
@@ -62,20 +62,20 @@ export default function DataTable({
 		});
 	};
 
-	const getSortValue = (coach: Coach, key: SortKey): string | number => {
+	const getSortValue = (employe: Employee, key: SortKey): string | number => {
 		switch (key) {
 			case "userId":
-				return coach.user_id;
+				return employe.user_id;
 			case "name":
-				return coach.profile?.name ?? "";
+				return employe.profile?.name ?? "";
 			case "lastName":
-				return coach.profile?.last_name ?? "";
+				return employe.profile?.last_name ?? "";
 			case "status":
-				return coach.profile?.status?.name ?? "";
+				return employe.profile?.status?.name ?? "";
 			case "createdAt":
-				return new Date(coach.created_at).getTime() || 0;
+				return new Date(employe.created_at).getTime() || 0;
 			case "updatedAt":
-				return new Date(coach.updated_at).getTime() || 0;
+				return new Date(employe.updated_at).getTime() || 0;
 		}
 	};
 
