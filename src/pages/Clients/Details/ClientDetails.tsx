@@ -15,9 +15,9 @@ import ClientMembershipPaymentsCard from "./Payments/ClientMembershipPaymentsCar
 import ClientAttemdamceCard from "./Attendance/ClientAttemdamceCard";
 import Tabs from "./Tabs";
 
-interface ParamsUsuario {
-	id: string | undefined | null;
-}
+type ParamsUsuario = {
+	id?: string;
+};
 
 export default function ClientDetails() {
 	const { id } = useParams<ParamsUsuario>();
