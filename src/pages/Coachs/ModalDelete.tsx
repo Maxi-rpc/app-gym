@@ -1,7 +1,7 @@
 import { Modal } from "../../components/ui/modal";
 import FormDelete from "./FormDelete";
 
-import { Coach } from "./types/Coach";
+import { Coach } from "../../service/types/Coach";
 
 type Props = {
 	isOpen: boolean;

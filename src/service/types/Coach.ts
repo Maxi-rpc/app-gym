@@ -1,4 +1,4 @@
-import { Profile } from "../../../../context/types/Profile";
+import { Profile } from "../../context/types/Profile";
 
 export interface Coach {
 	user_id: string;

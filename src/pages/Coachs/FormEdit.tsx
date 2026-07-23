@@ -2,9 +2,8 @@ import React, { useState } from "react";
 
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
-import Select from "../../components/form/Select";
 import Button from "../../components/ui/button/Button";
-import { Coach } from "./types/Coach";
+import { Coach } from "../../service/types/Coach";
 
 type Props = {
 	onSubmit?: () => void;
@@ -14,13 +13,12 @@ type Props = {
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [formData, setFormData] = useState({
-		name: defaultData?.name,
-		lastname: defaultData?.lastname,
-		document: defaultData?.document,
-		birthDate: defaultData?.birthDate,
-		phoneNumber: defaultData?.phoneNumber,
-		email: defaultData?.email,
-		status: defaultData?.status,
+		salary: defaultData?.salary,
+		hire_date: defaultData?.hire_date,
+		specialist: defaultData?.specialist,
+		employee_number: defaultData?.employee_number,
+		observations: defaultData?.observations,
+		profile: defaultData?.profile,
 	});
 	const handleClose = () => {
 		console.log("handleClose Modal");
@@ -30,19 +28,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const handleSubmit = () => {
 		console.log("handleSubmit Modal");
 		onSubmit?.();
-	};
-
-	const options = [
-		{ value: "activo", label: "Activo" },
-		{ value: "inactivo", label: "Inactivo" },
-	];
-
-	const handleSelectChange = (value: string) => {
-		console.log("Selected value:", value);
-		setFormData({
-			...formData,
-			status: value,
-		});
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +47,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Nombre</Label>
 						<Input
 							type="text"
-							value={formData.name}
+							value={formData.salary}
 							name="name"
 							onChange={handleChange}
 						/>
@@ -72,7 +57,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Apellido</Label>
 						<Input
 							type="text"
-							value={formData.lastname}
+							value={formData.hire_date}
 							name="lastname"
 							onChange={handleChange}
 						/>
@@ -82,7 +67,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Documento</Label>
 						<Input
 							type="text"
-							value={formData.document}
+							value={formData.specialist}
 							name="document"
 							onChange={handleChange}
 						/>
@@ -92,7 +77,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="text"
-							value={formData.birthDate}
+							value={formData.employee_number}
 							name="birthDate"
 							onChange={handleChange}
 						/>
@@ -102,30 +87,9 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
-							value={formData.phoneNumber}
+							value={formData.observations}
 							name="phoneNumber"
 							onChange={handleChange}
-						/>
-					</div>
-
-					<div>
-						<Label>Email</Label>
-						<Input
-							type="text"
-							value={formData.email}
-							name="email"
-							onChange={handleChange}
-						/>
-					</div>
-
-					<div>
-						<Label>Estado</Label>
-						<Select
-							options={options}
-							placeholder="Seleccionar Estado"
-							onChange={handleSelectChange}
-							className="dark:bg-dark-900"
-							defaultValue={formData.status}
 						/>
 					</div>
 				</div>

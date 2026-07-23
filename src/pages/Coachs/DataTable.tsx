@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import { Coach } from "./types/Coach";
+import { Coach } from "../../service/types/Coach";
 
 type SortKey =
 	| "userId"

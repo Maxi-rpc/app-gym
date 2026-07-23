@@ -67,7 +67,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					{/* <div>
 						<Label>Documento</Label>
 						<Input
 							type="text"
@@ -75,7 +75,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 							name="document"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 
 					<div>
 						<Label>Fecha de Nacimiento</Label>
@@ -87,7 +87,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					{/* <div>
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
@@ -95,7 +95,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 							name="phone"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 
 					<div>
 						<Label>Email</Label>
