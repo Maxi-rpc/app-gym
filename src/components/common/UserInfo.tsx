@@ -1,25 +1,5 @@
 import { useAuth } from "../../hooks/useAuth";
 
-/**
- * Hook personalizado para acceder a información del usuario
- * Ejemplo de uso en cualquier componente:
- *
- * function MyComponent() {
- *   const { user, isAuthenticated, hasRole, logout } = useAuth();
- *
- *   if (!isAuthenticated) return <div>No autenticado</div>;
- *
- *   return (
- *     <div>
- *       <p>{user?.name} {user?.lastname}</p>
- *       <p>{user?.email}</p>
- *       {hasRole('admin') && <p>Eres administrador</p>}
- *       <button onClick={logout}>Logout</button>
- *     </div>
- *   );
- * }
- */
-
 export function UserInfo() {
 	const { profile, isAuthenticated, logout } = useAuth();
 
@@ -33,15 +13,15 @@ export function UserInfo() {
 		<div className="flex flex-col gap-2">
 			<div>
 				<p className="text-sm font-semibold text-gray-900 dark:text-white">
-					{profile.profile?.name} {profile.profile?.last_name}
+					{profile?.name} {profile?.last_name}
 				</p>
 				<p className="text-xs text-gray-500 dark:text-gray-400">
-					{profile.profile?.email}
+					{profile?.email}
 				</p>
 			</div>
 			<div className="flex gap-2">
 				<span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
-					{profile.profile?.user_roles.join(", ")}
+					{profile?.user_roles.join(", ")}
 				</span>
 			</div>
 			<button

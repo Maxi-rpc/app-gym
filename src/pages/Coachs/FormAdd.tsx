@@ -4,7 +4,7 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 
-import { employeeService } from "../../service/employee.service";
+//import { employeeService } from "../../service/employee.service";
 
 type Props = {
 	onSubmit?: () => void;
@@ -41,9 +41,13 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 			return;
 		}
 
-		const resp = await employeeService.create(formData);
+		// const EmployeeForm = {
+		// 	profile: formData,
+		// };
 
-		console.log("handleSave", resp);
+		// const resp = await employeeService.create(EmployeeForm);
+
+		// console.log("handleSave", resp);
 		onSubmit?.();
 	};
 

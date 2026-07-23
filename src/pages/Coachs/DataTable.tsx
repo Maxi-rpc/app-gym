@@ -65,7 +65,7 @@ export default function DataTable({
 	const getSortValue = (employe: Employee, key: SortKey): string | number => {
 		switch (key) {
 			case "userId":
-				return employe.user_id;
+				return employe.user_id ?? "";
 			case "name":
 				return employe.profile?.name ?? "";
 			case "lastName":
@@ -73,9 +73,9 @@ export default function DataTable({
 			case "status":
 				return employe.profile?.status?.name ?? "";
 			case "createdAt":
-				return new Date(employe.created_at).getTime() || 0;
+				return employe.created_at ? new Date(employe.created_at).getTime() : 0;
 			case "updatedAt":
-				return new Date(employe.updated_at).getTime() || 0;
+				return employe.updated_at ? new Date(employe.updated_at).getTime() : 0;
 		}
 	};
 
