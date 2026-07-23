@@ -15,7 +15,7 @@ export default function UserSecurityCard() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
 	const [formData, setFormData] = useState({
-		email: profile?.profile?.email,
+		email: profile?.email,
 		password: "",
 		newPassword: "",
 	});

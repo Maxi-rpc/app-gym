@@ -40,11 +40,11 @@ export default function UserDropdown() {
 				</span> */}
 
 				<span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-brand-400 inline-flex items-center justify-center text-2xl font-medium text-white">
-					{profile?.profile?.name[0]}
+					{profile?.name[0]}
 				</span>
 
 				<span className="block mr-1 font-medium text-theme-sm">
-					Hola {profile?.profile?.name}!
+					Hola {profile?.name}!
 				</span>
 				<svg
 					className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
@@ -73,10 +73,10 @@ export default function UserDropdown() {
 			>
 				<div>
 					<span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-						{profile?.profile?.name} {profile?.profile?.last_name}
+						{profile?.name} {profile?.last_name}
 					</span>
 					<span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-						{profile?.profile?.email}
+						{profile?.email}
 					</span>
 				</div>
 

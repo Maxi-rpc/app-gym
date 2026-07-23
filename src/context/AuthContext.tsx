@@ -4,12 +4,12 @@ import { Session, User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "../utils/supabase";
 import { profileService } from "../service/profile.service.ts";
 
-import { ProfileResponse } from "./types/Profile.ts";
+import { Profile } from "./types/Profile.ts";
 
 export interface AuthContextType {
 	session: Session | null;
 	authUser: SupabaseUser | null;
-	profile: ProfileResponse | null;
+	profile: Profile | null;
 
 	isLoading: boolean;
 	isAuthenticated: boolean;
@@ -30,7 +30,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [session, setSession] = useState<Session | null>(null);
 	const [authUser, setAuthUser] = useState<SupabaseUser | null>(null);
-	const [profile, setProfile] = useState<ProfileResponse | null>(null);
+	const [profile, setProfile] = useState<Profile | null>(null);
 
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -130,17 +130,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const hasRole = (role: string): boolean => {
 		return Boolean(
-			profile?.profile?.user_roles?.some(
-				(ur) => ur.role && ur.role.name === role,
-			),
+			profile?.user_roles?.some((ur) => ur.role && ur.role.name === role),
 		);
 	};
 
 	const hasAnyRole = (roles: string[]): boolean => {
-		if (!profile?.profile?.user_roles) return false;
+		if (!profile?.user_roles) return false;
 
 		return roles.some((r) =>
-			profile.profile.user_roles.some((ur) => ur.role && ur.role.name === r),
+			profile.user_roles.some((ur) => ur.role && ur.role.name === r),
 		);
 	};
 

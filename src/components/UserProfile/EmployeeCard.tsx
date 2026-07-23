@@ -34,8 +34,8 @@ export default function EmployeeCard() {
 
 	useEffect(() => {
 		const getData = async () => {
-			if (profile?.profile?.id) {
-				await loadEmployee(profile?.profile?.id);
+			if (profile?.id) {
+				await loadEmployee(profile?.id);
 			}
 		};
 		getData();

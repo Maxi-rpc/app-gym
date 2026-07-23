@@ -34,8 +34,8 @@ export default function ClientCard() {
 
 	useEffect(() => {
 		const getData = async () => {
-			if (profile?.profile?.id) {
-				await loadClient(profile?.profile?.id);
+			if (profile?.id) {
+				await loadClient(profile?.id);
 			}
 		};
 		getData();

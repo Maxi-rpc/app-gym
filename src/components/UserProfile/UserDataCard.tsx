@@ -16,7 +16,7 @@ import { employeeService } from "../../service/employee.service";
 export default function UserDataCard() {
 	const { isOpen, openModal, closeModal } = useModal();
 	const { profile, hasRole } = useAuth();
-	console.log(profile?.profile.id);
+	console.log(profile?.id);
 	const [profileData, setProfileData] = useState({
 		id: "",
 		email: "",
@@ -46,7 +46,7 @@ export default function UserDataCard() {
 	});
 
 	const roleNames =
-		profile?.profile?.user_roles
+		profile?.user_roles
 			?.map((ur) => ur.role?.name)
 			.filter(Boolean)
 			.join(", ") ?? "";
@@ -82,10 +82,7 @@ export default function UserDataCard() {
 						<div className="mb-6 flex flex-col gap-5 sm:flex-row xl:items-center xl:justify-between">
 							<div className="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-center">
 								<div className="border-gray-20 overflow-hidden rounded border dark:border-gray-800">
-									<QRCode
-										value={profile?.profile?.qr_token || "no data"}
-										size={100}
-									/>
+									<QRCode value={profile?.qr_token || "no data"} size={100} />
 								</div>
 								{/* <div className="border-gray-20 overflow-hidden rounded-full border dark:border-gray-800">
 									<img
@@ -95,15 +92,13 @@ export default function UserDataCard() {
 									/>
 								</div> */}
 								<div className="mr-3 overflow-hidden rounded-full h-20 w-20 bg-brand-400 inline-flex items-center justify-center text-5xl font-medium text-white">
-									{profile?.profile?.name[0]}
+									{profile?.name[0]}
 								</div>
 
 								<div className="text-left">
 									<h4 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">
-										{profile?.profile?.name} {profile?.profile?.last_name}{" "}
-										<Badge color="success">
-											{profile?.profile?.status.name}
-										</Badge>
+										{profile?.name} {profile?.last_name}{" "}
+										<Badge color="success">{profile?.status.name}</Badge>
 									</h4>
 									<div className="flex items-center gap-1 sm:gap-3">
 										<p className="text-sm text-gray-500 dark:text-gray-400">
@@ -123,7 +118,7 @@ export default function UserDataCard() {
 									Nombre
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{profile?.profile?.name}
+									{profile?.name}
 								</p>
 							</div>
 							<div className="w-full">
@@ -131,7 +126,7 @@ export default function UserDataCard() {
 									Apellido
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{profile?.profile?.last_name}
+									{profile?.last_name}
 								</p>
 							</div>
 							<div className="w-full">
@@ -139,7 +134,7 @@ export default function UserDataCard() {
 									Email
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{profile?.profile?.email}
+									{profile?.email}
 								</p>
 							</div>
 							<div className="hidden xl:block"></div>
@@ -148,7 +143,7 @@ export default function UserDataCard() {
 									Cumpleaños
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{profile?.profile?.birth_date}
+									{profile?.birth_date}
 								</p>
 							</div>
 							<div>
@@ -156,7 +151,7 @@ export default function UserDataCard() {
 									Teléfono
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{profile?.profile?.phone}
+									{profile?.phone}
 								</p>
 							</div>
 							<div>
@@ -327,30 +322,27 @@ export default function UserDataCard() {
 								<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Nombre</Label>
-										<Input type="text" value={profile?.profile?.name} />
+										<Input type="text" value={profile?.name} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Apellido</Label>
-										<Input type="text" value={profile?.profile?.last_name} />
+										<Input type="text" value={profile?.last_name} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Email</Label>
-										<Input type="text" value={profile?.profile?.email} />
+										<Input type="text" value={profile?.email} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Documento</Label>
-										<Input
-											type="text"
-											value={profile?.profile?.document || ""}
-										/>
+										<Input type="text" value={profile?.document || ""} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Teléfono</Label>
-										<Input type="text" value={profile?.profile?.phone || ""} />
+										<Input type="text" value={profile?.phone || ""} />
 									</div>
 
 									<div className="col-span-2 lg:col-span-1">
@@ -358,7 +350,7 @@ export default function UserDataCard() {
 										<Input
 											type="text"
 											placeholder="AAAA-MM-DD"
-											value={profile?.profile?.birth_date || ""}
+											value={profile?.birth_date || ""}
 										/>
 									</div>
 								</div>

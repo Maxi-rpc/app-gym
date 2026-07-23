@@ -20,7 +20,7 @@ async function getById(id: string) {
 	});
 
 	if (error) throw error;
-	return data;
+	return data?.profile;
 }
 
 export const profileService = {
