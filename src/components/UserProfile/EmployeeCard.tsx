@@ -56,6 +56,7 @@ export default function EmployeeCard() {
 			if (resp.error) {
 				throw resp.error;
 			}
+			await loadEmployee(formData.user_id);
 		} catch (error) {
 			console.error("Error al guardar datos:", error);
 
