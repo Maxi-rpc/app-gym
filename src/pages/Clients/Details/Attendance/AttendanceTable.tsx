@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import Badge from "../../../../components/ui/badge/Badge";
+
+import { formatLocalDateTime } from "../../../../utils/date";
+
 import { Attendance } from "../../types/Attendance";
 
 type SortKey =
@@ -130,21 +134,17 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 								{attendance.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{attendance?.check_in_at}
+								{formatLocalDateTime(attendance?.check_in_at)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{attendance?.check_out_at}
+								{formatLocalDateTime(attendance?.check_out_at)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								<span
-									className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-										attendance?.access_granted
-											? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-											: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-									}`}
+								<Badge
+									color={attendance?.access_granted ? "success" : "warning"}
 								>
 									{attendance?.access_granted ? "Si" : "No"}
-								</span>
+								</Badge>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{attendance?.access_reason}

@@ -2,8 +2,11 @@ import { useState, useEffect, SetStateAction } from "react";
 
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
+import Badge from "../../../../components/ui/badge/Badge";
 import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+
+import { formatLocalDateTime } from "../../../../utils/date";
 
 import { Attendance } from "../../types/Attendance";
 import { attendanceService } from "../../../../service/attendance.service";
@@ -75,7 +78,7 @@ export default function ClientAttemdamceCard({ id }: Props) {
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{attendance?.check_in_at}
+									{formatLocalDateTime(attendance?.check_in_at)}
 								</p>
 							</div>
 
@@ -84,7 +87,7 @@ export default function ClientAttemdamceCard({ id }: Props) {
 									Fecha de Salida
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{attendance?.check_out_at}
+									{formatLocalDateTime(attendance?.check_out_at)}
 								</p>
 							</div>
 
@@ -93,15 +96,11 @@ export default function ClientAttemdamceCard({ id }: Props) {
 									Acceso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									<span
-										className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-											attendance?.access_granted
-												? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-												: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-										}`}
+									<Badge
+										color={attendance?.access_granted ? "success" : "warning"}
 									>
 										{attendance?.access_granted ? "Si" : "No"}
-									</span>
+									</Badge>
 								</p>
 							</div>
 
@@ -130,7 +129,10 @@ export default function ClientAttemdamceCard({ id }: Props) {
 							</div>
 						</div>
 						<div>
-							<AttendanceTable searchText="" listData={listAttendances || []} />
+							<AttendanceTable
+								searchText={searchText}
+								listData={listAttendances || []}
+							/>
 						</div>
 					</div>
 				</div>
