@@ -22,8 +22,7 @@ async function getByClientId(id: string) {
 		},
 	);
 
-	if (error) throw error;
-	return data?.memberships;
+	return { data: data?.memberships, error: error };
 }
 
 async function getAll() {

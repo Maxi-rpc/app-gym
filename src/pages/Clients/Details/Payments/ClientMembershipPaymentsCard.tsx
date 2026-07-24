@@ -2,6 +2,8 @@ import { useState, useEffect, SetStateAction } from "react";
 
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
+import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 
 import { Payments } from "../../types/Payments";
 import { paymentsService } from "../../../../service/payments.service";
@@ -13,6 +15,8 @@ interface Props {
 }
 
 export default function ClientMembershipPaymentsCard({ id }: Props) {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const [payment, setPayment] = useState<Payments | null>(null);
 	const [listPayments, setListPayments] = useState<Payments[] | null>(null);
 	const [searchText, setSearchText] = useState("");
@@ -23,11 +27,22 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
 
 	const getData = async (id: string) => {
 		try {
-			const data = await paymentsService.getByClient(id);
-			setListPayments(data);
-			setPayment(data[0]);
+			setFeedback(null);
+
+			const resp = await paymentsService.getByClient(id);
+			if (resp.error) throw resp.error;
+
+			setListPayments(resp.data);
+			setPayment(resp.data[0]);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error No se puede obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -45,6 +60,16 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 sm:grid-cols-2 lg:gap-7 2xl:gap-x-32">
+							{feedback && (
+								<div className="col-span-2">
+									<Alert
+										variant={feedback?.variant}
+										title={feedback?.title}
+										message={feedback?.message}
+									/>
+								</div>
+							)}
+
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
 									Fecha de Pago

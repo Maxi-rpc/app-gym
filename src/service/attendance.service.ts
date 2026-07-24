@@ -22,8 +22,7 @@ async function getById(id: string) {
 		},
 	);
 
-	if (error) throw error;
-	return data?.attendances;
+	return { data: data?.attendances, error: error };
 }
 
 async function getAll() {

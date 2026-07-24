@@ -2,6 +2,8 @@ import { useState, useEffect, SetStateAction } from "react";
 
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
+import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 
 import { Membership } from "../../types/Membership";
 import { membershipsService } from "../../../../service/memberships.service";
@@ -13,6 +15,8 @@ interface Props {
 }
 
 export default function ClientMembershipCard({ id }: Props) {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const [memberships, setMemberships] = useState<Membership | null>(null);
 	const [listMembership, setListMembership] = useState<Membership[] | null>(
 		null,
@@ -25,15 +29,26 @@ export default function ClientMembershipCard({ id }: Props) {
 
 	const getData = async (id: string) => {
 		try {
-			const data = await membershipsService.getByClientId(id);
-			setListMembership(data);
-			data.filter((item: Membership) => {
+			setFeedback(null);
+
+			const resp = await membershipsService.getByClientId(id);
+			if (resp.error) throw resp.error;
+
+			setListMembership(resp?.data);
+			resp?.data.filter((item: Membership) => {
 				if (item?.active) {
 					setMemberships(item);
 				}
 			});
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error No se puede obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -51,6 +66,16 @@ export default function ClientMembershipCard({ id }: Props) {
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 sm:grid-cols-2 lg:gap-7 2xl:gap-x-32">
+							{feedback && (
+								<div className="col-span-2">
+									<Alert
+										variant={feedback?.variant}
+										title={feedback?.title}
+										message={feedback?.message}
+									/>
+								</div>
+							)}
+
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
 									Fecha de Ingreso
