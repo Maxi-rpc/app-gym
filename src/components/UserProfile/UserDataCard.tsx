@@ -61,6 +61,7 @@ export default function UserDataCard() {
 					});
 				}
 			}
+
 			if (resp.error) {
 				throw resp.error;
 			}

@@ -5,6 +5,8 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import Alert from "../../components/ui/alert/Alert";
+import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
 
 import { employeeService } from "../../service/employee.service";
 import { UpdateEmployeeInput } from "../../service/types/Employee";
@@ -22,36 +24,47 @@ export default function EmployeeCard() {
 		employee_number: "",
 		observations: "",
 	});
-	const [error, setError] = useState("");
-	const [message, setMessage] = useState("");
+	const [feedback, setFeedback] = useState<Feedback>(null);
 
 	const handleCloseModal = () => {
-		setError("");
-		setMessage("");
+		setFeedback(null);
 		closeModal();
 	};
 
 	const handleSave = async () => {
-		setError("");
-		setMessage("");
-		// Validación básica
-		// if (!email || !password) {
-		// 	setError("Por favor completa todos los campos*");
-		// 	return;
-		// }
+		try {
+			setFeedback(null);
+			// Validación básica
 
-		// if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-		// 	setError("Email inválido");
-		// 	return;
-		// }
+			const resp = await employeeService.update(formData);
+			if (resp.data) {
+				if (resp?.data?.success) {
+					setFeedback({
+						variant: "success",
+						title: "Info.",
+						message: resp?.data?.message,
+					});
+				} else {
+					setFeedback({
+						variant: "warning",
+						title: "Info.",
+						message: resp?.data?.message,
+					});
+				}
+			}
 
-		const resp = await employeeService.update(formData);
-		if (resp.data) {
-			setMessage(resp?.data?.message);
-			await loadEmployee(formData.user_id);
-		}
-		if (resp.error) {
-			setError(resp?.error?.message);
+			if (resp.error) {
+				throw resp.error;
+			}
+		} catch (error) {
+			console.error("Error al guardar datos:", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede guardar datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -171,6 +184,16 @@ export default function EmployeeCard() {
 					<form className="flex flex-col">
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+								{feedback && (
+									<div className="col-span-2 text-start">
+										<Alert
+											variant={feedback?.variant}
+											title={feedback?.title}
+											message={feedback?.message}
+										/>
+									</div>
+								)}
+
 								<div className="col-span-2 lg:col-span-1">
 									<Label>Fecha de Ingreso</Label>
 									<Input
@@ -209,25 +232,6 @@ export default function EmployeeCard() {
 							<Button size="sm" onClick={handleSave}>
 								Guadar Cambios
 							</Button>
-						</div>
-						<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 mt-6">
-							<div className="col-span-2">
-								{message && (
-									<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
-										<p className="text-sm text-success-600 dark:text-success-400">
-											{message}
-										</p>
-									</div>
-								)}
-
-								{error && (
-									<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
-										<p className="text-sm text-error-600 dark:text-error-400">
-											{error}
-										</p>
-									</div>
-								)}
-							</div>
 						</div>
 					</form>
 				</div>
