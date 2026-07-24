@@ -4,6 +4,12 @@ export interface Service {
 	price: number;
 }
 
+export interface Membership_status {
+	id: number;
+	name: string;
+	description: string;
+}
+
 export interface Membership {
 	id: string;
 	created_at: string;
@@ -13,4 +19,5 @@ export interface Membership {
 	next_due_date: string;
 	observations: string;
 	service: Service;
+	membership_status: Membership_status;
 }

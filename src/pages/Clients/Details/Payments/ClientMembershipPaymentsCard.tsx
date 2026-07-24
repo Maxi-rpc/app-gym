@@ -5,6 +5,8 @@ import Input from "../../../../components/form/input/InputField";
 import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 
+import { formatLocalDateTime } from "../../../../utils/date";
+
 import { Payments } from "../../types/Payments";
 import { paymentsService } from "../../../../service/payments.service";
 
@@ -75,7 +77,7 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
 									Fecha de Pago
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{payment?.payment_date}
+									{formatLocalDateTime(payment?.payment_date)}
 								</p>
 							</div>
 
@@ -108,7 +110,7 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Estatus
+									Estado
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
 									{payment?.status?.name}

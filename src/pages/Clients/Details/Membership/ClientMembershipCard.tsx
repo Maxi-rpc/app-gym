@@ -2,10 +2,13 @@ import { useState, useEffect, SetStateAction } from "react";
 
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
+import Badge from "../../../../components/ui/badge/Badge";
 import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 
-import { Membership } from "../../types/Membership";
+import { formatLocalDateTime } from "../../../../utils/date";
+
+import { Membership } from "../../../../service/types/Membership";
 import { membershipsService } from "../../../../service/memberships.service";
 
 import MembershipsTable from "./MembershipsTable";
@@ -36,7 +39,7 @@ export default function ClientMembershipCard({ id }: Props) {
 
 			setListMembership(resp?.data);
 			resp?.data.filter((item: Membership) => {
-				if (item?.active) {
+				if (item?.membership_status?.name == "Active") {
 					setMemberships(item);
 				}
 			});
@@ -81,7 +84,7 @@ export default function ClientMembershipCard({ id }: Props) {
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.created_at}
+									{formatLocalDateTime(memberships?.created_at)}
 								</p>
 							</div>
 
@@ -90,7 +93,7 @@ export default function ClientMembershipCard({ id }: Props) {
 									Fecha de Fin
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.end_date}
+									{formatLocalDateTime(memberships?.end_date)}
 								</p>
 							</div>
 
@@ -99,7 +102,15 @@ export default function ClientMembershipCard({ id }: Props) {
 									Estado
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{String(memberships?.active)}
+									<Badge
+										color={
+											memberships?.membership_status.id == 1
+												? "success"
+												: "warning"
+										}
+									>
+										{memberships?.membership_status?.name}
+									</Badge>
 								</p>
 							</div>
 
@@ -108,7 +119,7 @@ export default function ClientMembershipCard({ id }: Props) {
 									Próximo vencimiento
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{memberships?.next_due_date}
+									{formatLocalDateTime(memberships?.next_due_date)}
 								</p>
 							</div>
 

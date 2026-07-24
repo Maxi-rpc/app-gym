@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-import { Membership } from "../../types/Membership";
+import Badge from "../../../../components/ui/badge/Badge";
+
+import { formatLocalDateTime } from "../../../../utils/date";
+
+import { Membership } from "../../../../service/types/Membership";
 
 type SortKey =
 	| "id"
@@ -8,7 +12,7 @@ type SortKey =
 	| "startDate"
 	| "endDate"
 	| "nextDueDate"
-	| "active"
+	| "state"
 	| "createdAt"
 	| "observations";
 
@@ -43,8 +47,8 @@ export default function MembershipsTable({ listData, searchText }: Props) {
 				return new Date(membership.end_date).getTime() || 0;
 			case "nextDueDate":
 				return new Date(membership.next_due_date).getTime() || 0;
-			case "active":
-				return Number(membership.active);
+			case "state":
+				return membership.membership_status?.name;
 			case "createdAt":
 				return new Date(membership.created_at).getTime() || 0;
 			case "observations":
@@ -107,7 +111,7 @@ export default function MembershipsTable({ listData, searchText }: Props) {
 		{ key: "startDate", label: "Fecha de inicio" },
 		{ key: "endDate", label: "Fecha de fin" },
 		{ key: "nextDueDate", label: "Próximo vencimiento" },
-		{ key: "active", label: "Estado" },
+		{ key: "state", label: "Estado" },
 		{ key: "createdAt", label: "Creada" },
 		{ key: "observations", label: "Observaciones" },
 	];
@@ -147,27 +151,27 @@ export default function MembershipsTable({ listData, searchText }: Props) {
 								{membership.service?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{membership.start_date}
+								{formatLocalDateTime(membership.start_date)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{membership.end_date}
+								{formatLocalDateTime(membership.end_date)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{membership.next_due_date}
 							</td>
 							<td className="px-4 py-3 text-sm">
-								<span
-									className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-										membership.active
-											? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-											: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-									}`}
+								<Badge
+									color={
+										membership?.membership_status.id == 1
+											? "success"
+											: "warning"
+									}
 								>
-									{membership.active ? "Activa" : "Inactiva"}
-								</span>
+									{membership?.membership_status?.name}
+								</Badge>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{membership.created_at}
+								{formatLocalDateTime(membership.created_at)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{membership.observations}
