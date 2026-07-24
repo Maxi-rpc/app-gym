@@ -58,15 +58,24 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 			}
 
 			const resp = await clientService.create(formData);
+			if (resp.error) {
+				throw resp.error;
+			}
+
+			setFeedback({
+				variant: "success",
+				title: "Cliente creado.",
+				message: resp?.data?.message,
+			});
 
 			console.log("handleSave", resp);
 			onSubmit?.();
 		} catch (error) {
-			console.error("Error al obtener clientes:", error);
+			console.error("Error al crear cliente:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se pudieron cargar los clientes",
+				title: "No se puede crear cliente",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
