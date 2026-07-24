@@ -1,12 +1,30 @@
 import { Profile } from "../../context/types/Profile";
 
-export interface Client {
+export interface ClientProfile {
 	user_id: string;
 	created_at: string;
-	height: number;
-	weight: number;
-	emergency_contact: string;
-	medical_notes: string;
+	height: number | null;
+	weight: number | null;
+	emergency_contact: string | null;
+	medical_notes: string | null;
 	updated_at: string;
+}
+
+export interface Client extends ClientProfile {
 	profile: Profile;
+}
+
+export interface CreateClientInput {
+	height: number | null;
+	weight: number | null;
+	emergency_contact: string | null;
+	medical_notes: string | null;
+}
+
+export interface UpdateClientInput {
+	user_id?: string;
+	height: number | null;
+	weight: number | null;
+	emergency_contact: string | null;
+	medical_notes: string | null;
 }

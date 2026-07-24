@@ -1,5 +1,5 @@
 import { supabase } from "../utils/supabase";
-import { Client } from "./types/Client";
+import { UpdateClientInput } from "./types/Client";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -81,7 +81,7 @@ async function create(formData: FormData) {
 	return { data: data, error: error };
 }
 
-async function update(formData: Client) {
+async function update(formData: UpdateClientInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -91,14 +91,9 @@ async function update(formData: Client) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("create-client", {
+	const { data, error } = await supabase.functions.invoke("update-client", {
 		body: {
-			name: formData?.profile?.name,
-			last_name: formData?.profile?.last_name,
-			document: formData?.profile?.document,
-			phone: formData?.profile?.phone,
-			birth_date: formData?.profile?.birth_date,
-			email: formData?.profile?.email,
+			id: formData?.user_id,
 			height: formData?.height,
 			weight: formData?.weight,
 			emergency_contact: formData?.emergency_contact,

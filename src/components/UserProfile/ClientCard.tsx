@@ -7,24 +7,63 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 
 import { clientService } from "../../service/client.service";
-import { Client } from "./types/Client";
+import { UpdateClientInput } from "../../service/types/Client";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function ClientCard() {
 	const { profile } = useAuth();
-	const [client, setClient] = useState<Client | null>(null);
+	const [client, setClient] = useState<UpdateClientInput | null>(null);
 	const { isOpen, openModal, closeModal } = useModal();
-	const handleSave = () => {
-		// Handle save logic here
-		console.log("Saving changes...");
+	const [formData, setFormData] = useState({
+		user_id: "",
+		height: 0,
+		weight: 0,
+		emergency_contact: "",
+		medical_notes: "",
+	});
+	const [error, setError] = useState("");
+	const [message, setMessage] = useState("");
+
+	const handleCloseModal = () => {
+		setError("");
+		setMessage("");
 		closeModal();
+	};
+
+	const handleSave = async () => {
+		setError("");
+		// Validación básica
+
+		const resp = await clientService.update(formData);
+		if (resp.data) {
+			setMessage(resp?.data?.message);
+			await loadClient(formData.user_id);
+		}
+		if (resp.error) {
+			setError(resp?.error?.message);
+		}
+	};
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
 	};
 
 	const loadClient = async (userId: string) => {
 		try {
 			const clientData = await clientService.getById(userId);
-
 			setClient(clientData);
+			setFormData((prev) => ({
+				...prev,
+				user_id: userId,
+				height: clientData?.height ?? 0,
+				weight: clientData?.weight ?? 0,
+				emergency_contact: clientData?.emergency_contact ?? "",
+				medical_notes: clientData?.medical_notes ?? "",
+			}));
 		} catch (err) {
 			console.error("Error cargando client", err);
 
@@ -51,21 +90,30 @@ export default function ClientCard() {
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
-							<div>
+							{/* <div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
 									{client?.created_at}
 								</p>
+							</div> */}
+
+							<div>
+								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+									Altura (cm)
+								</p>
+								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
+									{client?.height}
+								</p>
 							</div>
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Altura y Peso
+									Peso (kg)
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{client?.height} , {client?.weight}
+									{client?.weight}
 								</p>
 							</div>
 
@@ -80,7 +128,7 @@ export default function ClientCard() {
 
 							<div>
 								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-									Notas Medicas
+									Notas Médicas
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
 									{client?.medical_notes}
@@ -113,11 +161,15 @@ export default function ClientCard() {
 				</div>
 			</div>
 			{/* modal */}
-			<Modal isOpen={isOpen} onClose={closeModal} className="max-w-175 m-4">
+			<Modal
+				isOpen={isOpen}
+				onClose={handleCloseModal}
+				className="max-w-175 m-4"
+			>
 				<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 					<div className="px-2 pr-14">
 						<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-							Editar Dirección
+							Editar Datos
 						</h4>
 						<p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
 							Actualiza tus datos para mantener tu perfil actualizado.
@@ -126,24 +178,67 @@ export default function ClientCard() {
 					<form className="flex flex-col">
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-								<div>
-									<Label>País</Label>
-									<Input type="text" value="Argentina" />
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Altura (cm)</Label>
+									<Input
+										type="number"
+										value={formData?.height}
+										name="height"
+										onChange={handleChange}
+									/>
 								</div>
 
-								<div>
-									<Label>Ciudad</Label>
-									<Input type="text" value="Buenos Aires." />
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Peso (kg)</Label>
+									<Input
+										type="number"
+										value={formData?.weight}
+										name="height"
+										onChange={handleChange}
+									/>
 								</div>
 
-								<div>
-									<Label>Código Postal</Label>
-									<Input type="text" value="1646" />
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Contacto de Emergencia</Label>
+									<Input
+										type="text"
+										value={formData?.emergency_contact}
+										name="emergency_contact"
+										onChange={handleChange}
+									/>
+								</div>
+
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Notas Médicas</Label>
+									<Input
+										type="text"
+										value={formData?.medical_notes}
+										name="medical_notes"
+										onChange={handleChange}
+									/>
+								</div>
+
+								<div className="col-span-2">
+									{message && (
+										<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
+											<p className="text-sm text-success-600 dark:text-success-400">
+												{message}
+											</p>
+										</div>
+									)}
+
+									{error && (
+										<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+											<p className="text-sm text-error-600 dark:text-error-400">
+												{error}
+											</p>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>
 						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-							<Button size="sm" variant="outline" onClick={closeModal}>
+							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
 							<Button size="sm" onClick={handleSave}>
