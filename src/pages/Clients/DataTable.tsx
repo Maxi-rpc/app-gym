@@ -7,6 +7,7 @@ import {
 } from "@lineiconshq/free-icons";
 
 import { Client } from "../../service/types/Client";
+import { formatLocalDateTime } from "../../utils/date";
 
 type SortConfig = {
 	key: keyof Client;
@@ -148,14 +149,6 @@ export default function DataTable({
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("profile")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Próximo Pago <SortIcon column="profile" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
 								onClick={() => handleSort("updated_at")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
@@ -189,7 +182,7 @@ export default function DataTable({
 								{client.profile?.last_name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.created_at}
+								{formatLocalDateTime(client.created_at)}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
@@ -197,10 +190,7 @@ export default function DataTable({
 								</span>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								en proceso
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.updated_at}
+								{formatLocalDateTime(client.updated_at)}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
