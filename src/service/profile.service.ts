@@ -1,5 +1,5 @@
 import { supabase } from "../utils/supabase";
-import { ProfileBase } from "../context/types/Profile";
+import { UpdateProfilInput } from "../context/types/Profile";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -24,7 +24,7 @@ async function getById(id: string) {
 	return data?.profile;
 }
 
-async function update(formData: ProfileBase) {
+async function update(formData: UpdateProfilInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -48,9 +48,6 @@ async function update(formData: ProfileBase) {
 			Authorization: `Bearer ${session_token}`,
 		},
 	});
-
-	console.log("data", data);
-	console.log("error", error);
 
 	return { data: data, error: error };
 }

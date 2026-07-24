@@ -31,7 +31,7 @@ export interface Profile {
 	user_roles?: UserRole[];
 }
 
-export interface ProfileBase {
+export interface UpdateProfilInput {
 	id?: string;
 	email?: string;
 	name?: string;
