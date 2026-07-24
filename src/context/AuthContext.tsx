@@ -138,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		if (!profile?.user_roles) return false;
 
 		return roles.some((r) =>
-			profile.user_roles.some((ur) => ur.role && ur.role.name === r),
+			profile.user_roles?.some((ur) => ur.role && ur.role.name === r),
 		);
 	};
 

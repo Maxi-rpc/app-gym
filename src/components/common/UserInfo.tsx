@@ -21,7 +21,7 @@ export function UserInfo() {
 			</div>
 			<div className="flex gap-2">
 				<span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
-					{profile?.user_roles.join(", ")}
+					{profile?.user_roles?.join(", ")}
 				</span>
 			</div>
 			<button

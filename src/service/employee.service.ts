@@ -1,5 +1,5 @@
 import { supabase } from "../utils/supabase";
-import { Employee } from "./types/Employee";
+import { Employee, UpdateEmployeeInput } from "../service/types/Employee";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -24,7 +24,7 @@ async function getById(id: string) {
 	);
 
 	if (error) throw error;
-	return data;
+	return data?.employee;
 }
 
 async function getAll() {
@@ -80,7 +80,7 @@ async function create(formData: Employee) {
 	return { data: data, error: error };
 }
 
-async function update(formData: Employee) {
+async function update(formData: UpdateEmployeeInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -90,17 +90,11 @@ async function update(formData: Employee) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("create-client", {
+	const { data, error } = await supabase.functions.invoke("update-employee", {
 		body: {
-			id: formData?.profile?.id,
-			email: formData?.profile?.email,
-			name: formData?.profile?.name,
-			last_name: formData?.profile?.last_name,
-			document: formData?.profile?.document,
-			phone: formData?.profile?.phone,
-			birth_date: formData?.profile?.birth_date,
+			id: formData?.user_id,
 			salary: formData?.salary,
-			hire_date: formData?.hire_date,
+			hire_date: formData?.hire_date || null,
 			specialist: formData?.specialist,
 			employee_number: formData?.employee_number,
 			observations: formData?.observations,

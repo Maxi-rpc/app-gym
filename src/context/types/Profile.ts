@@ -22,13 +22,13 @@ export interface Profile {
 	last_name: string;
 	document: string | null;
 	phone: string | null;
-	image: string | null;
-	status_id: number;
+	image?: string | null;
+	status_id?: number;
 	updated_at?: string;
-	qr_token: string;
-	birth_date: string;
-	status: Status;
-	user_roles: UserRole[];
+	qr_token?: string;
+	birth_date?: string;
+	status?: Status;
+	user_roles?: UserRole[];
 }
 
 export interface ProfileBase {

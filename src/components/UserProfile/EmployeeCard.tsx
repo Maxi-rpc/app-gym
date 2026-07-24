@@ -7,27 +7,70 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 
 import { employeeService } from "../../service/employee.service";
-import { EmployeeResponse } from "./types/Employee";
+import { UpdateEmployeeInput } from "../../service/types/Employee";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function EmployeeCard() {
 	const { profile } = useAuth();
-	const [employee, setEmployee] = useState<EmployeeResponse | null>(null);
+	const [employee, setEmployee] = useState<UpdateEmployeeInput | null>(null);
 	const { isOpen, openModal, closeModal } = useModal();
-	const handleSave = () => {
-		// Handle save logic here
-		console.log("Saving changes...");
-		closeModal();
+	const [formData, setFormData] = useState({
+		user_id: "",
+		salary: 0,
+		hire_date: null,
+		specialist: "",
+		employee_number: "",
+		observations: "",
+	});
+	const [error, setError] = useState("");
+	const [message, setMessage] = useState("");
+
+	const handleSave = async () => {
+		setError("");
+		// Validación básica
+		// if (!email || !password) {
+		// 	setError("Por favor completa todos los campos*");
+		// 	return;
+		// }
+
+		// if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+		// 	setError("Email inválido");
+		// 	return;
+		// }
+
+		const resp = await employeeService.update(formData);
+		if (resp.data) {
+			setMessage(resp?.data?.message);
+			await loadEmployee(formData.user_id);
+		}
+		if (resp.error) {
+			setError(resp?.error?.message);
+		}
+	};
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
 	};
 
 	const loadEmployee = async (userId: string) => {
 		try {
 			const employeeData = await employeeService.getById(userId);
-
 			setEmployee(employeeData);
+			setFormData((prev) => ({
+				...prev,
+				user_id: userId,
+				salary: employeeData.salary ?? 0,
+				hire_date: employeeData.hire_date ?? null,
+				specialist: employeeData.specialist ?? "",
+				employee_number: employeeData.employee_number ?? "",
+				observations: employeeData.observations ?? "",
+			}));
 		} catch (err) {
 			console.error("Error cargando employee", err);
-
 			setEmployee(null);
 		}
 	};
@@ -56,7 +99,7 @@ export default function EmployeeCard() {
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{employee?.employee?.hire_date}
+									{employee?.hire_date}
 								</p>
 							</div>
 
@@ -65,7 +108,7 @@ export default function EmployeeCard() {
 									Especialidad
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{employee?.employee?.specialist}
+									{employee?.specialist}
 								</p>
 							</div>
 
@@ -74,7 +117,7 @@ export default function EmployeeCard() {
 									Observación
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{employee?.employee?.observations}
+									{employee?.observations}
 								</p>
 							</div>
 						</div>
@@ -108,7 +151,7 @@ export default function EmployeeCard() {
 				<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 					<div className="px-2 pr-14">
 						<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-							Editar Dirección
+							Editar Datos
 						</h4>
 						<p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
 							Actualiza tus datos para mantener tu perfil actualizado.
@@ -117,19 +160,52 @@ export default function EmployeeCard() {
 					<form className="flex flex-col">
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-								<div>
-									<Label>País</Label>
-									<Input type="text" value="Argentina" />
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Fecha de Ingreso</Label>
+									<Input
+										type="date"
+										value={formData?.hire_date || ""}
+										name="hire_date"
+										onChange={handleChange}
+									/>
 								</div>
 
-								<div>
-									<Label>Ciudad</Label>
-									<Input type="text" value="Buenos Aires." />
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Especialidad</Label>
+									<Input
+										type="text"
+										value={formData?.specialist}
+										name="specialist"
+										onChange={handleChange}
+									/>
 								</div>
 
-								<div>
-									<Label>Código Postal</Label>
-									<Input type="text" value="1646" />
+								<div className="col-span-2 lg:col-span-1">
+									<Label>Observación</Label>
+									<Input
+										type="text"
+										value={formData?.observations}
+										name="observations"
+										onChange={handleChange}
+									/>
+								</div>
+
+								<div className="col-span-2">
+									{message && (
+										<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
+											<p className="text-sm text-success-600 dark:text-success-400">
+												{message}
+											</p>
+										</div>
+									)}
+
+									{error && (
+										<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+											<p className="text-sm text-error-600 dark:text-error-400">
+												{error}
+											</p>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>

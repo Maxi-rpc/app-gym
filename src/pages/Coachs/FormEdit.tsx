@@ -14,7 +14,7 @@ type Props = {
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [formData, setFormData] = useState({
 		salary: defaultData?.salary,
-		hire_date: defaultData?.hire_date,
+		hire_date: null,
 		specialist: defaultData?.specialist,
 		employee_number: defaultData?.employee_number,
 		observations: defaultData?.observations,
@@ -57,7 +57,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Apellido</Label>
 						<Input
 							type="text"
-							value={formData.hire_date}
+							value={formData.hire_date || ""}
 							name="lastname"
 							onChange={handleChange}
 						/>

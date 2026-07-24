@@ -48,7 +48,7 @@ export default function UserDataCard({ data }: Props) {
 								<div className="text-left">
 									<h4 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">
 										{profile?.name} {profile?.last_name}{" "}
-										<Badge color="success">{profile?.status.name}</Badge>
+										<Badge color="success">{profile?.status?.name}</Badge>
 									</h4>
 									<div className="flex items-center gap-1 sm:gap-3">
 										<p className="text-sm text-gray-500 dark:text-gray-400">
