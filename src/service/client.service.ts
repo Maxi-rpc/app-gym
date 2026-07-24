@@ -1,5 +1,5 @@
 import { supabase } from "../utils/supabase";
-import { UpdateClientInput } from "./types/Client";
+import { CreateClientInput, UpdateClientInput } from "./types/Client";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -44,16 +44,7 @@ async function getAll() {
 	return { data: data?.clients, error: error };
 }
 
-interface FormData {
-	name: string;
-	last_name: string;
-	document: string;
-	phone: string;
-	birth_date: string;
-	email: string;
-}
-
-async function create(formData: FormData) {
+async function create(formData: CreateClientInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -65,12 +56,17 @@ async function create(formData: FormData) {
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke("create-client", {
 		body: {
+			email: formData?.email,
 			name: formData?.name,
 			last_name: formData?.last_name,
 			document: formData?.document,
 			phone: formData?.phone,
+			image: formData?.image,
 			birth_date: formData?.birth_date,
-			email: formData?.email,
+			height: formData?.name, // client
+			weight: formData?.name,
+			emergency_contact: formData?.name,
+			medical_notes: formData?.name,
 		},
 		headers: {
 			Authorization: `Bearer ${session_token}`,
