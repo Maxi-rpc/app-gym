@@ -33,6 +33,7 @@ export default function EmployeeCard() {
 
 	const handleSave = async () => {
 		setError("");
+		setMessage("");
 		// Validación básica
 		// if (!email || !password) {
 		// 	setError("Por favor completa todos los campos*");

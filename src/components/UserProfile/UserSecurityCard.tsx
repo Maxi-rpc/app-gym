@@ -9,41 +9,45 @@ import Label from "../form/Label";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 
 import { useAuth } from "../../hooks/useAuth";
+import { userService } from "../../service/user.service";
 
 export default function UserSecurityCard() {
 	const { profile } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
+	const [message, setMessage] = useState("");
+
 	const [formData, setFormData] = useState({
-		email: profile?.email,
+		id: profile?.id || "",
 		password: "",
-		newPassword: "",
 	});
 
 	const { isOpen, openModal, closeModal } = useModal();
 
-	const handleChange = () => {
-		setFormData({
-			...formData,
-			email: "",
-		});
-		console.log("editando data");
+	const handleCloseModal = () => {
+		setError("");
+		setMessage("");
+		closeModal();
 	};
 
-	const handleSave = () => {
-		// Handle save logic here
-		if (!formData.password || !formData.newPassword) {
-			setError("Por favor completa todos los campos*");
-			return;
-		}
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
+	};
 
-		if (formData.password == formData.newPassword) {
-			setError("Por favor la contraseña debe ser diferente");
-			return;
-		}
+	const handleSave = async () => {
+		// Validación básica
 
-		console.log("Saving changes...");
-		closeModal();
+		const resp = await userService.update_password(formData);
+		if (resp.data) {
+			setMessage(resp?.data?.message);
+		}
+		if (resp.error) {
+			setError(resp?.error?.message);
+		}
 	};
 	return (
 		<>
@@ -88,7 +92,11 @@ export default function UserSecurityCard() {
 				</div>
 			</div>
 			{/* modal */}
-			<Modal isOpen={isOpen} onClose={closeModal} className="max-w-175 m-4">
+			<Modal
+				isOpen={isOpen}
+				onClose={handleCloseModal}
+				className="max-w-175 m-4"
+			>
 				<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 					<div className="px-2 pr-14">
 						<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -103,9 +111,10 @@ export default function UserSecurityCard() {
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 								<div className="col-span-2">
 									<Label>Email</Label>
-									<Input type="text" value={formData.email} disabled />
+									<Input type="text" value={profile?.email} disabled />
 								</div>
-								<div>
+
+								{/* <div className="col-span-2">
 									<Label>
 										Password Actual <span className="text-error-500">*</span>
 									</Label>
@@ -127,17 +136,17 @@ export default function UserSecurityCard() {
 											)}
 										</span>
 									</div>
-								</div>
+								</div> */}
 
-								<div>
+								<div className="col-span-2">
 									<Label>
 										Password Nueva <span className="text-error-500">*</span>
 									</Label>
 									<div className="relative">
 										<Input
 											type={showPassword ? "text" : "password"}
-											name="newPassword"
-											value={formData.newPassword}
+											name="password"
+											value={formData.password}
 											onChange={handleChange}
 										/>
 										<span
@@ -153,17 +162,27 @@ export default function UserSecurityCard() {
 									</div>
 								</div>
 
-								{error && (
-									<div className="col-span-2 p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
-										<p className="text-sm text-error-600 dark:text-error-400">
-											{error}
-										</p>
-									</div>
-								)}
+								<div className="col-span-2">
+									{message && (
+										<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
+											<p className="text-sm text-success-600 dark:text-success-400">
+												{message}
+											</p>
+										</div>
+									)}
+
+									{error && (
+										<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+											<p className="text-sm text-error-600 dark:text-error-400">
+												{error}
+											</p>
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
 						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-							<Button size="sm" variant="outline" onClick={closeModal}>
+							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
 							<Button size="sm" onClick={handleSave}>
