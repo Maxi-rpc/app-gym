@@ -78,7 +78,7 @@ const mainItems: NavItem[] = [
 	{
 		icon: <Lineicons icon={BarChart4Outlined} size={40} />,
 		name: "Reportes",
-		path: "/coachs",
+		path: "/report",
 		requiredRoles: ["Admin", "Profesor"],
 	},
 	{

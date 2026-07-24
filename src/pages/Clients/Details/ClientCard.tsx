@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import { Client } from "../../../service/types/Client";
 
+import { formatLocalDateTime } from "../../../utils/date";
+
 interface Props {
 	data: Client | null;
 }
@@ -28,7 +30,7 @@ export default function ClientCard({ data }: Props) {
 									Fecha de Ingreso
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{client?.created_at}
+									{formatLocalDateTime(client?.created_at)}
 								</p>
 							</div>
 

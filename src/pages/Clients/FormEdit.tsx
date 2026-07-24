@@ -81,6 +81,27 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+
+			// Validación básica
+			if (!formProfile.email || !formProfile.name || !formProfile.last_name) {
+				setFeedback({
+					variant: "info",
+					title: "Por favor completa todos los campos*",
+					message: "",
+				});
+				return;
+			}
+
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formProfile.email)) {
+				setFeedback({
+					variant: "warning",
+					title: "Verificar el campo email.",
+					message: "Email inválido.",
+				});
+
+				return;
+			}
+
 			const resp = await saveClient();
 			const resp_profile = await saveProfile();
 

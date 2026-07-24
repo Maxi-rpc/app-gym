@@ -3,6 +3,8 @@ import { useParams } from "react-router";
 
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import PageMeta from "../../../components/common/PageMeta";
+import Alert from "../../../components/ui/alert/Alert";
+import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
 import { Client } from "../../../service/types/Client";
 import { Profile } from "../../../context/types/Profile";
@@ -21,17 +23,27 @@ type ParamsUsuario = {
 
 export default function ClientDetails() {
 	const { id } = useParams<ParamsUsuario>();
+	const [feedback, setFeedback] = useState<Feedback>(null);
 
 	const [data, setData] = useState<Client | null>(null);
 	const [profile, setProfile] = useState<Profile | null>(null);
 
 	const getData = async (id: string) => {
 		try {
+			setFeedback(null);
+
 			const client = await clientService.getById(id);
 			setData(client);
 			setProfile(client?.profile);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error al obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -53,6 +65,15 @@ export default function ClientDetails() {
 					Perfil
 				</h3>
 				<div className="space-y-6">
+					{feedback && (
+						<div>
+							<Alert
+								variant={feedback?.variant}
+								title={feedback?.title}
+								message={feedback?.message}
+							/>
+						</div>
+					)}
 					<ClientProfileCard data={profile} />
 					<ClientCard data={data} />
 					<Tabs
