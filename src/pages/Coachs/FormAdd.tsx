@@ -171,7 +171,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 					<div>
 						<Label>Salario</Label>
 						<Input
-							type="text"
+							type="number"
 							value={formData.salary}
 							name="salary"
 							onChange={handleChange}
@@ -179,7 +179,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 					</div>
 
 					<div>
-						<Label>Salario</Label>
+						<Label>Fecha de Ingreso</Label>
 						<Input
 							type="date"
 							value={formData?.hire_date || ""}

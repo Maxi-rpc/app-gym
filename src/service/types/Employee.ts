@@ -4,7 +4,7 @@ export interface EmployeeProfile {
 	user_id?: string;
 	created_at?: string;
 	salary?: number | null;
-	hire_date?: Date | null;
+	hire_date?: string | null;
 	specialist?: string;
 	employee_number?: string;
 	observations?: string;
