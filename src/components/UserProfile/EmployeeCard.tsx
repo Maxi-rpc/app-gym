@@ -185,16 +185,6 @@ export default function EmployeeCard() {
 					<form className="flex flex-col">
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-								{feedback && (
-									<div className="col-span-2 text-start">
-										<Alert
-											variant={feedback?.variant}
-											title={feedback?.title}
-											message={feedback?.message}
-										/>
-									</div>
-								)}
-
 								<div className="col-span-2 lg:col-span-1">
 									<Label>Fecha de Ingreso</Label>
 									<Input
@@ -233,6 +223,17 @@ export default function EmployeeCard() {
 							<Button size="sm" onClick={handleSave}>
 								Guadar Cambios
 							</Button>
+						</div>
+						<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">
+							{feedback && (
+								<div className="col-span-2 text-start">
+									<Alert
+										variant={feedback?.variant}
+										title={feedback?.title}
+										message={feedback?.message}
+									/>
+								</div>
+							)}
 						</div>
 					</form>
 				</div>

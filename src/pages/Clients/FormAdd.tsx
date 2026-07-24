@@ -32,6 +32,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 
 	const handleClose = () => {
 		setFeedback(null);
+		onSubmit?.();
 		onClose?.();
 	};
 
@@ -67,8 +68,6 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				title: "Cliente creado.",
 				message: resp?.data?.message,
 			});
-
-			onSubmit?.();
 		} catch (error) {
 			console.error("Error al crear cliente:", error);
 
@@ -93,15 +92,6 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
 				<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
-					{feedback && (
-						<div className="col-span-2 text-start">
-							<Alert
-								variant={feedback?.variant}
-								title={feedback?.title}
-								message={feedback?.message}
-							/>
-						</div>
-					)}
 					<div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Completar los campos para el perfil.
@@ -223,6 +213,17 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				<Button size="sm" onClick={handleSubmit}>
 					Guardar
 				</Button>
+			</div>
+			<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">
+				{feedback && (
+					<div className="col-span-2 text-start">
+						<Alert
+							variant={feedback?.variant}
+							title={feedback?.title}
+							message={feedback?.message}
+						/>
+					</div>
+				)}
 			</div>
 		</form>
 	);

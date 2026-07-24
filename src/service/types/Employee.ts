@@ -16,6 +16,13 @@ export interface Employee extends EmployeeProfile {
 }
 
 export interface CreateEmployeeInput {
+	email?: string;
+	name?: string;
+	last_name?: string;
+	document?: string | null;
+	phone?: string | null;
+	image?: string | null;
+	birth_date?: string;
 	salary?: number | null;
 	hire_date?: string | null;
 	specialist?: string | null;
