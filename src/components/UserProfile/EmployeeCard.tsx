@@ -200,24 +200,6 @@ export default function EmployeeCard() {
 										onChange={handleChange}
 									/>
 								</div>
-
-								<div className="col-span-2">
-									{message && (
-										<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
-											<p className="text-sm text-success-600 dark:text-success-400">
-												{message}
-											</p>
-										</div>
-									)}
-
-									{error && (
-										<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
-											<p className="text-sm text-error-600 dark:text-error-400">
-												{error}
-											</p>
-										</div>
-									)}
-								</div>
 							</div>
 						</div>
 						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
@@ -227,6 +209,25 @@ export default function EmployeeCard() {
 							<Button size="sm" onClick={handleSave}>
 								Guadar Cambios
 							</Button>
+						</div>
+						<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 mt-6">
+							<div className="col-span-2">
+								{message && (
+									<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
+										<p className="text-sm text-success-600 dark:text-success-400">
+											{message}
+										</p>
+									</div>
+								)}
+
+								{error && (
+									<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+										<p className="text-sm text-error-600 dark:text-error-400">
+											{error}
+										</p>
+									</div>
+								)}
+							</div>
 						</div>
 					</form>
 				</div>

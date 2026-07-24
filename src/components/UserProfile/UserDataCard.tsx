@@ -49,8 +49,7 @@ export default function UserDataCard() {
 		if (resp.data) {
 			if (resp?.data?.success) {
 				setMessage(resp?.data?.message);
-			}
-			else {
+			} else {
 				setError(resp?.data?.message);
 			}
 		}
@@ -262,7 +261,11 @@ export default function UserDataCard() {
 				</div>
 			</div>
 			{/* modal */}
-			<Modal isOpen={isOpen} onClose={handleCloseModal} className="max-w-175 m-4">
+			<Modal
+				isOpen={isOpen}
+				onClose={handleCloseModal}
+				className="max-w-175 m-4"
+			>
 				<div className="no-scrollbar relative w-full max-w-175 overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
 					<div className="px-2 pr-14">
 						<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -373,24 +376,6 @@ export default function UserDataCard() {
 											onChange={handleChange}
 										/>
 									</div>
-
-									<div className="col-span-2">
-										{message && (
-											<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
-												<p className="text-sm text-success-600 dark:text-success-400">
-													{message}
-												</p>
-											</div>
-										)}
-
-										{error && (
-											<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
-												<p className="text-sm text-error-600 dark:text-error-400">
-													{error}
-												</p>
-											</div>
-										)}
-									</div>
 								</div>
 							</div>
 						</div>
@@ -401,6 +386,25 @@ export default function UserDataCard() {
 							<Button size="sm" onClick={handleSave}>
 								Guardar Cambios
 							</Button>
+						</div>
+						<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 mt-6">
+							<div className="col-span-2">
+								{message && (
+									<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
+										<p className="text-sm text-success-600 dark:text-success-400">
+											{message}
+										</p>
+									</div>
+								)}
+
+								{error && (
+									<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
+										<p className="text-sm text-error-600 dark:text-error-400">
+											{error}
+										</p>
+									</div>
+								)}
+							</div>
 						</div>
 					</form>
 				</div>
