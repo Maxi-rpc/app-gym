@@ -7,6 +7,8 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Badge from "../ui/badge/Badge";
+import Alert from "../../components/ui/alert/Alert";
+import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
 
 import { useAuth } from "../../hooks/useAuth";
 import QRCode from "react-qr-code";
@@ -16,8 +18,7 @@ import { profileService } from "../../service/profile.service";
 export default function UserDataCard() {
 	const { isOpen, openModal, closeModal } = useModal();
 	const { profile } = useAuth();
-	const [error, setError] = useState("");
-	const [message, setMessage] = useState("");
+	const [feedback, setFeedback] = useState<Feedback>(null);
 
 	const [formData, setFormData] = useState({
 		id: profile?.id,
@@ -37,24 +38,41 @@ export default function UserDataCard() {
 			.join(", ") ?? "";
 
 	const handleCloseModal = () => {
-		setError("");
-		setMessage("");
+		setFeedback(null);
 		closeModal();
 	};
 
 	const handleSave = async () => {
-		setError("");
-		setMessage("");
-		const resp = await profileService.update(formData);
-		if (resp.data) {
-			if (resp?.data?.success) {
-				setMessage(resp?.data?.message);
-			} else {
-				setError(resp?.data?.message);
+		try {
+			setFeedback(null);
+			const resp = await profileService.update(formData);
+			if (resp.data) {
+				if (resp?.data?.success) {
+					setFeedback({
+						variant: "success",
+						title: "Info.",
+						message: resp?.data?.message,
+					});
+				} else {
+					setFeedback({
+						variant: "warning",
+						title: "Info.",
+						message: resp?.data?.message,
+					});
+				}
 			}
-		}
-		if (resp.error) {
-			setError(resp?.error?.message);
+			if (resp.error) {
+				throw resp.error;
+			}
+		} catch (error) {
+			console.error("Error al guardar datos:", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede guardar datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -316,6 +334,16 @@ export default function UserDataCard() {
 								</h5>
 
 								<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+									{feedback && (
+										<div className="col-span-2 text-start">
+											<Alert
+												variant={feedback?.variant}
+												title={feedback?.title}
+												message={feedback?.message}
+											/>
+										</div>
+									)}
+
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Nombre</Label>
 										<Input
@@ -386,25 +414,6 @@ export default function UserDataCard() {
 							<Button size="sm" onClick={handleSave}>
 								Guardar Cambios
 							</Button>
-						</div>
-						<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 mt-6">
-							<div className="col-span-2">
-								{message && (
-									<div className="p-4 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/20">
-										<p className="text-sm text-success-600 dark:text-success-400">
-											{message}
-										</p>
-									</div>
-								)}
-
-								{error && (
-									<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
-										<p className="text-sm text-error-600 dark:text-error-400">
-											{error}
-										</p>
-									</div>
-								)}
-							</div>
 						</div>
 					</form>
 				</div>
