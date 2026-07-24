@@ -41,8 +41,7 @@ async function getAll() {
 		method: "GET",
 	});
 
-	if (error) throw error;
-	return data?.clients;
+	return { data: data?.clients, error: error };
 }
 
 interface FormData {

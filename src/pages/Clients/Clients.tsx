@@ -7,6 +7,8 @@ import PageMeta from "../../components/common/PageMeta";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
+import Alert from "../../components/ui/alert/Alert";
+import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
 import { useModal } from "../../hooks/useModal";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
@@ -15,7 +17,7 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Client } from "./types/Client";
+import { Client } from "../../service/types/Client";
 import { clientService } from "../../service/client.service";
 
 import DataTable from "./DataTable";
@@ -24,6 +26,8 @@ import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 
 export default function Clients() {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -48,12 +52,24 @@ export default function Clients() {
 	const navigate = useNavigate();
 
 	const getData = async () => {
-		console.log("Clients - getData");
 		try {
-			const data = await clientService.getAll();
-			setListData(data);
+			setFeedback(null);
+
+			const resp = await clientService.getAll();
+			if (resp.error) {
+				throw resp.error;
+			}
+
+			setListData(resp.data ?? []);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error al obtener clientes:", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se pudieron cargar los clientes",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -117,6 +133,16 @@ export default function Clients() {
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 						Se muestran los clientes registrados hasta la fecha actual.
 					</p>
+
+					{feedback && (
+						<div className="my-4 text-start">
+							<Alert
+								variant={feedback?.variant}
+								title={feedback?.title}
+								message={feedback?.message}
+							/>
+						</div>
+					)}
 				</div>
 
 				{/* Search */}

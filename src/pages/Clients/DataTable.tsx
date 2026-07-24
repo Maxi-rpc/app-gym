@@ -6,7 +6,7 @@ import {
 	Search1Outlined,
 } from "@lineiconshq/free-icons";
 
-import { Client } from "./types/Client";
+import { Client } from "../../service/types/Client";
 
 type SortConfig = {
 	key: keyof Client;

@@ -15,6 +15,13 @@ export interface Client extends ClientProfile {
 }
 
 export interface CreateClientInput {
+	email?: string;
+	name?: string;
+	last_name?: string;
+	document?: string | null;
+	phone?: string | null;
+	image?: string | null;
+	birth_date?: string;
 	height: number | null;
 	weight: number | null;
 	emergency_contact: string | null;

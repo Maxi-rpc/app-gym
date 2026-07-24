@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Client } from "../types/Client";
+import { Client } from "../../../service/types/Client";
 
 interface Props {
 	data: Client | null;

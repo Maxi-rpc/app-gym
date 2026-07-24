@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import PageMeta from "../../../components/common/PageMeta";
 
-import { Client } from "../types/Client";
+import { Client } from "../../../service/types/Client";
 import { Profile } from "../../../context/types/Profile";
 import { clientService } from "../../../service/client.service";
 

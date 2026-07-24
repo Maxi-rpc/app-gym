@@ -1,7 +1,7 @@
 import { Modal } from "../../components/ui/modal";
 import FormDelete from "./FormDelete";
 
-import { Client } from "./types/Client";
+import { Client } from "../../service/types/Client";
 
 type Props = {
 	isOpen: boolean;
