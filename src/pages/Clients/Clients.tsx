@@ -74,20 +74,15 @@ export default function Clients() {
 	};
 
 	const handleUpdate = () => {
-		// Handle save logic here
-		console.log("Updating changes...");
 		closeModalEdit();
 		getData();
 	};
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
-		console.log("handleSearch", searchText);
 	};
 
 	const handleSave = () => {
-		// Handle save logic here
-		console.log("Saving changes...");
 		closeModalAdd();
 		getData();
 	};
@@ -98,8 +93,6 @@ export default function Clients() {
 	};
 
 	const handleDeleteItem = () => {
-		// Handle save logic here
-		console.log("Delete item...");
 		closeModalDelete();
 		getData();
 	};

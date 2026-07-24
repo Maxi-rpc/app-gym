@@ -31,7 +31,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 	});
 
 	const handleClose = () => {
-		console.log("handleClose Modal");
+		setFeedback(null);
 		onClose?.();
 	};
 
@@ -68,7 +68,6 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				message: resp?.data?.message,
 			});
 
-			console.log("handleSave", resp);
 			onSubmit?.();
 		} catch (error) {
 			console.error("Error al crear cliente:", error);
