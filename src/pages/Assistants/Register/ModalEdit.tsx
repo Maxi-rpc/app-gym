@@ -1,26 +1,38 @@
-import { Modal } from "../../components/ui/modal";
-import FormdAdd from "./FormAdd";
+import { Modal } from "../../../components/ui/modal";
+import FormEdit from "./FormEdit";
+
+import { ClientAssistant } from "../../../service/types/ClientAssistant";
 
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: () => void | undefined;
+	defaultData: ClientAssistant | null;
 };
 
-export default function ModalAdd({ isOpen, onClose, onSubmit }: Props) {
+export default function ModalEdit({
+	isOpen,
+	onClose,
+	onSubmit,
+	defaultData,
+}: Props) {
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} className="max-w-175 m-4">
 			<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 				<div className="px-2 pr-14">
 					<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-						Agregar Registro
+						Editar Registro
 					</h4>
 					<p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
 						Complete los campos requeridos*.
 					</p>
 				</div>
 
-				<FormdAdd onClose={onClose} onSubmit={onSubmit} />
+				<FormEdit
+					onClose={onClose}
+					onSubmit={onSubmit}
+					defaultData={defaultData}
+				/>
 			</div>
 		</Modal>
 	);

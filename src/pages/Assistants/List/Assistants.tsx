@@ -1,11 +1,13 @@
 import { SetStateAction, useState, useEffect } from "react";
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
+import PageMeta from "../../../components/common/PageMeta";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-import { useModal } from "../../hooks/useModal";
+import Label from "../../../components/form/Label";
+import Input from "../../../components/form/input/InputField";
+import Button from "../../../components/ui/button/Button";
+import { useModal } from "../../../hooks/useModal";
+import Alert from "../../../components/ui/alert/Alert";
+import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
@@ -13,8 +15,8 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { ClientAssistant } from "../../service/types/ClientAssistant";
-import { attendanceService } from "../../service/attendance.service";
+import { ClientAssistant } from "../../../service/types/ClientAssistant";
+import { attendanceService } from "../../../service/attendance.service";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./ModalAdd";
@@ -24,6 +26,8 @@ import ModalAttendance from "./ModalAttendance";
 import ConfirmAttendanceButton from "./ConfirmAttendanceButton";
 
 export default function Assistants() {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -47,12 +51,22 @@ export default function Assistants() {
 	const [listData, setListData] = useState<ClientAssistant[] | []>([]);
 
 	const getData = async () => {
-		console.log("Assistants - getData");
 		try {
-			const data = await attendanceService.getAll();
-			setListData(data);
+			setFeedback(null);
+
+			const resp = await attendanceService.getAll();
+			if (resp.error) throw resp.error;
+
+			setListData(resp.data);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error No se puede obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -65,7 +79,6 @@ export default function Assistants() {
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
-		console.log("handleSearch", searchText);
 	};
 
 	const handleSave = () => {
@@ -112,6 +125,16 @@ export default function Assistants() {
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 						Se muestran las asistencias registrados del día de hoy.
 					</p>
+
+					{feedback && (
+						<div className="my-4 text-start">
+							<Alert
+								variant={feedback?.variant}
+								title={feedback?.title}
+								message={feedback?.message}
+							/>
+						</div>
+					)}
 				</div>
 
 				<div className="mx-auto w-full text-center mb-8">

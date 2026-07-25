@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-import Alert from "../../components/ui/alert/Alert";
+import Label from "../../../components/form/Label";
+import Input from "../../../components/form/input/InputField";
+import Button from "../../../components/ui/button/Button";
+import Alert from "../../../components/ui/alert/Alert";
 
 type Props = {
 	onSubmit?: () => void;

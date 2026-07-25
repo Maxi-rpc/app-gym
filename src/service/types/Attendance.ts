@@ -27,3 +27,20 @@ export interface Attendance {
 	membership: Membership;
 	created_by_profile: Created_by_profile;
 }
+
+export interface RegisterAttendanceInput {
+	qr_token: string;
+	check_in_at: string;
+	check_out_at: string;
+	created_by: Created_by_profile;
+}
+
+export interface CreateAttendanceInput {
+	qr_token: string;
+	check_in_at: string;
+	check_out_at: string;
+	access_granted: boolean;
+	access_reason: string;
+	user: User;
+	created_by: Created_by_profile;
+}

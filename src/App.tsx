@@ -22,7 +22,8 @@ import Clients from "./pages/Clients/Clients";
 import ClientDetails from "./pages/Clients/Details/ClientDetails";
 
 import Coachs from "./pages/Coachs/Coachs";
-import Assistants from "./pages/Assistants/Assistants";
+import Assistants from "./pages/Assistants/List/Assistants";
+import AssistantsRegister from "./pages/Assistants/Register/Register";
 
 // operations
 import Payments from "./pages/Payments/Payments";
@@ -104,6 +105,14 @@ export default function App() {
 
 							{/* Assistant Page */}
 							<Route path="/assistants">
+								<Route
+									path="register"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<AssistantsRegister />
+										</ProtectedRoute>
+									}
+								/>
 								<Route
 									path="list"
 									element={

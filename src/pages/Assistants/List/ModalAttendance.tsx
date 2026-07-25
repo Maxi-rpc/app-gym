@@ -1,5 +1,5 @@
-import { Modal } from "../../components/ui/modal";
-import Button from "../../components/ui/button/Button";
+import { Modal } from "../../../components/ui/modal";
+import Button from "../../../components/ui/button/Button";
 import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 

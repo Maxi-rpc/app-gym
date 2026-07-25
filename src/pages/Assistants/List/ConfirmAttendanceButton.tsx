@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
-import Button from "../../components/ui/button/Button";
+import Button from "../../../components/ui/button/Button";
 
 type Props = {
 	onClick?: () => void; // Click handler

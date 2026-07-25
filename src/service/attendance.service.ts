@@ -45,8 +45,12 @@ async function getAll() {
 		},
 	);
 
-	if (error) throw error;
-	return data?.attendances;
+	return { data: data?.attendances, error: error };
+}
+
+async function register(qrValue: string) {
+	console.log("attendanceService.register", qrValue);
+	return { data: "data?.attendances", error: "error" };
 }
 
 async function create() {
@@ -64,6 +68,7 @@ async function remove() {
 export const attendanceService = {
 	getAll,
 	getById,
+	register,
 	create, // to do
 	update, // to do
 	remove, // to do

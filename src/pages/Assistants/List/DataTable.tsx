@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
-import Badge from "../../components/ui/badge/Badge";
+import Badge from "../../../components/ui/badge/Badge";
 
-import { formatLocalDateTime } from "../../utils/date";
+import { formatLocalDateTime } from "../../../utils/date";
 
-import { ClientAssistant } from "../../service/types/ClientAssistant";
+import { ClientAssistant } from "../../../service/types/ClientAssistant";
 
 type SortKey =
 	| "id"
