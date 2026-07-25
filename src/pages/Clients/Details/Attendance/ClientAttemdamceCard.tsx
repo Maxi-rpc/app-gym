@@ -113,6 +113,15 @@ export default function ClientAttemdamceCard({ id }: Props) {
 								</p>
 							</div>
 
+							<div>
+								<p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+									Registrado por
+								</p>
+								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
+									{attendance?.created_by_profile?.name} {attendance?.created_by_profile?.last_name}
+								</p>
+							</div>
+
 							<div className="col-span-2"></div>
 						</div>
 

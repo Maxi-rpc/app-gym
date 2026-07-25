@@ -11,7 +11,8 @@ type SortKey =
 	| "checkInAt"
 	| "checkOutAt"
 	| "accessGranted"
-	| "accessReason";
+	| "accessReason"
+	| "createdBy";
 
 type SortConfig = {
 	key: SortKey;
@@ -44,6 +45,8 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 				return String(attendance.access_granted);
 			case "accessReason":
 				return attendance.access_reason ?? "";
+			case "createdBy":
+				return attendance?.created_by_profile?.name ?? "";
 		}
 	};
 
@@ -100,6 +103,7 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 		{ key: "checkOutAt", label: "Check Out" },
 		{ key: "accessGranted", label: "Acceso" },
 		{ key: "accessReason", label: "Razón" },
+		{ key: "createdBy", label: "Registrado Por" },
 	];
 
 	return (
@@ -148,6 +152,10 @@ export default function AttendanceTable({ listData, searchText }: Props) {
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{attendance?.access_reason}
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{attendance?.created_by_profile?.name}{" "}
+								{attendance?.created_by_profile?.last_name}
 							</td>
 						</tr>
 					))}
