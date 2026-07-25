@@ -7,7 +7,6 @@ export interface User {
 
 export interface Membership {
 	id: string;
-	active: boolean;
 	end_date: string;
 	start_date: string;
 }

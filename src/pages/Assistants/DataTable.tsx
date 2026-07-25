@@ -2,27 +2,11 @@ import { useState } from "react";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Trash3Outlined, Pencil1Outlined } from "@lineiconshq/free-icons";
 
+import Badge from "../../components/ui/badge/Badge";
+
+import { formatLocalDateTime } from "../../utils/date";
+
 import { ClientAssistant } from "../../service/types/ClientAssistant";
-
-type CustomRowProp = {
-	value: boolean;
-};
-
-const CustomRow = ({ value }: CustomRowProp) => {
-	if (value == true) {
-		return (
-			<span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
-				{String(value)}
-			</span>
-		);
-	} else {
-		return (
-			<span className="inline-block bg-green-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-red-900/30 dark:text-red-400">
-				{String(value)}
-			</span>
-		);
-	}
-};
 
 type SortKey =
 	| "id"
@@ -30,7 +14,8 @@ type SortKey =
 	| "name"
 	| "lastName"
 	| "accessGranted"
-	| "membershipActive";
+	| "membershipActive"
+	| "createdBy";
 
 type SortConfig = {
 	key: SortKey;
@@ -96,7 +81,9 @@ export default function DataTable({
 			case "accessGranted":
 				return String(client.access_granted);
 			case "membershipActive":
-				return String(client.membership?.active);
+				return client.membership?.membership_status?.name ?? "";
+			case "createdBy":
+				return client?.created_by_profile?.name ?? "";
 		}
 	};
 
@@ -183,6 +170,14 @@ export default function DataTable({
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("createdBy")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Registrado Por <SortIcon column="createdBy" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
 							<span className="font-semibold text-gray-700 dark:text-gray-300">
 								Acciones
 							</span>
@@ -203,7 +198,7 @@ export default function DataTable({
 								{client.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client?.check_in_at}
+								{formatLocalDateTime(client?.check_in_at)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{client?.user?.name}
@@ -212,10 +207,24 @@ export default function DataTable({
 								{client?.user?.last_name}
 							</td>
 							<td className="px-4 py-3 text-sm">
-								<CustomRow value={client?.access_granted} />
+								<Badge color={client?.access_granted ? "success" : "warning"}>
+									{client?.access_granted ? "Si" : "No"}
+								</Badge>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								<CustomRow value={client?.membership?.active} />
+								<Badge
+									color={
+										client?.membership?.membership_status?.id == 1
+											? "success"
+											: "warning"
+									}
+								>
+									{client?.membership?.membership_status?.name}
+								</Badge>
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{client?.created_by_profile?.name}{" "}
+								{client?.created_by_profile?.last_name}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">

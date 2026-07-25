@@ -1,3 +1,4 @@
+import { Membership_status } from "./Membership";
 export interface User {
 	id: string;
 	name: string;
@@ -7,9 +8,9 @@ export interface User {
 
 export interface Membership {
 	id: string;
-	active: boolean;
 	end_date: string;
 	start_date: string;
+	membership_status: Membership_status;
 }
 
 export interface ClientAssistant {

@@ -8,7 +8,7 @@ import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 
 import { formatLocalDateTime } from "../../../../utils/date";
 
-import { Attendance } from "../../types/Attendance";
+import { Attendance } from "../../../../service/types/Attendance";
 import { attendanceService } from "../../../../service/attendance.service";
 
 import AttendanceTable from "./AttendanceTable";
@@ -118,7 +118,8 @@ export default function ClientAttemdamceCard({ id }: Props) {
 									Registrado por
 								</p>
 								<p className="text-sm font-medium text-gray-800 dark:text-white/90">
-									{attendance?.created_by_profile?.name} {attendance?.created_by_profile?.last_name}
+									{attendance?.created_by_profile?.name}{" "}
+									{attendance?.created_by_profile?.last_name}
 								</p>
 							</div>
 

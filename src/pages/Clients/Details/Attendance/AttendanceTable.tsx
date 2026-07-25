@@ -4,7 +4,7 @@ import Badge from "../../../../components/ui/badge/Badge";
 
 import { formatLocalDateTime } from "../../../../utils/date";
 
-import { Attendance } from "../../types/Attendance";
+import { Attendance } from "../../../../service/types/Attendance";
 
 type SortKey =
 	| "id"
