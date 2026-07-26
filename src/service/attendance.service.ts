@@ -1,4 +1,5 @@
 import { supabase } from "../utils/supabase";
+import { RegisterAttendanceInput, Attendance } from "./types/Attendance";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -48,9 +49,36 @@ async function getAll() {
 	return { data: data?.attendances, error: error };
 }
 
-async function register(qrValue: string) {
-	console.log("attendanceService.register", qrValue);
-	return { data: "data?.attendances", error: "error" };
+async function register(formData: RegisterAttendanceInput) {
+	console.log("attendanceService.register", formData);
+
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke(
+		"create-attendance-by-qr",
+		{
+			body: {
+				qr_token: formData.qr_token,
+				check_in_at: formData.check_in_at,
+				check_out_at: formData.check_out_at,
+			},
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
+		},
+	);
+
+	console.log(data);
+	console.log(error);
+
+	return { data: data, error: error };
 }
 
 async function create() {
@@ -61,8 +89,36 @@ async function update() {
 	console.log("attendanceService.update");
 }
 
-async function remove() {
-	console.log("attendanceService.remove");
+interface formDelete {
+	id: string;
+}
+
+async function remove(formData: formDelete) {
+	console.log("attendanceService.register", formData);
+
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke("remove-attendance", {
+		body: {
+			id: formData.id,
+		},
+		headers: {
+			Authorization: `Bearer ${session_token}`,
+		},
+		method: "DELETE",
+	});
+
+	console.log(data);
+	console.log(error);
+
+	return { data: data, error: error };
 }
 
 export const attendanceService = {
@@ -71,5 +127,5 @@ export const attendanceService = {
 	register,
 	create, // to do
 	update, // to do
-	remove, // to do
+	remove,
 };

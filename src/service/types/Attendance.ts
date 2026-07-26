@@ -28,13 +28,14 @@ export interface Attendance {
 	created_by_profile: Created_by_profile;
 }
 
+// automatico
 export interface RegisterAttendanceInput {
 	qr_token: string;
 	check_in_at: string;
-	check_out_at: string;
-	created_by: Created_by_profile;
+	check_out_at: string | null;
 }
 
+// manual
 export interface CreateAttendanceInput {
 	qr_token: string;
 	check_in_at: string;

@@ -4,6 +4,9 @@ import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
 import Alert from "../../../components/ui/alert/Alert";
+import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
+
+import { attendanceService } from "../../../service/attendance.service";
 
 type Props = {
 	onSubmit?: () => void;
@@ -12,22 +15,50 @@ type Props = {
 };
 
 export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const [formData, setFormData] = useState({ deletetext: "" });
 
 	const [validText] = useState(deleteText);
 
 	const handleClose = () => {
-		console.log("handleClose Modal");
+		onSubmit?.();
 		onClose?.();
 	};
 
-	const handleSubmit = () => {
-		console.log("handleSubmit Modal");
-		if (validateDelete()) {
-			console.log("ok");
-			onSubmit?.();
-		} else {
-			console.log("error");
+	const handleSubmit = async () => {
+		try {
+			setFeedback(null);
+
+			if (validateDelete()) {
+				const formDelete = {
+					id: deleteText || "",
+				};
+				const resp = await attendanceService.remove(formDelete);
+				if (resp.error) throw resp.error;
+
+				setFeedback({
+					variant: "success",
+					title: "Info",
+					message: resp.data?.message,
+				});
+			} else {
+				setFeedback({
+					variant: "error",
+					title: "No es correcto el texto",
+					message:
+						"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+				});
+			}
+		} catch (error) {
+			console.error("Error No se puede obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -79,6 +110,15 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 					Eliminar
 				</Button>
 			</div>
+			{feedback && (
+				<div className="my-4 text-start">
+					<Alert
+						variant={feedback?.variant}
+						title={feedback?.title}
+						message={feedback?.message}
+					/>
+				</div>
+			)}
 		</form>
 	);
 }

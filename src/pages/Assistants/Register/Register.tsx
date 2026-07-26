@@ -84,7 +84,15 @@ export default function Register() {
 		try {
 			setFeedback(null);
 
-			const resp = await attendanceService.register(qrValue);
+			const date_to_string = new Date().toISOString();
+
+			const body = {
+				qr_token: qrValue,
+				check_in_at: date_to_string,
+				check_out_at: null,
+			};
+
+			const resp = await attendanceService.register(body);
 			if (resp.error) throw resp.error;
 		} catch (error) {
 			console.error("Error No se puede obtener datos", error);
