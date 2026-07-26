@@ -1,5 +1,5 @@
 import { supabase } from "../utils/supabase";
-import { RegisterAttendanceInput, Attendance } from "./types/Attendance";
+import { RegisterAttendanceInput } from "./types/Attendance";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
