@@ -36,8 +36,8 @@ export default function DataTable({
 	onDelet,
 }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
-		key: "id",
-		direction: "asc",
+		key: "checkInAt",
+		direction: "desc",
 	});
 
 	const handleEdit = (client: ClientAssistant) => {
@@ -121,14 +121,14 @@ export default function DataTable({
 			<table className="w-full table-auto">
 				<thead>
 					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-						<th className="px-4 py-3 text-left">
+						{/* <th className="px-4 py-3 text-left">
 							<button
 								onClick={() => handleSort("id")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
 								ID <SortIcon column="id" />
 							</button>
-						</th>
+						</th> */}
 						<th className="px-4 py-3 text-left">
 							<button
 								onClick={() => handleSort("checkInAt")}
@@ -194,9 +194,9 @@ export default function DataTable({
 									: "bg-gray-50 dark:bg-white/5"
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+							{/* <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{client.id}
-							</td>
+							</td> */}
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{formatLocalDateTime(client?.check_in_at)}
 							</td>

@@ -50,8 +50,6 @@ async function getAll() {
 }
 
 async function register(formData: RegisterAttendanceInput) {
-	console.log("attendanceService.register", formData);
-
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -94,8 +92,6 @@ interface formDelete {
 }
 
 async function remove(formData: formDelete) {
-	console.log("attendanceService.register", formData);
-
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -114,9 +110,6 @@ async function remove(formData: formDelete) {
 		},
 		method: "DELETE",
 	});
-
-	console.log(data);
-	console.log(error);
 
 	return { data: data, error: error };
 }

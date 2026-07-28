@@ -104,8 +104,6 @@ export default function Register() {
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
 		}
-		console.log("Saving changes...");
-		closeModalAdd();
 		getData();
 	};
 

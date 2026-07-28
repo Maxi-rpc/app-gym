@@ -140,6 +140,7 @@ export default function SignInForm() {
 										value={email}
 										onChange={(e) => setEmail(e.target.value)}
 										disabled={isLoading}
+										autocomplete={email}
 									/>
 								</div>
 								<div>
@@ -153,6 +154,7 @@ export default function SignInForm() {
 											value={password}
 											onChange={(e) => setPassword(e.target.value)}
 											disabled={isLoading}
+											autocomplete="current-password"
 										/>
 										<span
 											onClick={() => setShowPassword(!showPassword)}
