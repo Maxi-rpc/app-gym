@@ -70,8 +70,6 @@ export default function Register() {
 	};
 
 	const handleUpdate = () => {
-		// Handle save logic here
-		console.log("Updating changes...");
 		closeModalEdit();
 		getData();
 	};

@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
 	Trash3Outlined,
@@ -7,6 +8,7 @@ import {
 } from "@lineiconshq/free-icons";
 
 import { Client } from "../../service/types/Client";
+
 import { formatLocalDateTime } from "../../utils/date";
 
 type SortConfig = {
@@ -196,26 +198,23 @@ export default function DataTable({
 								<div className="flex gap-2">
 									<button
 										onClick={() => handleView(client)}
-										className="text-grey-500 hover:text-gey-700 dark:hover:text-gey-300 transition-colors"
-										title="Editar"
+										className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
 										<Lineicons icon={Search1Outlined} size={20} />
 									</button>
 
 									<button
 										onClick={() => handleEdit(client)}
-										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-										title="Editar"
+										className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
-										<Lineicons icon={Pencil1Outlined} size={20} color="blue" />
+										<Lineicons icon={Pencil1Outlined} size={20} />
 									</button>
 
 									<button
 										onClick={() => handleDelete(client)}
-										className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
-										title="Eliminar"
+										className="flex items-center justify-center text-error-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-error-700 dark:border-gray-800 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
-										<Lineicons icon={Trash3Outlined} size={20} color="red" />
+										<Lineicons icon={Trash3Outlined} size={20} />
 									</button>
 								</div>
 							</td>
