@@ -17,8 +17,6 @@ export default function ButtonQr({ onRegister, onRegistered }: Props) {
 		const qrValue = codes[0]?.rawValue;
 		if (!qrValue || isRegistering) return;
 
-		console.log("Escaneado OK:", qrValue);
-
 		try {
 			setIsRegistering(true);
 
