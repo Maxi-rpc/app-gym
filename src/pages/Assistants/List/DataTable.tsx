@@ -36,8 +36,8 @@ export default function DataTable({
 	onDelet,
 }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
-		key: "id",
-		direction: "asc",
+		key: "checkInAt",
+		direction: "desc",
 	});
 
 	const handleEdit = (client: ClientAssistant) => {
@@ -121,14 +121,14 @@ export default function DataTable({
 			<table className="w-full table-auto">
 				<thead>
 					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-						<th className="px-4 py-3 text-left">
+						{/* <th className="px-4 py-3 text-left">
 							<button
 								onClick={() => handleSort("id")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
 								ID <SortIcon column="id" />
 							</button>
-						</th>
+						</th> */}
 						<th className="px-4 py-3 text-left">
 							<button
 								onClick={() => handleSort("checkInAt")}
@@ -194,9 +194,9 @@ export default function DataTable({
 									: "bg-gray-50 dark:bg-white/5"
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+							{/* <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{client.id}
-							</td>
+							</td> */}
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{formatLocalDateTime(client?.check_in_at)}
 							</td>
@@ -230,18 +230,16 @@ export default function DataTable({
 								<div className="flex gap-2">
 									<button
 										onClick={() => handleEdit(client)}
-										className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-										title="Editar"
+										className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
-										<Lineicons icon={Pencil1Outlined} size={20} color="blue" />
+										<Lineicons icon={Pencil1Outlined} size={20} />
 									</button>
 
 									<button
 										onClick={() => handleDelete(client)}
-										className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
-										title="Eliminar"
+										className="flex items-center justify-center text-error-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-error-700 dark:border-gray-800 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
-										<Lineicons icon={Trash3Outlined} size={20} color="red" />
+										<Lineicons icon={Trash3Outlined} size={20} />
 									</button>
 								</div>
 							</td>

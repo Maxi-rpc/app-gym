@@ -22,11 +22,11 @@ import Clients from "./pages/Clients/Clients";
 import ClientDetails from "./pages/Clients/Details/ClientDetails";
 
 import Coachs from "./pages/Coachs/Coachs";
-import Assistants from "./pages/Assistants/List/Assistants";
+import Assistants from "./pages/Assistants/List/List";
 import AssistantsRegister from "./pages/Assistants/Register/Register";
 
 // operations
-import Payments from "./pages/Payments/Payments";
+import Payments from "./pages/Payments/List/List";
 
 export default function App() {
 	return (

@@ -1,11 +1,13 @@
 import { SetStateAction, useState, useEffect } from "react";
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
+import PageMeta from "../../../components/common/PageMeta";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-import { useModal } from "../../hooks/useModal";
+import Label from "../../../components/form/Label";
+import Input from "../../../components/form/input/InputField";
+import Button from "../../../components/ui/button/Button";
+import { useModal } from "../../../hooks/useModal";
+import Alert from "../../../components/ui/alert/Alert";
+import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
@@ -13,15 +15,18 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Membership_payment } from "../../service/types/Payments";
-import { paymentsService } from "../../service/payments.service";
+import { ClientAssistant } from "../../../service/types/ClientAssistant";
+import { attendanceService } from "../../../service/attendance.service";
 
-import DataTable from "./List/DataTable";
-import ModalAdd from "./List/modals/ModalAdd";
-import ModalEdit from "./List/modals/ModalEdit";
-import ModalDelete from "./List/modals/ModalDelete";
+import DataTable from "./DataTable";
+import ModalAdd from "./ModalAdd";
+import ModalEdit from "./ModalEdit";
+import ModalDelete from "./ModalDelete";
+import ModalAttendance from "./ModalAttendance";
 
-export default function Payments() {
+export default function List() {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -41,16 +46,26 @@ export default function Payments() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Membership_payment | null>(null);
-	const [listData, setListData] = useState<Membership_payment[] | []>([]);
+	const [selectData, setSelectData] = useState<ClientAssistant | null>(null);
+	const [listData, setListData] = useState<ClientAssistant[] | []>([]);
 
 	const getData = async () => {
-		console.log("Payments - getData");
 		try {
-			const data = await paymentsService.getAll();
-			setListData(data);
+			setFeedback(null);
+
+			const resp = await attendanceService.getAll();
+			if (resp.error) throw resp.error;
+
+			setListData(resp.data);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error No se puede obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -63,7 +78,6 @@ export default function Payments() {
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
-		console.log("handleSearch", searchText);
 	};
 
 	const handleSave = () => {
@@ -73,7 +87,7 @@ export default function Payments() {
 		getData();
 	};
 
-	const handleEdit = (client: Membership_payment) => {
+	const handleEdit = (client: ClientAssistant) => {
 		setSelectData(client);
 		openModalEdit();
 	};
@@ -85,7 +99,7 @@ export default function Payments() {
 		getData();
 	};
 
-	const handleDelete = (client: Membership_payment) => {
+	const handleDelete = (client: ClientAssistant) => {
 		setSelectData(client);
 		openModalDelete();
 	};
@@ -97,25 +111,35 @@ export default function Payments() {
 	return (
 		<div>
 			<PageMeta
-				title="App Gym - Administration Payments"
-				description="Panel de administracion para Pagos"
+				title="App Gym - Administration Asistencias"
+				description="Panel de administracion para Asistencias"
 			/>
-			<PageBreadcrumb pageTitle="Clients" />
+			<PageBreadcrumb pageTitle="Asistencias" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-						Historial de pagos
+						Listado de Asistencias
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran los pagos registrados hasta la fecha actual.
+						Se muestran las asistencias registrados del día de hoy.
 					</p>
+
+					{feedback && (
+						<div className="my-4 text-start">
+							<Alert
+								variant={feedback?.variant}
+								title={feedback?.title}
+								message={feedback?.message}
+							/>
+						</div>
+					)}
 				</div>
 
 				{/* Search */}
 				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
 					<div className="space-y-6 flex-1">
-						<Label htmlFor="inputTwo">Buscar Pago</Label>
+						<Label htmlFor="inputTwo">Buscar Cliente</Label>
 						<Input
 							type="text"
 							id="inputTwo"
@@ -180,6 +204,13 @@ export default function Payments() {
 				onClose={closeModalDelete}
 				onSubmit={handleDeleteItem}
 				defaultData={selectData}
+			/>
+
+			{/* Modal Add */}
+			<ModalAttendance
+				isOpen={isOpenAdd}
+				onClose={closeModalAdd}
+				onSubmit={handleSave}
 			/>
 		</div>
 	);

@@ -1,20 +1,25 @@
 import React, { useState } from "react";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-
-import { Membership_payment } from "../../service/types/Payments";
+import Label from "../../../../components/form/Label";
+import Input from "../../../../components/form/input/InputField";
+import Select from "../../../../components/form/Select";
+import Button from "../../../../components/ui/button/Button";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: Membership_payment | null;
 };
 
-export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
-	console.log(defaultData);
-	const [formData, setFormData] = useState({});
+export default function FormAdd({ onSubmit, onClose }: Props) {
+	const [formData, setFormData] = useState({
+		name: "",
+		lastname: "",
+		document: "",
+		birthDate: "",
+		phoneNumber: "",
+		email: "",
+		status: "",
+	});
 	const handleClose = () => {
 		console.log("handleClose Modal");
 		onClose?.();
@@ -23,6 +28,15 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const handleSubmit = () => {
 		console.log("handleSubmit Modal");
 		onSubmit?.();
+	};
+
+	const options = [
+		{ value: "activo", label: "Activo" },
+		{ value: "inactivo", label: "Inactivo" },
+	];
+
+	const handleSelectChange = (value: string) => {
+		console.log("Selected value:", value);
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,17 +56,17 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Nombre</Label>
 						<Input
 							type="text"
-							value={"nada"}
+							value={formData.name}
 							name="name"
 							onChange={handleChange}
 						/>
 					</div>
-					{/*
+
 					<div>
 						<Label>Apellido</Label>
 						<Input
 							type="text"
-							value={formData.weight}
+							value={formData.lastname}
 							name="lastname"
 							onChange={handleChange}
 						/>
@@ -62,7 +76,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Documento</Label>
 						<Input
 							type="text"
-							value={formData.emergency_contact}
+							value={formData.document}
 							name="document"
 							onChange={handleChange}
 						/>
@@ -72,11 +86,41 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="text"
-							value={formData.medical_notes}
+							value={formData.birthDate}
 							name="birthDate"
 							onChange={handleChange}
 						/>
-					</div> */}
+					</div>
+
+					<div>
+						<Label>Teléfono</Label>
+						<Input
+							type="text"
+							value={formData.phoneNumber}
+							name="phoneNumber"
+							onChange={handleChange}
+						/>
+					</div>
+
+					<div>
+						<Label>Email</Label>
+						<Input
+							type="text"
+							value={formData.email}
+							name="email"
+							onChange={handleChange}
+						/>
+					</div>
+
+					<div>
+						<Label>Estado</Label>
+						<Select
+							options={options}
+							placeholder="Seleccionar Estado"
+							onChange={handleSelectChange}
+							className="dark:bg-dark-900"
+						/>
+					</div>
 				</div>
 			</div>
 			<div className="flex items-center gap-3 px-2 mt-6 justify-end">

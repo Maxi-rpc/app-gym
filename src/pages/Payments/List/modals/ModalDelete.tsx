@@ -1,7 +1,7 @@
-import { Modal } from "../../components/ui/modal";
-import FormDelete from "./FormDelete";
+import { Modal } from "../../../../components/ui/modal";
+import FormDelete from "../forms/FormDelete";
 
-import { Membership_payment } from "../../service/types/Payments";
+import { Membership_payment } from "../../../../service/types/Payments";
 
 type Props = {
 	isOpen: boolean;

@@ -6,8 +6,6 @@ import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
 import { useModal } from "../../../hooks/useModal";
-import Alert from "../../../components/ui/alert/Alert";
-import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
@@ -15,19 +13,15 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { ClientAssistant } from "../../../service/types/ClientAssistant";
-import { attendanceService } from "../../../service/attendance.service";
+import { Membership_payment } from "../../../service/types/Payments";
+import { paymentsService } from "../../../service/payments.service";
 
 import DataTable from "./DataTable";
-import ModalAdd from "./ModalAdd";
-import ModalEdit from "./ModalEdit";
-import ModalDelete from "./ModalDelete";
-import ModalAttendance from "./ModalAttendance";
-import ConfirmAttendanceButton from "./ConfirmAttendanceButton";
+import ModalAdd from "./modals/ModalAdd";
+import ModalEdit from "./modals/ModalEdit";
+import ModalDelete from "./modals/ModalDelete";
 
-export default function Assistants() {
-	const [feedback, setFeedback] = useState<Feedback>(null);
-
+export default function Payments() {
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -47,26 +41,16 @@ export default function Assistants() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<ClientAssistant | null>(null);
-	const [listData, setListData] = useState<ClientAssistant[] | []>([]);
+	const [selectData, setSelectData] = useState<Membership_payment | null>(null);
+	const [listData, setListData] = useState<Membership_payment[] | []>([]);
 
 	const getData = async () => {
+		console.log("Payments - getData");
 		try {
-			setFeedback(null);
-
-			const resp = await attendanceService.getAll();
-			if (resp.error) throw resp.error;
-
-			setListData(resp.data);
+			const data = await paymentsService.getAll();
+			setListData(data);
 		} catch (error) {
-			console.error("Error No se puede obtener datos", error);
-
-			setFeedback({
-				variant: "error",
-				title: "No se puede obtener datos",
-				message:
-					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
-			});
+			console.error("Error getData", error);
 		}
 	};
 
@@ -79,6 +63,7 @@ export default function Assistants() {
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
+		console.log("handleSearch", searchText);
 	};
 
 	const handleSave = () => {
@@ -88,7 +73,7 @@ export default function Assistants() {
 		getData();
 	};
 
-	const handleEdit = (client: ClientAssistant) => {
+	const handleEdit = (client: Membership_payment) => {
 		setSelectData(client);
 		openModalEdit();
 	};
@@ -100,7 +85,7 @@ export default function Assistants() {
 		getData();
 	};
 
-	const handleDelete = (client: ClientAssistant) => {
+	const handleDelete = (client: Membership_payment) => {
 		setSelectData(client);
 		openModalDelete();
 	};
@@ -112,39 +97,25 @@ export default function Assistants() {
 	return (
 		<div>
 			<PageMeta
-				title="App Gym - Administration Asistencias"
-				description="Panel de administracion para Asistencias"
+				title="App Gym - Administration Payments"
+				description="Panel de administracion para Pagos"
 			/>
-			<PageBreadcrumb pageTitle="Asistencias" />
+			<PageBreadcrumb pageTitle="Clients" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-						Listado de Asistencias
+						Historial de pagos
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran las asistencias registrados del día de hoy.
+						Se muestran los pagos registrados hasta la fecha actual.
 					</p>
-
-					{feedback && (
-						<div className="my-4 text-start">
-							<Alert
-								variant={feedback?.variant}
-								title={feedback?.title}
-								message={feedback?.message}
-							/>
-						</div>
-					)}
-				</div>
-
-				<div className="mx-auto w-full text-center mb-8">
-					<ConfirmAttendanceButton />
 				</div>
 
 				{/* Search */}
 				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
 					<div className="space-y-6 flex-1">
-						<Label htmlFor="inputTwo">Buscar Cliente</Label>
+						<Label htmlFor="inputTwo">Buscar Pago</Label>
 						<Input
 							type="text"
 							id="inputTwo"
@@ -209,13 +180,6 @@ export default function Assistants() {
 				onClose={closeModalDelete}
 				onSubmit={handleDeleteItem}
 				defaultData={selectData}
-			/>
-
-			{/* Modal Add */}
-			<ModalAttendance
-				isOpen={isOpenAdd}
-				onClose={closeModalAdd}
-				onSubmit={handleSave}
 			/>
 		</div>
 	);

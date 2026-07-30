@@ -89,7 +89,7 @@ const Button: React.FC<ButtonProps> = ({
 
 	return (
 		<button
-			className={`relative flex items-center justify-center transition-colors rounded-full ${className} ${
+			className={`relative flex items-center justify-center transition-colors rounded-full h-11 w-11 ${className} ${
 				sizeClass
 			} ${colorStyles} ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
 			onClick={onClick}
