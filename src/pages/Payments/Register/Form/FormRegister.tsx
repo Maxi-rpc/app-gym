@@ -24,9 +24,9 @@ export default function FormRegister({ data }: Props) {
 		start_date: "",
 		end_date: "",
 		observations: "",
-		original_amount: "",
-		discount: "",
-		amount_paid: "",
+		original_amount: 0,
+		discount: 0,
+		amount_paid: 0,
 		payment_method_id: "",
 		billing_period: "",
 		status_id: "",
@@ -92,7 +92,7 @@ export default function FormRegister({ data }: Props) {
 							<div>
 								<Label>Monto original*</Label>
 								<Input
-									type="text"
+									type="number"
 									value={formData.original_amount}
 									name="original_amount"
 									onChange={handleChange}
@@ -102,7 +102,7 @@ export default function FormRegister({ data }: Props) {
 							<div>
 								<Label>Descuento*</Label>
 								<Input
-									type="text"
+									type="number"
 									value={formData.discount}
 									name="discount"
 									onChange={handleChange}
@@ -112,7 +112,7 @@ export default function FormRegister({ data }: Props) {
 							<div>
 								<Label>Total*</Label>
 								<Input
-									type="text"
+									type="number"
 									value={formData.amount_paid}
 									name="amount_paid"
 									onChange={handleChange}
