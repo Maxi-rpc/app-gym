@@ -54,3 +54,18 @@ export interface Membership_payment {
 	payment_method: Payment_method;
 	payment_status: Payment_status;
 }
+
+export interface CreateMembershipPaymentInput {
+	client_id: string;
+	service_id: number;
+	start_date: string;
+	end_date: string;
+	observations: string;
+	original_amount: number;
+	discount: number;
+	amount_paid: number;
+	payment_method_id: number;
+	billing_period: string;
+	status_id: number;
+	receipt_number: string;
+}

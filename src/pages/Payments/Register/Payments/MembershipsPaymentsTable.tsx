@@ -102,12 +102,12 @@ export default function PaymentsTable({ listData, searchText }: Props) {
 
 	const columns: { key: SortKey; label: string }[] = [
 		{ key: "id", label: "ID" },
+		{ key: "createdAt", label: "Creada" },
 		{ key: "service", label: "Servicio" },
 		{ key: "startDate", label: "Fecha de inicio" },
-		{ key: "nextDueDate", label: "Próximo vencimiento" },
 		{ key: "paymentMethod", label: "Método de Pago" },
 		{ key: "amountPaid", label: "Monto" },
-		{ key: "createdAt", label: "Creada" },
+		{ key: "nextDueDate", label: "Próximo vencimiento" },
 		{ key: "observations", label: "Observaciones" },
 	];
 
@@ -143,13 +143,13 @@ export default function PaymentsTable({ listData, searchText }: Props) {
 								{payment.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+								{formatLocalDateTime(payment.created_at)}
+							</td>
+							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{payment.membership?.service?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{formatLocalDateTime(payment.created_at)}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{payment.next_due_date}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{payment?.payment_method?.name}
@@ -158,7 +158,7 @@ export default function PaymentsTable({ listData, searchText }: Props) {
 								{payment?.amount_paid}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{formatLocalDateTime(payment.created_at)}
+								{payment.next_due_date}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{payment.observations}

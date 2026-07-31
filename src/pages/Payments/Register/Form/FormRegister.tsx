@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
+import Select from "../../../../components/form/Select";
 import Button from "../../../../components/ui/button/Button";
 import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
@@ -13,23 +14,35 @@ interface Props {
 	data: Profile | null;
 }
 
+const optionsServices = [{ value: "1", label: "Mensual" }];
+
+const optionsPaymentsMethods = [
+	{ value: "1", label: "Efectivo" },
+	{ value: "2", label: "Transferencia" },
+];
+
+const optionsPaymentsStatus = [
+	{ value: "1", label: "Pagado" },
+	{ value: "2", label: "Pendiente" },
+	{ value: "3", label: "Cancelado" },
+	{ value: "4", label: "Reembolsado" },
+];
+
 export default function FormRegister({ data }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 
-	const [profile, setProfile] = useState<Profile | null>(null);
-
 	const [formData, setFormData] = useState({
-		client_id: "",
-		service_id: "",
+		client_id: data?.id || "",
+		service_id: 0,
 		start_date: "",
 		end_date: "",
 		observations: "",
 		original_amount: 0,
 		discount: 0,
 		amount_paid: 0,
-		payment_method_id: "",
+		payment_method_id: 0,
 		billing_period: "",
-		status_id: "",
+		status_id: 0,
 		receipt_number: "",
 	});
 
@@ -42,23 +55,23 @@ export default function FormRegister({ data }: Props) {
 			setFeedback(null);
 			// Validación básica
 
-			const resp = await paymentsService.create();
-			console.log(resp, profile);
-			// if (resp.error) {
-			// 	throw resp.error;
-			// }
+			const resp = await paymentsService.create(formData);
+			console.log(resp);
+			if (resp.error) {
+				throw resp.error;
+			}
 
-			// setFeedback({
-			// 	variant: "success",
-			// 	title: "Cliente creado.",
-			// 	message: resp?.data?.message,
-			// });
+			setFeedback({
+				variant: "success",
+				title: "Pago registrado.",
+				message: resp?.data?.message,
+			});
 		} catch (error) {
-			console.error("Error al crear cliente:", error);
+			console.error("Error al registrar pago:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se puede crear cliente",
+				title: "No se puede registrar pago",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
@@ -67,15 +80,32 @@ export default function FormRegister({ data }: Props) {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
-	useEffect(() => {
-		setProfile(data);
-	}, [data]);
+	const handleSelectChangeService = (value: string) => {
+		setFormData((prev) => ({
+			...prev,
+			service_id: Number(value),
+		}));
+	};
+
+	const handleSelectChangePaymentMethod = (value: string) => {
+		setFormData((prev) => ({
+			...prev,
+			payment_method_id: Number(value),
+		}));
+	};
+
+	const handleSelectChangePaymentStatus = (value: string) => {
+		setFormData((prev) => ({
+			...prev,
+			status_id: Number(value),
+		}));
+	};
 
 	return (
 		<>
@@ -87,6 +117,16 @@ export default function FormRegister({ data }: Props) {
 								<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 									Completar los campos para registrar el pago.
 								</p>
+							</div>
+
+							<div>
+								<Label>Servicio*</Label>
+								<Select
+									options={optionsServices}
+									placeholder="Seleccionar"
+									onChange={handleSelectChangeService}
+									className="dark:bg-dark-900"
+								/>
 							</div>
 
 							<div>
@@ -121,18 +161,18 @@ export default function FormRegister({ data }: Props) {
 
 							<div>
 								<Label>Método de Pago</Label>
-								<Input
-									type="text"
-									value={formData.payment_method_id}
-									name="payment_method_id"
-									onChange={handleChange}
+								<Select
+									options={optionsPaymentsMethods}
+									placeholder="Seleccionar"
+									onChange={handleSelectChangePaymentMethod}
+									className="dark:bg-dark-900"
 								/>
 							</div>
 
 							<div>
 								<Label>Período</Label>
 								<Input
-									type="text"
+									type="date"
 									value={formData.billing_period}
 									name="billing_period"
 									onChange={handleChange}
@@ -141,11 +181,11 @@ export default function FormRegister({ data }: Props) {
 
 							<div>
 								<Label>Estado del Pago</Label>
-								<Input
-									type="text"
-									value={formData.status_id}
-									name="status_id"
-									onChange={handleChange}
+								<Select
+									options={optionsPaymentsStatus}
+									placeholder="Seleccionar"
+									onChange={handleSelectChangePaymentStatus}
+									className="dark:bg-dark-900"
 								/>
 							</div>
 
@@ -168,7 +208,7 @@ export default function FormRegister({ data }: Props) {
 							<div>
 								<Label>Observación</Label>
 								<Input
-									type="number"
+									type="text"
 									value={formData.observations}
 									name="observations"
 									onChange={handleChange}
