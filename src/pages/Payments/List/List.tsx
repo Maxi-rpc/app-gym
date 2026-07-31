@@ -6,27 +6,21 @@ import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
 import { useModal } from "../../../hooks/useModal";
+import Alert from "../../../components/ui/alert/Alert";
+import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import {
-	PlusOutlined,
-	RefreshCircle1ClockwiseOutlined,
-} from "@lineiconshq/free-icons";
+import { RefreshCircle1ClockwiseOutlined } from "@lineiconshq/free-icons";
 
 import { Membership_payment } from "../../../service/types/Payments";
 import { paymentsService } from "../../../service/payments.service";
 
 import DataTable from "./DataTable";
-import ModalAdd from "./modals/ModalAdd";
 import ModalEdit from "./modals/ModalEdit";
 import ModalDelete from "./modals/ModalDelete";
 
-export default function Payments() {
-	const {
-		isOpen: isOpenAdd,
-		openModal: openModalAdd,
-		closeModal: closeModalAdd,
-	} = useModal();
+export default function List() {
+	const [feedback, setFeedback] = useState<Feedback>(null);
 
 	const {
 		isOpen: isOpenEdit,
@@ -45,12 +39,22 @@ export default function Payments() {
 	const [listData, setListData] = useState<Membership_payment[] | []>([]);
 
 	const getData = async () => {
-		console.log("Payments - getData");
 		try {
-			const data = await paymentsService.getAll();
-			setListData(data);
+			setFeedback(null);
+
+			const resp = await paymentsService.getAll();
+			if (resp.error) throw resp.error;
+
+			setListData(resp.data);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error No se puede obtener datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede obtener datos",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
@@ -63,14 +67,6 @@ export default function Payments() {
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
-		console.log("handleSearch", searchText);
-	};
-
-	const handleSave = () => {
-		// Handle save logic here
-		console.log("Saving changes...");
-		closeModalAdd();
-		getData();
 	};
 
 	const handleEdit = (client: Membership_payment) => {
@@ -110,6 +106,16 @@ export default function Payments() {
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 						Se muestran los pagos registrados hasta la fecha actual.
 					</p>
+
+					{feedback && (
+						<div className="my-4 text-start">
+							<Alert
+								variant={feedback?.variant}
+								title={feedback?.title}
+								message={feedback?.message}
+							/>
+						</div>
+					)}
 				</div>
 
 				{/* Search */}
@@ -139,15 +145,6 @@ export default function Payments() {
 					>
 						Actualizar
 					</Button>
-					<Button
-						size="sm"
-						onClick={openModalAdd}
-						startIcon={
-							<Lineicons icon={PlusOutlined} size={20} color="white" />
-						}
-					>
-						Agregar
-					</Button>
 				</div>
 
 				{/* Data Table */}
@@ -158,13 +155,6 @@ export default function Payments() {
 					onDelet={handleDelete}
 				/>
 			</div>
-
-			{/* Modal Add */}
-			<ModalAdd
-				isOpen={isOpenAdd}
-				onClose={closeModalAdd}
-				onSubmit={handleSave}
-			/>
 
 			{/* Modal Edit */}
 			<ModalEdit

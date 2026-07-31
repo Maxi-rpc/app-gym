@@ -45,8 +45,7 @@ async function getAll() {
 		},
 	);
 
-	if (error) throw error;
-	return data?.membership_payments;
+	return { data: data?.membership_payments, error: error };
 }
 
 async function create() {

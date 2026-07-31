@@ -24,6 +24,30 @@ async function getById(id: string) {
 	return data?.client;
 }
 
+async function getByCustomId(search: string) {
+	// search = name, lastname, email, dni
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke(
+		"get-client-by-custom-search",
+		{
+			body: { search: search },
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
+		},
+	);
+
+	return { data: data?.clients, error: error };
+}
+
 async function getAll() {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
@@ -109,6 +133,7 @@ async function remove() {
 export const clientService = {
 	getAll,
 	getById,
+	getByCustomId,
 	create,
 	update,
 	remove, // to do

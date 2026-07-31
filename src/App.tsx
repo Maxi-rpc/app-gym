@@ -18,15 +18,20 @@ import UserProfiles from "./pages/UserProfiles";
 // admin
 import Dashboards from "./pages/Administration/Dashboard/Dashboard";
 
+// clients
 import Clients from "./pages/Clients/Clients";
 import ClientDetails from "./pages/Clients/Details/ClientDetails";
 
+// employee
 import Coachs from "./pages/Coachs/Coachs";
+
+// assistance
 import Assistants from "./pages/Assistants/List/List";
 import AssistantsRegister from "./pages/Assistants/Register/Register";
 
-// operations
+// payments
 import Payments from "./pages/Payments/List/List";
+import PaymentsRegister from "./pages/Payments/Register/Register";
 
 export default function App() {
 	return (
@@ -125,6 +130,14 @@ export default function App() {
 
 							{/* Payments Page */}
 							<Route path="/payments">
+								<Route
+									path="register"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<PaymentsRegister />
+										</ProtectedRoute>
+									}
+								/>
 								<Route
 									path="list"
 									element={
