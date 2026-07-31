@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { formatLocalDateTime } from "../../../../utils/date";
 
-import { Payments } from "../../types/Payments";
+import { Payments } from "./types/Payments";
 
 type SortKey =
 	| "id"

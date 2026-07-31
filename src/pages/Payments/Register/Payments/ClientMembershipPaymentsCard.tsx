@@ -7,7 +7,7 @@ import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 
 import { formatLocalDateTime } from "../../../../utils/date";
 
-import { Payments } from "../../types/Payments";
+import { Payments } from "./types/Payments";
 import { paymentsService } from "../../../../service/payments.service";
 
 import MembershipsPaymentsTable from "./MembershipsPaymentsTable";
