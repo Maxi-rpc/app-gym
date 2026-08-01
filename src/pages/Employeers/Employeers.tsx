@@ -118,7 +118,7 @@ export default function Employeers() {
 						<Input
 							type="text"
 							id="inputTwo"
-							placeholder="nombre o appelido"
+							placeholder="nombre o apellido"
 							value={searchText}
 							onChange={handleSearch}
 						/>
