@@ -1,5 +1,8 @@
 import { supabase } from "../utils/supabase";
-import { Employee, UpdateEmployeeInput } from "../service/types/Employee";
+import {
+	CreateEmployeeInput,
+	UpdateEmployeeInput,
+} from "../service/types/Employee";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -48,7 +51,7 @@ async function getAll() {
 	return data?.employeers;
 }
 
-async function create(formData: Employee) {
+async function create(formData: CreateEmployeeInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -60,12 +63,12 @@ async function create(formData: Employee) {
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke("create-employee", {
 		body: {
-			email: formData?.profile?.email,
-			name: formData?.profile?.name,
-			last_name: formData?.profile?.last_name,
-			document: formData?.profile?.document,
-			phone: formData?.profile?.phone,
-			birth_date: formData?.profile?.birth_date,
+			email: formData?.email,
+			name: formData?.name,
+			last_name: formData?.last_name,
+			document: formData?.document,
+			phone: formData?.phone,
+			birth_date: formData?.birth_date,
 			salary: formData?.salary,
 			hire_date: formData?.hire_date,
 			specialist: formData?.specialist,

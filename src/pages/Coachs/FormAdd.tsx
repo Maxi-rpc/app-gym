@@ -61,7 +61,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				return;
 			}
 
-			const resp = await employeeService.update(formData);
+			const resp = await employeeService.create(formData);
 			if (resp.error) {
 				throw resp.error;
 			}
