@@ -110,14 +110,37 @@ async function update(formData: UpdateEmployeeInput) {
 	return { data: data, error: error };
 }
 
-async function remove() {
-	console.log("clientService.remove");
+interface formDelete {
+	id: string;
+}
+
+async function remove(formData: formDelete) {
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke("remove-employee", {
+		body: {
+			id: formData.id,
+		},
+		headers: {
+			Authorization: `Bearer ${session_token}`,
+		},
+		method: "DELETE",
+	});
+
+	return { data: data, error: error };
 }
 
 export const employeeService = {
 	getAll,
 	getById,
 	create, // to do
-	update, // to do
+	update,
 	remove, // to do
 };

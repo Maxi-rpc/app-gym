@@ -45,7 +45,6 @@ export default function Coachs() {
 	const [listData, setListData] = useState<Employee[] | []>([]);
 
 	const getData = async () => {
-		console.log("Employee - getData");
 		try {
 			const data = await employeeService.getAll();
 			setListData(data);

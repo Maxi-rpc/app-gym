@@ -29,7 +29,7 @@ export default function ModalDelete({
 				<FormDelete
 					onClose={onClose}
 					onSubmit={onSubmit}
-					deleteText={defaultData?.profile?.email}
+					deleteText={defaultData?.profile?.id}
 				/>
 			</div>
 		</Modal>
