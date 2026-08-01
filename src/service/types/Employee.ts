@@ -22,7 +22,7 @@ export interface CreateEmployeeInput {
 	document?: string | null;
 	phone?: string | null;
 	image?: string | null;
-	birth_date?: string;
+	birth_date?: string | null;
 	salary?: number | null;
 	hire_date?: string | null;
 	specialist?: string | null;
