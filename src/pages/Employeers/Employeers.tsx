@@ -21,7 +21,7 @@ import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 
-export default function Coachs() {
+export default function Employeers() {
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -112,8 +112,8 @@ export default function Coachs() {
 				</div>
 
 				{/* Search */}
-				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
-					<div className="space-y-6 flex-1">
+				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+					<div className="space-y-6 w-full">
 						<Label htmlFor="inputTwo">Buscar Profesor</Label>
 						<Input
 							type="text"

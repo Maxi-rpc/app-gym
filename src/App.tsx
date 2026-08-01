@@ -23,7 +23,7 @@ import Clients from "./pages/Clients/Clients";
 import ClientDetails from "./pages/Clients/Details/ClientDetails";
 
 // employee
-import Coachs from "./pages/Coachs/Coachs";
+import Coachs from "./pages/Employeers/Employeers";
 
 // assistance
 import Assistants from "./pages/Assistants/List/List";
