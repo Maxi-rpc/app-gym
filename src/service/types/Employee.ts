@@ -38,3 +38,7 @@ export interface UpdateEmployeeInput {
 	employee_number?: string | null;
 	observations?: string | null;
 }
+
+export interface DeleteEmployeeInput {
+	id: string;
+}

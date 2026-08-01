@@ -5,6 +5,7 @@ import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../components/ui/button/IconSpinner";
 
 import { employeeService } from "../../service/employee.service";
 
@@ -30,6 +31,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 		employee_number: "",
 		observations: "",
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleClose = () => {
 		setFeedback(null);
@@ -40,6 +42,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			// Validación básica
 			if (!formData.email || !formData.name || !formData.last_name) {
@@ -80,6 +83,8 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -94,14 +99,14 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 	return (
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
-				<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
+				<div className="grid grid-cols-1 gap-x-6 gap-y-5 xsm:grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
 					<div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Completar los campos para el perfil.
 						</p>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Email*</Label>
 						<Input
 							type="text"
@@ -111,7 +116,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Nombre*</Label>
 						<Input
 							type="text"
@@ -121,7 +126,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Apellido*</Label>
 						<Input
 							type="text"
@@ -131,7 +136,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					{/* <div className="col-span-2 md:col-span-1">
 						<Label>Documento</Label>
 						<Input
 							type="text"
@@ -139,9 +144,9 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 							name="document"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
@@ -151,7 +156,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					{/* <div className="col-span-2 md:col-span-1">
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="date"
@@ -160,15 +165,15 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 							placeholder="YYYY-MM-DD"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 
-					<div className="col-span-2">
+					{/* <div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Campos opcionales.
 						</p>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Salario</Label>
 						<Input
 							type="number"
@@ -178,7 +183,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Fecha de Ingreso</Label>
 						<Input
 							type="date"
@@ -188,7 +193,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Especialidad</Label>
 						<Input
 							type="text"
@@ -198,7 +203,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Observación</Label>
 						<Input
 							type="text"
@@ -206,14 +211,15 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 							name="observations"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<div className="flex items-center gap-3 px-2 mt-6 justify-end">
 				<Button size="sm" variant="outline" onClick={handleClose}>
 					Cerrar
 				</Button>
-				<Button size="sm" onClick={handleSubmit}>
+				<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+					{isLoading && <IconSpinner />}
 					Guardar
 				</Button>
 			</div>
