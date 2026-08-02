@@ -136,7 +136,7 @@ async function remove(formData: DeleteEmployeeInput) {
 export const employeeService = {
 	getAll,
 	getById,
-	create, // to do
+	create,
 	update,
-	remove, // to do
+	remove,
 };

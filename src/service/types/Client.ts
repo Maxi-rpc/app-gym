@@ -21,7 +21,7 @@ export interface CreateClientInput {
 	document?: string | null;
 	phone?: string | null;
 	image?: string | null;
-	birth_date?: string;
+	birth_date?: string | null;
 	height: number | null;
 	weight: number | null;
 	emergency_contact: string | null;

@@ -90,11 +90,11 @@ async function create(formData: CreateClientInput) {
 			document: formData?.document,
 			phone: formData?.phone,
 			image: formData?.image,
-			birth_date: formData?.birth_date,
-			height: formData?.name, // client
-			weight: formData?.name,
-			emergency_contact: formData?.name,
-			medical_notes: formData?.name,
+			birth_date: formData?.birth_date || null,
+			height: formData?.height, // client
+			weight: formData?.weight,
+			emergency_contact: formData?.emergency_contact,
+			medical_notes: formData?.medical_notes,
 		},
 		headers: {
 			Authorization: `Bearer ${session_token}`,

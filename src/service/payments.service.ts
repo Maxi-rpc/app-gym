@@ -68,14 +68,14 @@ async function create(formData: CreateMembershipPaymentInput) {
 			body: {
 				client_id: formData?.client_id,
 				service_id: formData?.service_id,
-				start_date: formData?.start_date,
-				end_date: formData?.end_date,
+				start_date: formData?.start_date || null,
+				end_date: formData?.end_date || null,
 				observations: formData?.observations,
 				original_amount: formData?.original_amount, // payment
 				discount: formData?.discount,
 				amount_paid: formData?.amount_paid,
 				payment_method_id: formData?.payment_method_id, // payment method
-				billing_period: formData?.billing_period,
+				billing_period: formData?.billing_period || null,
 				status_id: formData?.status_id, // payment status
 				receipt_number: formData?.receipt_number,
 			},
