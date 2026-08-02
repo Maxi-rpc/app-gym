@@ -87,26 +87,33 @@ const mainItems: NavItem[] = [
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
-				name: "Usuarios",
-				path: "/operations/payments",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-			{
 				name: "Roles",
-				path: "/operations/sales",
+				path: "/configurations/roles",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
-				name: "Membresías",
-				path: "/operations/sales",
+				name: "Estados de usuario",
+				path: "/configurations/payments",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+
+			{
+				name: "Estados de membresía",
+				path: "/configurations/sales",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
-				name: "Preferencias",
-				path: "/operations/sales",
+				name: "Servicios",
+				path: "/configurations/sales",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Métodos de pago",
+				path: "/configurations/sales",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},

@@ -33,6 +33,9 @@ import AssistantsRegister from "./pages/Assistants/Register/Register";
 import Payments from "./pages/Payments/List/List";
 import PaymentsRegister from "./pages/Payments/Register/Register";
 
+// configurations
+import ConfigRoles from "./pages/Configurations/Roles/Roles";
+
 export default function App() {
 	return (
 		<>
@@ -143,6 +146,18 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<Payments />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+
+							{/* Configuration Page */}
+							<Route path="/configurations">
+								<Route
+									path="roles"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ConfigRoles />
 										</ProtectedRoute>
 									}
 								/>
