@@ -5,9 +5,9 @@ import PageMeta from "../../../components/common/PageMeta";
 import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
-import { useModal } from "../../../hooks/useModal";
 import Alert from "../../../components/ui/alert/Alert";
 import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
+import { useModal } from "../../../hooks/useModal";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
@@ -111,8 +111,6 @@ export default function Register() {
 	};
 
 	const handleDeleteItem = () => {
-		// Handle save logic here
-		console.log("Delete item...");
 		closeModalDelete();
 		getData();
 	};
@@ -159,13 +157,13 @@ export default function Register() {
 				</div>
 
 				{/* Search */}
-				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
+				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
 					<div className="space-y-6 flex-1">
 						<Label htmlFor="inputTwo">Buscar Cliente</Label>
 						<Input
 							type="text"
 							id="inputTwo"
-							placeholder="nombre o appelido"
+							placeholder="nombre o apellido"
 							value={searchText}
 							onChange={handleSearch}
 						/>

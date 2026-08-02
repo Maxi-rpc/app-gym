@@ -4,6 +4,10 @@ import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
+
+import { paymentsService } from "../../../../service/payments.service";
 
 type Props = {
 	onSubmit?: () => void;
@@ -12,22 +16,52 @@ type Props = {
 };
 
 export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState({ deletetext: "" });
 
 	const [validText] = useState(deleteText);
 
 	const handleClose = () => {
-		console.log("handleClose Modal");
+		onSubmit?.();
 		onClose?.();
 	};
 
-	const handleSubmit = () => {
-		console.log("handleSubmit Modal");
-		if (validateDelete()) {
-			console.log("ok");
-			onSubmit?.();
-		} else {
-			console.log("error");
+	const handleSubmit = async () => {
+		try {
+			setFeedback(null);
+			setIsLoading(true);
+
+			if (validateDelete()) {
+				const formDelete = {
+					id: deleteText || "",
+				};
+				const resp = await paymentsService.remove(formDelete);
+				if (resp.error) throw resp.error;
+
+				setFeedback({
+					variant: "success",
+					title: "Info",
+					message: resp.data?.message,
+				});
+			} else {
+				setFeedback({
+					variant: "error",
+					title: "No es correcto el texto",
+					message: "",
+				});
+			}
+		} catch (error) {
+			console.error("Error No se puede eliminar datos", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede realizar acción",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -37,11 +71,9 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 			...formData,
 			[name]: value,
 		});
-		console.log(name, value);
 	};
 
 	const validateDelete = () => {
-		console.log("validateDelete", validText, formData?.deletetext);
 		const isValid =
 			validText?.toLocaleLowerCase() ===
 			formData?.deletetext?.toLocaleLowerCase();
@@ -75,10 +107,20 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 				<Button size="sm" variant="outline" onClick={handleClose}>
 					Cerrar
 				</Button>
-				<Button size="sm" onClick={handleSubmit}>
+				<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+					{isLoading && <IconSpinner />}
 					Eliminar
 				</Button>
 			</div>
+			{feedback && (
+				<div className="my-4 text-start">
+					<Alert
+						variant={feedback?.variant}
+						title={feedback?.title}
+						message={feedback?.message}
+					/>
+				</div>
+			)}
 		</form>
 	);
 }

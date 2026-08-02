@@ -48,8 +48,7 @@ async function getAll() {
 		method: "GET",
 	});
 
-	if (error) throw error;
-	return data?.employeers;
+	return { data: data?.employeers, error: error };
 }
 
 async function create(formData: CreateEmployeeInput) {
@@ -121,7 +120,7 @@ async function remove(formData: DeleteEmployeeInput) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("remove-employee", {
+	const { data, error } = await supabase.functions.invoke("remove-user", {
 		body: {
 			id: formData.id,
 		},

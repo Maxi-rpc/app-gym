@@ -1,5 +1,8 @@
 import { supabase } from "../utils/supabase";
-import { CreateMembershipPaymentInput } from "./types/Payments";
+import {
+	CreateMembershipPaymentInput,
+	DeleteMembershipPaymentInput,
+} from "./types/Payments";
 
 async function getByClient(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -89,8 +92,30 @@ async function update() {
 	console.log("paymentsService.update");
 }
 
-async function remove() {
-	console.log("paymentsService.remove");
+async function remove(formData: DeleteMembershipPaymentInput) {
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke(
+		"remove-membership-payment",
+		{
+			body: {
+				id: formData.id,
+			},
+			headers: {
+				Authorization: `Bearer ${session_token}`,
+			},
+			method: "DELETE",
+		},
+	);
+
+	return { data: data, error: error };
 }
 
 export const paymentsService = {

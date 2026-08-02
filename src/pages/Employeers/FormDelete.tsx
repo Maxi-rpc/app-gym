@@ -17,9 +17,8 @@ type Props = {
 
 export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
-
-	const [formData, setFormData] = useState({ deletetext: "" });
 	const [isLoading, setIsLoading] = useState(false);
+	const [formData, setFormData] = useState({ deletetext: "" });
 
 	const [validText] = useState(deleteText);
 

@@ -5,9 +5,9 @@ import PageMeta from "../../../components/common/PageMeta";
 import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
-import { useModal } from "../../../hooks/useModal";
 import Alert from "../../../components/ui/alert/Alert";
 import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
+import { useModal } from "../../../hooks/useModal";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import {
@@ -70,8 +70,6 @@ export default function List() {
 	};
 
 	const handleUpdate = () => {
-		// Handle save logic here
-		console.log("Updating changes...");
 		closeModalEdit();
 		getData();
 	};
@@ -81,8 +79,6 @@ export default function List() {
 	};
 
 	const handleSave = () => {
-		// Handle save logic here
-		console.log("Saving changes...");
 		closeModalAdd();
 		getData();
 	};
@@ -93,8 +89,6 @@ export default function List() {
 	};
 
 	const handleDeleteItem = () => {
-		// Handle save logic here
-		console.log("Delete item...");
 		closeModalDelete();
 		getData();
 	};
@@ -122,7 +116,7 @@ export default function List() {
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran las asistencias registrados del día de hoy.
+						Se muestran el historial de asistencias registrados.
 					</p>
 
 					{feedback && (
@@ -137,13 +131,13 @@ export default function List() {
 				</div>
 
 				{/* Search */}
-				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
-					<div className="space-y-6 flex-1">
+				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+					<div className="space-y-6 w-full">
 						<Label htmlFor="inputTwo">Buscar Cliente</Label>
 						<Input
 							type="text"
 							id="inputTwo"
-							placeholder="nombre o appelido"
+							placeholder="nombre o apellido"
 							value={searchText}
 							onChange={handleSearch}
 						/>

@@ -16,7 +16,7 @@ type Props = {
 
 export default function FormAdd({ onSubmit, onClose }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
-
+	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState({
 		email: "",
 		name: "",
@@ -31,7 +31,6 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 		employee_number: "",
 		observations: "",
 	});
-	const [isLoading, setIsLoading] = useState(false);
 
 	const handleClose = () => {
 		setFeedback(null);
@@ -99,7 +98,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 	return (
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
-				<div className="grid grid-cols-1 gap-x-6 gap-y-5 xsm:grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
 					<div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Completar los campos para el perfil.

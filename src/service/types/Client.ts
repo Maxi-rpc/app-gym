@@ -35,3 +35,7 @@ export interface UpdateClientInput {
 	emergency_contact: string | null;
 	medical_notes: string | null;
 }
+
+export interface DeleteClientInput {
+	id: string;
+}

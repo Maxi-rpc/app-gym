@@ -139,13 +139,13 @@ export default function Clients() {
 				</div>
 
 				{/* Search */}
-				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
-					<div className="space-y-6 flex-1">
+				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+					<div className="space-y-6 w-full">
 						<Label htmlFor="inputTwo">Buscar Cliente</Label>
 						<Input
 							type="text"
 							id="inputTwo"
-							placeholder="nombre o appelido"
+							placeholder="nombre o apellido"
 							value={searchText}
 							onChange={handleSearch}
 						/>

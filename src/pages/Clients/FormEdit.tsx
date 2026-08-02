@@ -5,6 +5,7 @@ import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../components/ui/button/IconSpinner";
 
 import { Client } from "../../service/types/Client";
 import { clientService } from "../../service/client.service";
@@ -18,6 +19,7 @@ type Props = {
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formProfile, setFormProfile] = useState({
 		id: defaultData?.user_id,
@@ -38,6 +40,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	});
 
 	const handleClose = () => {
+		setFeedback(null);
 		onSubmit?.();
 		onClose?.();
 	};
@@ -81,6 +84,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			// Validación básica
 			if (!formProfile.email || !formProfile.name || !formProfile.last_name) {
@@ -129,6 +133,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -151,14 +157,14 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	return (
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
-				<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
 					<div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Completar los campos para el perfil.
 						</p>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Email*</Label>
 						<Input
 							type="text"
@@ -168,7 +174,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Nombre*</Label>
 						<Input
 							type="text"
@@ -178,7 +184,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Apellido*</Label>
 						<Input
 							type="text"
@@ -188,7 +194,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Documento</Label>
 						<Input
 							type="text"
@@ -198,7 +204,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
@@ -208,7 +214,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="date"
@@ -225,7 +231,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						</p>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Altura (cm)</Label>
 						<Input
 							type="number"
@@ -235,7 +241,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Peso (kg)</Label>
 						<Input
 							type="number"
@@ -245,7 +251,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Contacto de Emergencia</Label>
 						<Input
 							type="text"
@@ -255,7 +261,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Notas Médicas</Label>
 						<Input
 							type="text"
@@ -270,7 +276,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				<Button size="sm" variant="outline" onClick={handleClose}>
 					Cerrar
 				</Button>
-				<Button size="sm" onClick={handleSubmit}>
+				<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+					{isLoading && <IconSpinner />}
 					Guardar
 				</Button>
 			</div>

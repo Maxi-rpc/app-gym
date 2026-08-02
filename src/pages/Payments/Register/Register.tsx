@@ -7,6 +7,7 @@ import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
 import Alert from "../../../components/ui/alert/Alert";
 import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../components/ui/button/IconSpinner";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Search1Outlined } from "@lineiconshq/free-icons";
@@ -25,6 +26,7 @@ import FormRegister from "./Form/FormRegister";
 
 export default function Register() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({ search: " " });
 	const [selectData, setSelectData] = useState<Profile | null>(null);
@@ -33,6 +35,7 @@ export default function Register() {
 	const getData = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			const resp = await clientService.getByCustomId(formData.search);
 			if (resp.error) throw resp.error;
@@ -47,6 +50,8 @@ export default function Register() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -95,8 +100,8 @@ export default function Register() {
 				</div>
 
 				{/* Search */}
-				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
-					<div className="space-y-6 flex-1">
+				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+					<div className="space-y-6 w-full">
 						<Label htmlFor="inputTwo">
 							Buscar Cliente por Nombre, Apellido, Email, DNI
 						</Label>
@@ -110,13 +115,12 @@ export default function Register() {
 						/>
 					</div>
 
-					<Button
-						size="sm"
-						onClick={handleSearch}
-						startIcon={
+					<Button size="sm" onClick={handleSearch} disabled={isLoading}>
+						{isLoading ? (
+							<IconSpinner />
+						) : (
 							<Lineicons icon={Search1Outlined} size={20} color="white" />
-						}
-					>
+						)}
 						Buscar
 					</Button>
 				</div>

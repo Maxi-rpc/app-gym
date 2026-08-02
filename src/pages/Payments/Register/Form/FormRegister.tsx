@@ -6,6 +6,7 @@ import Select from "../../../../components/form/Select";
 import Button from "../../../../components/ui/button/Button";
 import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
 import { Profile } from "../../../../context/types/Profile";
 import { paymentsService } from "../../../../service/payments.service";
@@ -30,6 +31,7 @@ const optionsPaymentsStatus = [
 
 export default function FormRegister({ data }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
 		client_id: data?.id || "",
@@ -53,10 +55,10 @@ export default function FormRegister({ data }: Props) {
 	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
-			// Validación básica
+			setIsLoading(true);
 
 			const resp = await paymentsService.create(formData);
-			console.log(resp);
+
 			if (resp.error) {
 				throw resp.error;
 			}
@@ -75,6 +77,8 @@ export default function FormRegister({ data }: Props) {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -112,14 +116,14 @@ export default function FormRegister({ data }: Props) {
 			<div className="my-6 rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
 				<form className="flex flex-col">
 					<div className="px-2 overflow-y-auto custom-scrollbar">
-						<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
 							<div className="col-span-2">
 								<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 									Completar los campos para registrar el pago.
 								</p>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Servicio*</Label>
 								<Select
 									options={optionsServices}
@@ -129,7 +133,7 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Monto original*</Label>
 								<Input
 									type="number"
@@ -139,8 +143,8 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
-								<Label>Descuento*</Label>
+							<div className="col-span-2 md:col-span-1">
+								<Label>Descuento</Label>
 								<Input
 									type="number"
 									value={formData.discount}
@@ -149,7 +153,7 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Total*</Label>
 								<Input
 									type="number"
@@ -159,7 +163,7 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Método de Pago</Label>
 								<Select
 									options={optionsPaymentsMethods}
@@ -169,7 +173,7 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Período</Label>
 								<Input
 									type="date"
@@ -179,7 +183,7 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Estado del Pago</Label>
 								<Select
 									options={optionsPaymentsStatus}
@@ -195,7 +199,7 @@ export default function FormRegister({ data }: Props) {
 								</p>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Número de Recibo</Label>
 								<Input
 									type="number"
@@ -205,7 +209,7 @@ export default function FormRegister({ data }: Props) {
 								/>
 							</div>
 
-							<div>
+							<div className="col-span-2 md:col-span-1">
 								<Label>Observación</Label>
 								<Input
 									type="text"
@@ -220,7 +224,8 @@ export default function FormRegister({ data }: Props) {
 						<Button size="sm" variant="outline" onClick={handleClose}>
 							Cerrar
 						</Button>
-						<Button size="sm" onClick={handleSubmit}>
+						<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+							{isLoading && <IconSpinner />}
 							Guardar
 						</Button>
 					</div>

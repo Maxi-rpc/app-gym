@@ -6,6 +6,7 @@ import Button from "../../../components/ui/button/Button";
 import Select from "../../../components/form/Select";
 import Alert from "../../../components/ui/alert/Alert";
 import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../components/ui/button/IconSpinner";
 
 import { UpdateAttendanceInput } from "../../../service/types/Attendance";
 import { attendanceService } from "../../../service/attendance.service";
@@ -23,6 +24,7 @@ const options = [
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
 		id: defaultData?.id || "",
@@ -32,7 +34,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 		access_reason: defaultData?.access_reason || "",
 	});
 	const handleClose = () => {
-		console.log("handleClose Modal");
 		onSubmit?.();
 		onClose?.();
 	};
@@ -59,6 +60,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			const resp = await attendanceService.update(formData);
 			if (resp.error) throw resp.error;
@@ -77,19 +79,21 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	return (
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
-				<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
-					<div>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+					<div className="col-span-2 md:col-span-1">
 						<Label>Id</Label>
 						<Input type="text" value={formData?.id} name="id" disabled />
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Check In</Label>
 						<Input
 							type="text"
@@ -100,7 +104,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div>
 
-					{/* <div>
+					{/* <div className="col-span-2 md:col-span-1">
 						<Label>Check Out</Label>
 						<Input
 							type="text"
@@ -111,7 +115,17 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						/>
 					</div> */}
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
+						<Label>Acceso actual</Label>
+						<Input
+							type="text"
+							value={formData?.access_granted == true ? "Si" : "No"}
+							name="prevAccess"
+							disabled
+						/>
+					</div>
+
+					<div className="col-span-2 md:col-span-1">
 						<Label>Puede Acceder?</Label>
 						<Select
 							className="dark:bg-dark-900"
@@ -138,7 +152,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				<Button size="sm" variant="outline" onClick={handleClose}>
 					Cerrar
 				</Button>
-				<Button size="sm" onClick={handleSubmit}>
+				<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+					{isLoading && <IconSpinner />}
 					Guardar
 				</Button>
 			</div>

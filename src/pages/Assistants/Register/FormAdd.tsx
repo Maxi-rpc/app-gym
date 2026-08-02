@@ -23,12 +23,10 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 	});
 
 	const handleClose = () => {
-		console.log("handleClose Modal");
 		onClose?.();
 	};
 
 	const handleSubmit = async () => {
-		console.log("handleSubmit Modal");
 		onSubmit?.(formData.qrValue);
 	};
 
@@ -47,14 +45,13 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 			...formData,
 			[name]: value,
 		});
-		console.log(name, value);
 	};
 
 	return (
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
-				<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2">
-					<div>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+					<div className="col-span-2 md:col-span-1">
 						<Label>QR</Label>
 						<Input
 							type="text"
@@ -64,7 +61,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Nombre</Label>
 						<Input
 							type="text"
@@ -74,7 +71,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Apellido</Label>
 						<Input
 							type="text"
@@ -84,7 +81,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Documento</Label>
 						<Input
 							type="text"
@@ -94,7 +91,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="text"
@@ -104,7 +101,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
@@ -114,7 +111,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Email</Label>
 						<Input
 							type="text"
@@ -124,7 +121,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					<div>
+					<div className="col-span-2 md:col-span-1">
 						<Label>Estado</Label>
 						<Select
 							options={options}

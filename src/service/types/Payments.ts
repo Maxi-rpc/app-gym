@@ -69,3 +69,7 @@ export interface CreateMembershipPaymentInput {
 	status_id: number;
 	receipt_number: string;
 }
+
+export interface DeleteMembershipPaymentInput {
+	id: string;
+}

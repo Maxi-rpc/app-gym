@@ -55,6 +55,10 @@ export interface UpdateAttendanceInput {
 	access_reason: string;
 }
 
+export interface DeleteAttendanceInput {
+	id: string;
+}
+
 /*
 {
 	"id": "01caa657-04ac-4584-8db8-c34c851d905c",

@@ -2,6 +2,7 @@ import { supabase } from "../utils/supabase";
 import {
 	RegisterAttendanceInput,
 	UpdateAttendanceInput,
+	DeleteAttendanceInput,
 } from "./types/Attendance";
 
 async function getById(id: string) {
@@ -112,11 +113,7 @@ async function update(formData: UpdateAttendanceInput) {
 	return { data: data, error: error };
 }
 
-interface formDelete {
-	id: string;
-}
-
-async function remove(formData: formDelete) {
+async function remove(formData: DeleteAttendanceInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 

@@ -1,5 +1,9 @@
 import { supabase } from "../utils/supabase";
-import { CreateClientInput, UpdateClientInput } from "./types/Client";
+import {
+	CreateClientInput,
+	UpdateClientInput,
+	DeleteClientInput,
+} from "./types/Client";
 
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
@@ -126,8 +130,27 @@ async function update(formData: UpdateClientInput) {
 	return { data: data, error: error };
 }
 
-async function remove() {
-	console.log("clientService.remove");
+async function remove(formData: DeleteClientInput) {
+	const { data: sessionData, error: sessionError } =
+		await supabase.auth.getSession();
+
+	if (sessionError) throw sessionError;
+	if (!sessionData?.session) throw new Error("No hay sesión activa");
+
+	const session_token = sessionData.session.access_token;
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke("remove-user", {
+		body: {
+			id: formData.id,
+		},
+		headers: {
+			Authorization: `Bearer ${session_token}`,
+		},
+		method: "DELETE",
+	});
+
+	return { data: data, error: error };
 }
 
 export const clientService = {
@@ -136,5 +159,5 @@ export const clientService = {
 	getByCustomId,
 	create,
 	update,
-	remove, // to do
+	remove,
 };

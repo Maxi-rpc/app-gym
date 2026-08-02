@@ -42,7 +42,7 @@ export default function ButtonQr({ onRegister, onRegistered }: Props) {
 			</Button>
 
 			{isScanning && (
-				<div className="w-100 mt-4 mx-auto">
+				<div className="w-full mt-4 mx-auto">
 					<Scanner
 						onScan={handleScan}
 						allowMultiple

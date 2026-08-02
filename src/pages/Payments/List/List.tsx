@@ -59,8 +59,6 @@ export default function List() {
 	};
 
 	const handleUpdate = () => {
-		// Handle save logic here
-		console.log("Updating changes...");
 		closeModalEdit();
 		getData();
 	};
@@ -75,8 +73,6 @@ export default function List() {
 	};
 
 	const handleDeleteItem = () => {
-		// Handle save logic here
-		console.log("Delete item...");
 		closeModalDelete();
 		getData();
 	};
@@ -119,8 +115,8 @@ export default function List() {
 				</div>
 
 				{/* Search */}
-				<div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3">
-					<div className="space-y-6 flex-1">
+				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+					<div className="space-y-6 w-full">
 						<Label htmlFor="inputTwo">Buscar Pago</Label>
 						<Input
 							type="text"

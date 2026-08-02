@@ -5,6 +5,8 @@ import PageMeta from "../../components/common/PageMeta";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
+import Alert from "../../components/ui/alert/Alert";
+import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
 import { useModal } from "../../hooks/useModal";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
@@ -22,6 +24,8 @@ import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 
 export default function Employeers() {
+	const [feedback, setFeedback] = useState<Feedback>(null);
+
 	const {
 		isOpen: isOpenAdd,
 		openModal: openModalAdd,
@@ -46,28 +50,36 @@ export default function Employeers() {
 
 	const getData = async () => {
 		try {
-			const data = await employeeService.getAll();
-			setListData(data);
+			setFeedback(null);
+
+			const resp = await employeeService.getAll();
+			if (resp.error) {
+				throw resp.error;
+			}
+
+			setListData(resp.data ?? []);
 		} catch (error) {
-			console.error("Error getData", error);
+			console.error("Error al obtener employee:", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se pudieron cargar los employee",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
 		}
 	};
 
 	const handleUpdate = () => {
-		// Handle save logic here
-		console.log("Updating changes...");
 		closeModalEdit();
 		getData();
 	};
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
-		console.log("handleSearch", searchText);
 	};
 
 	const handleSave = () => {
-		// Handle save logic here
-		console.log("Saving changes...");
 		closeModalAdd();
 		getData();
 	};
@@ -78,8 +90,6 @@ export default function Employeers() {
 	};
 
 	const handleDeleteItem = () => {
-		// Handle save logic here
-		console.log("Delete item...");
 		closeModalDelete();
 		getData();
 	};
@@ -109,6 +119,16 @@ export default function Employeers() {
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 						Se muestran los profesores registrados hasta la fecha actual.
 					</p>
+
+					{feedback && (
+						<div className="my-4 text-start">
+							<Alert
+								variant={feedback?.variant}
+								title={feedback?.title}
+								message={feedback?.message}
+							/>
+						</div>
+					)}
 				</div>
 
 				{/* Search */}
