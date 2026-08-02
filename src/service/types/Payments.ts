@@ -46,7 +46,7 @@ export interface Membership_payment {
 	billing_period: string;
 	next_due_date: string;
 	status_id: number;
-	receipt_number: number;
+	receipt_number: string;
 	observations: string;
 	updated_at: string;
 	membership: Membership;
@@ -68,6 +68,20 @@ export interface CreateMembershipPaymentInput {
 	billing_period: string;
 	status_id: number;
 	receipt_number: string;
+}
+
+export interface UpdateMembershipPaymentsInput {
+	id: string;
+	original_amount: number | 0;
+	discount: number | 0;
+	amount_paid: number | 0;
+	payment_method_id: number | 0;
+	payment_date: string | null;
+	billing_period: string | null;
+	next_due_date: string | null;
+	status_id: number | 0;
+	receipt_number: string;
+	observations: string;
 }
 
 export interface DeleteMembershipPaymentInput {

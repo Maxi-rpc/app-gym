@@ -164,7 +164,7 @@ export default function FormRegister({ data }: Props) {
 							</div>
 
 							<div className="col-span-2 md:col-span-1">
-								<Label>Método de Pago</Label>
+								<Label>Método de Pago*</Label>
 								<Select
 									options={optionsPaymentsMethods}
 									placeholder="Seleccionar"
@@ -174,7 +174,7 @@ export default function FormRegister({ data }: Props) {
 							</div>
 
 							<div className="col-span-2 md:col-span-1">
-								<Label>Período</Label>
+								<Label>Período*</Label>
 								<Input
 									type="date"
 									value={formData.billing_period}
@@ -184,7 +184,7 @@ export default function FormRegister({ data }: Props) {
 							</div>
 
 							<div className="col-span-2 md:col-span-1">
-								<Label>Estado del Pago</Label>
+								<Label>Estado del Pago*</Label>
 								<Select
 									options={optionsPaymentsStatus}
 									placeholder="Seleccionar"
