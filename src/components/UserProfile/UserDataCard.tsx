@@ -9,7 +9,7 @@ import Label from "../form/Label";
 import Badge from "../ui/badge/Badge";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
-import QrCard from "../ui/qr/QrCard";
+import QrCard from "../../components/ui/qr/QrCard";
 
 import { useAuth } from "../../hooks/useAuth";
 
