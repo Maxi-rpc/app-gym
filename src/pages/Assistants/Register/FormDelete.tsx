@@ -64,11 +64,10 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
-		console.log(name, value);
+		}));
 	};
 
 	const validateDelete = () => {

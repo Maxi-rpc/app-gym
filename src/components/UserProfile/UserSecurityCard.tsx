@@ -32,10 +32,10 @@ export default function UserSecurityCard() {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
 	const handleSave = async () => {

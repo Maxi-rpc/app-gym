@@ -71,10 +71,10 @@ export default function EmployeeCard() {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
 	const loadEmployee = async (userId: string) => {

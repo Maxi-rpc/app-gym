@@ -16,7 +16,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	console.log(defaultData);
 	const [formData, setFormData] = useState({});
 	const handleClose = () => {
-		console.log("handleClose Modal");
+		console.log(formData);
 		onClose?.();
 	};
 
@@ -27,11 +27,10 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
-		console.log(name, value);
+		}));
 	};
 
 	return (

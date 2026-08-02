@@ -148,10 +148,10 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
 	return (

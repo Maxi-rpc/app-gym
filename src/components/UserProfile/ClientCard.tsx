@@ -70,10 +70,10 @@ export default function ClientCard() {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
 	const loadClient = async (userId: string) => {

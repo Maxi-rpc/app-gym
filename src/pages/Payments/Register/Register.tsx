@@ -65,10 +65,10 @@ export default function Register() {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData({
-			...formData,
+		setFormData((prev) => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
 	return (
@@ -77,7 +77,7 @@ export default function Register() {
 				title="App Gym - Administration Payments"
 				description="Panel de administracion para Pagos"
 			/>
-			<PageBreadcrumb pageTitle="Clients" />
+			<PageBreadcrumb pageTitle="Payments" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
