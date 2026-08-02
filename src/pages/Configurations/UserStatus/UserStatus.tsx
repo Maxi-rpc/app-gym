@@ -15,14 +15,14 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Role } from "../../../service/types/Role";
-import { rolesService } from "../../../service/role.service";
+import { UserStatus } from "../../../service/types/UserStatus";
+import { userStatusService } from "../../../service/userstatus.service";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./modals/ModalAdd";
 import ModalEdit from "./modals/ModalEdit";
 
-export default function Roles() {
+export default function UsersStatus() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 
 	const {
@@ -38,14 +38,14 @@ export default function Roles() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Role | null>(null);
-	const [listData, setListData] = useState<Role[] | []>([]);
+	const [selectData, setSelectData] = useState<UserStatus | null>(null);
+	const [listData, setListData] = useState<UserStatus[] | []>([]);
 
 	const getData = async () => {
 		try {
 			setFeedback(null);
 
-			const resp = await rolesService.getAll();
+			const resp = await userStatusService.getAll();
 			if (resp.error) {
 				throw resp.error;
 			}
@@ -77,8 +77,8 @@ export default function Roles() {
 		getData();
 	};
 
-	const handleEdit = (Role: Role) => {
-		setSelectData(Role);
+	const handleEdit = (UserStatus: UserStatus) => {
+		setSelectData(UserStatus);
 		openModalEdit();
 	};
 
@@ -89,18 +89,19 @@ export default function Roles() {
 	return (
 		<div>
 			<PageMeta
-				title="App Gym - Administration Coach"
-				description="Panel de administracion para Coaches"
+				title="App Gym - Administration Configuration"
+				description="Panel de administracion para Configuración"
 			/>
-			<PageBreadcrumb pageTitle="Roles" />
+			<PageBreadcrumb pageTitle="User Status" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-						Listado de Roles
+						Listado de Estado de Usuarios
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran los roles de la app, se puede Agregar o Editar.
+						Se muestran los Estados de Usuario de la app, se puede Agregar o
+						Editar.
 					</p>
 
 					{feedback && (
@@ -117,7 +118,7 @@ export default function Roles() {
 				{/* Search */}
 				<div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
 					<div className="space-y-6 w-full">
-						<Label htmlFor="inputTwo">Buscar Role</Label>
+						<Label htmlFor="inputTwo">Buscar Estado</Label>
 						<Input
 							type="text"
 							id="inputTwo"

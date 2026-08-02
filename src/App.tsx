@@ -35,6 +35,7 @@ import PaymentsRegister from "./pages/Payments/Register/Register";
 
 // configurations
 import ConfigRoles from "./pages/Configurations/Roles/Roles";
+import ConfigUserStatus from "./pages/Configurations/UserStatus/UserStatus";
 
 export default function App() {
 	return (
@@ -158,6 +159,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<ConfigRoles />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="user-status"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ConfigUserStatus />
 										</ProtectedRoute>
 									}
 								/>

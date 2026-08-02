@@ -94,7 +94,7 @@ const mainItems: NavItem[] = [
 			},
 			{
 				name: "Estados de usuario",
-				path: "/configurations/payments",
+				path: "/configurations/user-status",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
