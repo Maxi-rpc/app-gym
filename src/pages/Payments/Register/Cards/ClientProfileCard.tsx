@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 
 // import { publicAsset } from "../../utils/publicAsset";
 import Badge from "../../../../components/ui/badge/Badge";
+import QRCard from "../../../../components/ui/qr/QrCard";
 
 import { Profile } from "../../../../context/types/Profile";
-
-import QRCode from "react-qr-code";
 
 interface Props {
 	data: Profile | null;
@@ -31,9 +30,7 @@ export default function UserDataCard({ data }: Props) {
 					<div className="flex-1">
 						<div className="mb-6 flex flex-col gap-5 sm:flex-row xl:items-center xl:justify-between">
 							<div className="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-center">
-								<div className="border-gray-20 overflow-hidden rounded border dark:border-gray-800">
-									<QRCode value={profile?.qr_token || "no data"} size={100} />
-								</div>
+								<QRCard value={profile?.qr_token} />
 								{/* <div className="border-gray-20 overflow-hidden rounded-full border dark:border-gray-800">
 									<img
 										className="size-20"
