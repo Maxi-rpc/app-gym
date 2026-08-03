@@ -101,7 +101,7 @@ const mainItems: NavItem[] = [
 
 			{
 				name: "Estados de membresía",
-				path: "/configurations/sales",
+				path: "/configurations/membership-status",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
