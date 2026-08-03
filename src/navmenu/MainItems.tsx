@@ -112,14 +112,14 @@ const mainItems: NavItem[] = [
 				pro: false,
 			},
 			{
-				name: "Servicios",
-				path: "/configurations/services",
+				name: "Métodos de pago",
+				path: "/configurations/payment-methods",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
 			{
-				name: "Métodos de pago",
-				path: "/configurations/sales",
+				name: "Servicios",
+				path: "/configurations/services",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},

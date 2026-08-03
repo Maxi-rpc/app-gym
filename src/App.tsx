@@ -38,6 +38,7 @@ import ConfigRoles from "./pages/Configurations/Roles/Roles";
 import ConfigUserStatus from "./pages/Configurations/UserStatus/UserStatus";
 import ConfigMembershipStatus from "./pages/Configurations/MembershipStatus/MembershipStatus";
 import ConfigPaymentStatus from "./pages/Configurations/PaymentStatus/PaymentStatus";
+import ConfigPaymentMethods from "./pages/Configurations/PaymentMethods/PaymentMethods";
 import ConfigServices from "./pages/Configurations/Services/Services";
 
 export default function App() {
@@ -186,6 +187,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<ConfigPaymentStatus />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="payment-methods"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ConfigPaymentMethods />
 										</ProtectedRoute>
 									}
 								/>
