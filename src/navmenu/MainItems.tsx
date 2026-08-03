@@ -107,7 +107,7 @@ const mainItems: NavItem[] = [
 			},
 			{
 				name: "Servicios",
-				path: "/configurations/sales",
+				path: "/configurations/services",
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},

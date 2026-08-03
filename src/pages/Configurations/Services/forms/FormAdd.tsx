@@ -7,24 +7,23 @@ import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { UpdateUserStatusInput } from "../../../../service/types/UserStatus";
-import { userStatusService } from "../../../../service/userstatus.service";
+import { serviceService } from "../../../../service/service.service";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: UpdateUserStatusInput | null;
 };
 
-export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
+export default function FormAdd({ onSubmit, onClose }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
-
 	const [formData, setFormData] = useState({
-		id: defaultData?.id || "",
-		name: defaultData?.name || "",
-		description: defaultData?.description || "",
+		name: "",
+		description: "",
+		price: 0,
+		duration_days: 0,
 	});
+
 	const handleClose = () => {
 		setFeedback(null);
 		onSubmit?.();
@@ -37,7 +36,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 			setIsLoading(true);
 
 			// Validación básica
-			if (!formData.name) {
+			if (!formData.name || !formData.price || !formData.duration_days) {
 				setFeedback({
 					variant: "info",
 					title: "Por favor completa todos los campos*",
@@ -46,22 +45,22 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				return;
 			}
 
-			const resp = await userStatusService.update(formData);
+			const resp = await serviceService.create(formData);
 			if (resp.error) {
 				throw resp.error;
 			}
 
 			setFeedback({
 				variant: "success",
-				title: "User Status guardado.",
+				title: "Servicio creado.",
 				message: resp?.data?.message,
 			});
 		} catch (error) {
-			console.error("Error al guardar user status:", error);
+			console.error("Error al crear servicio:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se puede guardar user status",
+				title: "No se puede crear servicio",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
@@ -83,15 +82,10 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 			<div className="px-2 overflow-y-auto custom-scrollbar">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
 					<div className="col-span-2 md:col-span-1">
-						<Label>ID</Label>
-						<Input type="text" value={formData?.id} name="id" disabled />
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label>Nombre</Label>
+						<Label>Nombre*</Label>
 						<Input
 							type="text"
-							value={formData?.name}
+							value={formData.name}
 							name="name"
 							onChange={handleChange}
 						/>
@@ -101,8 +95,28 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 						<Label>Descripción</Label>
 						<Input
 							type="text"
-							value={formData?.description}
+							value={formData.description}
 							name="description"
+							onChange={handleChange}
+						/>
+					</div>
+
+					<div className="col-span-2 md:col-span-1">
+						<Label>Precio*</Label>
+						<Input
+							type="number"
+							value={formData.price}
+							name="price"
+							onChange={handleChange}
+						/>
+					</div>
+
+					<div className="col-span-2 md:col-span-1">
+						<Label>Duración en días*</Label>
+						<Input
+							type="number"
+							value={formData.duration_days}
+							name="duration_days"
 							onChange={handleChange}
 						/>
 					</div>

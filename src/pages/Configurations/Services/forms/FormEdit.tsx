@@ -7,13 +7,13 @@ import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { UpdateUserStatusInput } from "../../../../service/types/UserStatus";
-import { userStatusService } from "../../../../service/userstatus.service";
+import { UpdateServiceInput } from "../../../../service/types/Service";
+import { serviceService } from "../../../../service/service.service";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: UpdateUserStatusInput | null;
+	defaultData: UpdateServiceInput | null;
 };
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
@@ -24,6 +24,9 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 		id: defaultData?.id || "",
 		name: defaultData?.name || "",
 		description: defaultData?.description || "",
+		price: defaultData?.price || 0,
+		duration_days: defaultData?.duration_days || 0,
+		active: defaultData?.active || true,
 	});
 	const handleClose = () => {
 		setFeedback(null);
@@ -37,7 +40,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 			setIsLoading(true);
 
 			// Validación básica
-			if (!formData.name) {
+			if (!formData.name || !formData.price || !formData.duration_days) {
 				setFeedback({
 					variant: "info",
 					title: "Por favor completa todos los campos*",
@@ -46,22 +49,22 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				return;
 			}
 
-			const resp = await userStatusService.update(formData);
+			const resp = await serviceService.update(formData);
 			if (resp.error) {
 				throw resp.error;
 			}
 
 			setFeedback({
 				variant: "success",
-				title: "User Status guardado.",
+				title: "Servicio guardado.",
 				message: resp?.data?.message,
 			});
 		} catch (error) {
-			console.error("Error al guardar user status:", error);
+			console.error("Error al guardar servicio:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se puede guardar user status",
+				title: "No se puede guardar servicio",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
@@ -103,6 +106,26 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 							type="text"
 							value={formData?.description}
 							name="description"
+							onChange={handleChange}
+						/>
+					</div>
+
+					<div className="col-span-2 md:col-span-1">
+						<Label>Precio</Label>
+						<Input
+							type="number"
+							value={formData?.price}
+							name="price"
+							onChange={handleChange}
+						/>
+					</div>
+
+					<div className="col-span-2 md:col-span-1">
+						<Label>Duración en Días</Label>
+						<Input
+							type="number"
+							value={formData?.duration_days}
+							name="duration_days"
 							onChange={handleChange}
 						/>
 					</div>

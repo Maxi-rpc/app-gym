@@ -82,12 +82,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 		<form className="flex flex-col">
 			<div className="px-2 overflow-y-auto custom-scrollbar">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-					<div className="col-span-2">
-						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-							Completar los campos para el perfil.
-						</p>
-					</div>
-
 					<div className="col-span-2 md:col-span-1">
 						<Label>ID</Label>
 						<Input type="text" value={formData?.id} name="id" disabled />
