@@ -63,6 +63,7 @@ export default function Dashboard() {
 				<div className="col-span-12">
 					<SectionClients data={client || null} />
 				</div>
+
 				<div className="col-span-12 space-y-6 xl:col-span-7">
 					<SectionMetrics />
 

@@ -24,7 +24,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 		document: "",
 		phone: "",
 		image: "",
-		birth_date: "",
+		birth_date: null,
 		height: 0, // client
 		weight: 0,
 		emergency_contact: "",
@@ -157,14 +157,14 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="date"
-							value={formData.birth_date}
+							value={formData?.birth_date || ""}
 							name="birth_date"
 							placeholder="YYYY-MM-DD"
 							onChange={handleChange}
 						/>
 					</div>
 
-					<div className="col-span-2">
+					{/* <div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Campos opcionales.
 						</p>
@@ -208,7 +208,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 							name="medical_notes"
 							onChange={handleChange}
 						/>
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<div className="flex items-center gap-3 px-2 mt-6 justify-end">
