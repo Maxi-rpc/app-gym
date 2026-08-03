@@ -59,7 +59,7 @@ async function update(formData: UpdateUserStatusInput) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("roles", {
+	const { data, error } = await supabase.functions.invoke("user-status", {
 		body: {
 			id: formData.id || "",
 			name: formData.name || "",
