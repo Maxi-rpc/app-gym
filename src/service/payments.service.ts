@@ -153,7 +153,7 @@ async function remove(formData: DeleteMembershipPaymentInput) {
 export const paymentsService = {
 	getAll,
 	getByClient,
-	create, // to do
-	update, // to do
-	remove, // to do
+	create,
+	update,
+	remove,
 };
