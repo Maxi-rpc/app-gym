@@ -26,8 +26,8 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 		direction: "asc",
 	});
 
-	const handleEdit = (Role: Role) => {
-		onEdit?.(Role);
+	const handleEdit = (data: Role) => {
+		onEdit?.(data);
 	};
 
 	const filterData = (listData: Role[]) => {
@@ -37,9 +37,9 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 
 		const searchLower = searchText.toLowerCase();
 
-		return listData.filter((Role) => {
-			const nameMatch = Role.name?.toLowerCase().includes(searchLower);
-			const descriptionMatch = Role?.description
+		return listData.filter((data) => {
+			const nameMatch = data.name?.toLowerCase().includes(searchLower);
+			const descriptionMatch = data?.description
 				?.toLowerCase()
 				.includes(searchLower);
 
@@ -47,18 +47,18 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 		});
 	};
 
-	const getSortValue = (role: Role, key: SortKey): string | number => {
+	const getSortValue = (data: Role, key: SortKey): string | number => {
 		switch (key) {
 			case "id":
-				return role.id ?? "";
+				return data.id ?? "";
 			case "createdAt":
-				return role.created_at ? new Date(role.created_at).getTime() : 0;
+				return data.created_at ? new Date(data.created_at).getTime() : 0;
 			case "name":
-				return role?.name ?? "";
+				return data?.name ?? "";
 			case "description":
-				return role?.description ?? "";
+				return data?.description ?? "";
 			case "updatedAt":
-				return role.updated_at ? new Date(role.updated_at).getTime() : 0;
+				return data.updated_at ? new Date(data.updated_at).getTime() : 0;
 		}
 	};
 
@@ -144,9 +144,9 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{filterData(sortedData).map((role, index) => (
+					{filterData(sortedData).map((item, index) => (
 						<tr
-							key={role.id}
+							key={item.id}
 							className={`border-b border-gray-200 dark:border-gray-700 ${
 								index % 2 === 0
 									? "bg-white dark:bg-white/2"
@@ -154,24 +154,24 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{role.id}
+								{item.id}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{formatLocalDateTime(role.created_at)}
+								{formatLocalDateTime(item.created_at)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{role?.name}
+								{item?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{role?.description}
+								{item?.description}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{formatLocalDateTime(role.updated_at)}
+								{formatLocalDateTime(item.updated_at)}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
 									<button
-										onClick={() => handleEdit(role)}
+										onClick={() => handleEdit(item)}
 										className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
 										<Lineicons icon={Pencil1Outlined} size={20} />

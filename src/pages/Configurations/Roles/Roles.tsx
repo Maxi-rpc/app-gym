@@ -89,8 +89,8 @@ export default function Roles() {
 	return (
 		<div>
 			<PageMeta
-				title="App Gym - Administration Coach"
-				description="Panel de administracion para Coaches"
+				title="App Gym - Administration Configuration"
+				description="Panel de administracion para Configuración"
 			/>
 			<PageBreadcrumb pageTitle="Roles" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
