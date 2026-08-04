@@ -27,6 +27,7 @@ import Coachs from "./pages/Employeers/Employeers";
 
 // assistance
 import Assistants from "./pages/Assistants/List/List";
+import AssistantsRegisterQR from "./pages/Assistants/RegisterQR/RegisterQR";
 import AssistantsRegister from "./pages/Assistants/Register/Register";
 
 // payments
@@ -118,6 +119,14 @@ export default function App() {
 
 							{/* Assistant Page */}
 							<Route path="/assistants">
+								<Route
+									path="register-qr"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<AssistantsRegisterQR />
+										</ProtectedRoute>
+									}
+								/>
 								<Route
 									path="register"
 									element={

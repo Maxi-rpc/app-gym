@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
-import Label from "../../../components/form/Label";
-import Input from "../../../components/form/input/InputField";
-import Button from "../../../components/ui/button/Button";
-import Select from "../../../components/form/Select";
-import Alert from "../../../components/ui/alert/Alert";
-import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
-import IconSpinner from "../../../components/ui/button/IconSpinner";
+import Label from "../../../../components/form/Label";
+import Input from "../../../../components/form/input/InputField";
+import Button from "../../../../components/ui/button/Button";
+import Select from "../../../../components/form/Select";
+import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { UpdateAttendanceInput } from "../../../service/types/Attendance";
-import { attendanceService } from "../../../service/attendance.service";
+import { UpdateAttendanceInput } from "../../../../service/types/Attendance";
+import { attendanceService } from "../../../../service/attendance.service";
 
 type Props = {
 	onSubmit?: () => void;

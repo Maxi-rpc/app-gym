@@ -1,9 +1,9 @@
-import { Modal } from "../../../components/ui/modal";
-import FormDelete from "./FormDelete";
+import { Modal } from "../../../../components/ui/modal";
+import FormDelete from "../forms/FormDelete";
 
-import { ClientAssistant } from "../../../service/types/ClientAssistant";
+import { ClientAssistant } from "../../../../service/types/ClientAssistant";
 
-import { formatLocalDateTime } from "../../../utils/date";
+import { formatLocalDateTime } from "../../../../utils/date";
 
 type Props = {
 	isOpen: boolean;
@@ -24,7 +24,8 @@ export default function ModalDelete({
 				<div className="px-2 pr-14">
 					<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
 						Eliminar Registro: {defaultData?.user?.name}{" "}
-						{defaultData?.user?.last_name} Check In {formatLocalDateTime(defaultData?.check_in_at)}
+						{defaultData?.user?.last_name} Check In{" "}
+						{formatLocalDateTime(defaultData?.check_in_at)}
 					</h4>
 				</div>
 

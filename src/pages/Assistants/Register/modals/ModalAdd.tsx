@@ -1,5 +1,5 @@
-import { Modal } from "../../../components/ui/modal";
-import FormdAdd from "./FormAdd";
+import { Modal } from "../../../../components/ui/modal";
+import FormdAdd from "../forms/FormAdd";
 
 type Props = {
 	isOpen: boolean;
