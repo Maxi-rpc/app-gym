@@ -32,6 +32,7 @@ const optionsPaymentsStatus = [
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	console.log(defaultData);
 
 	const [formData, setFormData] = useState({
 		id: defaultData?.id || "",
@@ -107,19 +108,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
 	return (
 		<form className="flex flex-col">
-			<div className="px-2 overflow-y-auto custom-scrollbar">
+			<div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-					{/* <div className="col-span-2 md:col-span-1">
-						<Label>ID</Label>
-						<Input
-							type="text"
-							value={formData.id}
-							name="id"
-							onChange={handleChange}
-							disabled
-						/>
-					</div> */}
-
 					<div className="col-span-2 md:col-span-1">
 						<Label>Monto original*</Label>
 						<Input
@@ -161,30 +151,12 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 					</div>
 
 					<div className="col-span-2 md:col-span-1">
-						<Label>Método de Pago Actual</Label>
-						<Input
-							type="text"
-							value={defaultData?.payment_method.name}
-							disabled
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
 						<Label>Método de Pago*</Label>
 						<Select
 							options={optionsPaymentsMethods}
 							placeholder="Seleccionar"
 							onChange={handleSelectChangePaymentMethod}
 							className="dark:bg-dark-900"
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label>Estado del Pago Actual</Label>
-						<Input
-							type="text"
-							value={defaultData?.payment_status.name}
-							disabled
 						/>
 					</div>
 

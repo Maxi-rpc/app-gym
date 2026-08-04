@@ -49,7 +49,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 
 	return (
 		<form className="flex flex-col">
-			<div className="px-2 overflow-y-auto custom-scrollbar">
+			<div className="custom-scrollbar overflow-y-auto px-2 pb-3">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
 					<div className="col-span-2 md:col-span-1">
 						<Label>QR</Label>

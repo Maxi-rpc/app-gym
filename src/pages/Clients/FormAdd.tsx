@@ -95,14 +95,8 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 
 	return (
 		<form className="flex flex-col">
-			<div className="px-2 overflow-y-auto custom-scrollbar">
+			<div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-					<div className="col-span-2">
-						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-							Completar los campos para el perfil.
-						</p>
-					</div>
-
 					<div className="col-span-2 md:col-span-1">
 						<Label>Email*</Label>
 						<Input
@@ -164,7 +158,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						/>
 					</div>
 
-					{/* <div className="col-span-2">
+					<div className="col-span-2">
 						<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
 							Campos opcionales.
 						</p>
@@ -208,7 +202,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 							name="medical_notes"
 							onChange={handleChange}
 						/>
-					</div> */}
+					</div>
 				</div>
 			</div>
 			<div className="flex items-center gap-3 px-2 mt-6 justify-end">
