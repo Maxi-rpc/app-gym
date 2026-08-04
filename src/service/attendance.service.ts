@@ -70,6 +70,8 @@ async function register(formData: RegisterAttendanceInput) {
 				qr_token: formData.qr_token,
 				check_in_at: formData.check_in_at,
 				check_out_at: formData.check_out_at,
+				access_granted: formData?.access_granted || "",
+				access_reason: formData?.access_reason || "",
 			},
 			headers: {
 				Authorization: `Bearer ${session_token}`,

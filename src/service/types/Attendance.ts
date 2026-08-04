@@ -32,9 +32,9 @@ export interface Attendance {
 export interface RegisterAttendanceInput {
 	qr_token: string;
 	check_in_at: string;
-	check_out_at: string | null;
-	access_granted: boolean;
-	access_reason: string;
+	check_out_at?: string | null;
+	access_granted?: boolean;
+	access_reason?: string;
 }
 
 // manual
