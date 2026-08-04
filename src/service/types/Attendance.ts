@@ -43,7 +43,9 @@ export interface RegisterAttendanceInput {
 export interface UpdateAttendanceInput {
 	id: string;
 	check_in_at: string;
+	new_check_in_at?: string | null;
 	check_out_at: string | null;
+	new_check_out_at?: string | null;
 	access_granted: boolean;
 	access_reason: string;
 }

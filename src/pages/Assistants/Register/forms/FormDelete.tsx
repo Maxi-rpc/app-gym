@@ -5,6 +5,7 @@ import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import Alert from "../../../../components/ui/alert/Alert";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
 import { attendanceService } from "../../../../service/attendance.service";
 
@@ -16,6 +17,7 @@ type Props = {
 
 export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({ deletetext: "" });
 
@@ -29,6 +31,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			if (validateDelete()) {
 				const formDelete = {
@@ -59,6 +62,8 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -105,7 +110,8 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 				<Button size="sm" variant="outline" onClick={handleClose}>
 					Cerrar
 				</Button>
-				<Button size="sm" onClick={handleSubmit}>
+				<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+					{isLoading && <IconSpinner />}
 					Eliminar
 				</Button>
 			</div>

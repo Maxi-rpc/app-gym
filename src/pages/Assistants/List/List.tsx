@@ -10,28 +10,17 @@ import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 import { useModal } from "../../../hooks/useModal";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import {
-	PlusOutlined,
-	RefreshCircle1ClockwiseOutlined,
-} from "@lineiconshq/free-icons";
+import { RefreshCircle1ClockwiseOutlined } from "@lineiconshq/free-icons";
 
 import { ClientAssistant } from "../../../service/types/ClientAssistant";
 import { attendanceService } from "../../../service/attendance.service";
 
 import DataTable from "./DataTable";
-import ModalAdd from "./ModalAdd";
-import ModalEdit from "./ModalEdit";
-import ModalDelete from "./ModalDelete";
-import ModalAttendance from "./ModalAttendance";
+import ModalEdit from "./modals/ModalEdit";
+import ModalDelete from "./modals/ModalDelete";
 
 export default function List() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
-
-	const {
-		isOpen: isOpenAdd,
-		openModal: openModalAdd,
-		closeModal: closeModalAdd,
-	} = useModal();
 
 	const {
 		isOpen: isOpenEdit,
@@ -76,11 +65,6 @@ export default function List() {
 
 	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
 		setSearchText(e.target.value);
-	};
-
-	const handleSave = () => {
-		closeModalAdd();
-		getData();
 	};
 
 	const handleEdit = (client: ClientAssistant) => {
@@ -157,15 +141,6 @@ export default function List() {
 					>
 						Actualizar
 					</Button>
-					<Button
-						size="sm"
-						onClick={openModalAdd}
-						startIcon={
-							<Lineicons icon={PlusOutlined} size={20} color="white" />
-						}
-					>
-						Agregar
-					</Button>
 				</div>
 
 				{/* Data Table */}
@@ -176,13 +151,6 @@ export default function List() {
 					onDelet={handleDelete}
 				/>
 			</div>
-
-			{/* Modal Add */}
-			<ModalAdd
-				isOpen={isOpenAdd}
-				onClose={closeModalAdd}
-				onSubmit={handleSave}
-			/>
 
 			{/* Modal Edit */}
 			<ModalEdit
@@ -198,13 +166,6 @@ export default function List() {
 				onClose={closeModalDelete}
 				onSubmit={handleDeleteItem}
 				defaultData={selectData}
-			/>
-
-			{/* Modal Add */}
-			<ModalAttendance
-				isOpen={isOpenAdd}
-				onClose={closeModalAdd}
-				onSubmit={handleSave}
 			/>
 		</div>
 	);

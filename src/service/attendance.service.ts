@@ -5,6 +5,23 @@ import {
 	DeleteAttendanceInput,
 } from "./types/Attendance";
 
+const ARGENTINA_OFFSET = "-03:00";
+
+/**
+ * Los valores del formulario son hora local de Argentina sin zona horaria.
+ * Los ISO recibidos desde Supabase ya tienen zona, por lo que se conservan.
+ */
+function toUtcIso(dateTime: string): string {
+	const hasTimeZone = /(Z|[+-]\d{2}:\d{2})$/i.test(dateTime);
+	const date = new Date(hasTimeZone ? dateTime : `${dateTime}${ARGENTINA_OFFSET}`);
+
+	if (Number.isNaN(date.getTime())) {
+		throw new RangeError(`Fecha y hora inválida: ${dateTime}`);
+	}
+
+	return date.toISOString();
+}
+
 async function getById(id: string) {
 	// 1) Obtener el token desde la sesión actual (si aplica)
 	// Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
@@ -62,18 +79,22 @@ async function register(formData: RegisterAttendanceInput) {
 
 	const session_token = sessionData.session.access_token;
 
+	const checkIn = formData.check_in_at
+		? toUtcIso(formData.check_in_at)
+		: "";
+
+	const checkOut = formData.check_out_at
+		? toUtcIso(formData.check_out_at)
+		: "";
+
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke(
 		"create-attendance-by-qr",
 		{
 			body: {
 				qr_token: formData.qr_token,
-				check_in_at: formData.check_in_at
-					? new Date(`${formData.check_in_at}-03:00`).toISOString()
-					: "",
-				check_out_at: formData.check_out_at
-					? new Date(`${formData.check_out_at}-03:00`).toISOString()
-					: "",
+				check_in_at: checkIn,
+				check_out_at: checkOut,
 				access_granted: formData?.access_granted || "",
 				access_reason: formData?.access_reason || "",
 			},
@@ -99,14 +120,23 @@ async function update(formData: UpdateAttendanceInput) {
 
 	const session_token = sessionData.session.access_token;
 
+	const checkIn = formData.new_check_in_at
+		? toUtcIso(formData.new_check_in_at)
+		: formData.check_in_at;
+
+	const checkOut = formData.new_check_out_at
+		? toUtcIso(formData.new_check_out_at)
+		: formData.check_out_at;
+
+	console.log(checkIn, checkOut);
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke(
 		"update-attendance-by-id",
 		{
 			body: {
 				id: formData.id,
-				check_in_at: formData.check_in_at,
-				check_out_at: formData.check_out_at,
+				check_in_at: checkIn,
+				check_out_at: checkOut,
 				access_granted: formData.access_granted,
 				access_reason: formData.access_reason,
 			},
@@ -147,6 +177,6 @@ export const attendanceService = {
 	getById,
 	register,
 	create, // to do
-	update, // to do
+	update,
 	remove,
 };
