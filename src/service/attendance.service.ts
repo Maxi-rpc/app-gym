@@ -68,8 +68,12 @@ async function register(formData: RegisterAttendanceInput) {
 		{
 			body: {
 				qr_token: formData.qr_token,
-				check_in_at: formData.check_in_at,
-				check_out_at: formData.check_out_at,
+				check_in_at: formData.check_in_at
+					? new Date(`${formData.check_in_at}-03:00`).toISOString()
+					: "",
+				check_out_at: formData.check_out_at
+					? new Date(`${formData.check_out_at}-03:00`).toISOString()
+					: "",
 				access_granted: formData?.access_granted || "",
 				access_reason: formData?.access_reason || "",
 			},

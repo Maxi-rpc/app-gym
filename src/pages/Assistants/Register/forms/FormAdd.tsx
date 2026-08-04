@@ -53,8 +53,12 @@ export default function FormAdd({ data }: Props) {
 		try {
 			setFeedback(null);
 			setIsLoading(true);
-			const CheckInfromString = `${checkIn.date}T${checkIn.time}`;
-			const CheckOutfromString = `${checkOut.date}T${checkOut.time}`;
+			const CheckInfromString = checkIn.date
+				? `${checkIn.date}T${checkIn.time}`
+				: formData.check_in_at;
+			const CheckOutfromString = checkOut.date
+				? `${checkOut.date}T${checkOut.time}`
+				: formData.check_out_at;
 
 			const formCreate = {
 				qr_token: formData.qr_token,
@@ -63,6 +67,10 @@ export default function FormAdd({ data }: Props) {
 				access_granted: formData.access_granted,
 				access_reason: formData.access_reason,
 			};
+
+			console.log(formCreate);
+			//return;
+
 			const resp = await attendanceService.register(formCreate);
 			if (resp.error) throw resp.error;
 
@@ -149,7 +157,7 @@ export default function FormAdd({ data }: Props) {
 
 					<div className="col-span-2 md:col-span-1">
 						<DatePicker
-							id="date-picker"
+							id="date-picker-in"
 							label="Check In - Fecha"
 							placeholder="Seleccionar"
 							onChange={(dates, currentDateString) => {
@@ -168,14 +176,15 @@ export default function FormAdd({ data }: Props) {
 						<div className="relative">
 							<Input
 								type="time"
-								id="tm"
+								id="tm-in"
 								name="tm"
-								onChange={(e) =>
+								onChange={(e) => {
+									console.log(e.target.value);
 									setCheckIn((prev) => ({
 										...prev,
 										time: e.target.value,
-									}))
-								}
+									}));
+								}}
 							/>
 							<span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
 								<TimeIcon className="size-6" />
@@ -185,7 +194,7 @@ export default function FormAdd({ data }: Props) {
 
 					<div className="col-span-2 md:col-span-1">
 						<DatePicker
-							id="date-picker"
+							id="date-picker-out"
 							label="Check Out - Fecha"
 							placeholder="Seleccionar"
 							onChange={(dates, currentDateString) => {
@@ -204,7 +213,7 @@ export default function FormAdd({ data }: Props) {
 						<div className="relative">
 							<Input
 								type="time"
-								id="tm"
+								id="tm-out"
 								name="tm"
 								onChange={(e) =>
 									setCheckOut((prev) => ({
