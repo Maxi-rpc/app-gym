@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
@@ -9,11 +8,11 @@ type Props = {
 	data: Charts | null;
 };
 
-export default function BarChart({ data }: Props) {
+export default function BarChartLine({ data }: Props) {
 	const [listValues, setListValues] = useState([
 		{
 			name: "Asistencias",
-			data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			data: [0, 0, 0, 0, 0, 0, 0],
 		},
 	]);
 
@@ -75,32 +74,7 @@ export default function BarChart({ data }: Props) {
 		},
 		xaxis: {
 			type: "category", // Category-based x-axis
-			categories: [
-				"0",
-				"1",
-				"2",
-				"3",
-				"4",
-				"5",
-				"6",
-				"7",
-				"8",
-				"9",
-				"10",
-				"11",
-				"12",
-				"13",
-				"14",
-				"15",
-				"16",
-				"17",
-				"18",
-				"19",
-				"20",
-				"21",
-				"22",
-				"23",
-			],
+			categories: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
 			axisBorder: {
 				show: false, // Hide x-axis border
 			},
@@ -129,7 +103,7 @@ export default function BarChart({ data }: Props) {
 
 	useEffect(() => {
 		if (data) {
-			const values = data?.attendance_by_hour.map((item) => item.count);
+			const values = data?.attendance_by_day.map((item) => item.count);
 			const newSeries = [
 				{
 					name: "Asistencias",

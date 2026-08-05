@@ -21,9 +21,22 @@ export interface AttendanceHour {
 	hour: number;
 	count: number;
 }
+
+export interface AttendanceByDay {
+	day: string;
+	count: number;
+}
+
+export interface AttendanceByMonth {
+	month: string;
+	count: number;
+}
+
 export interface Charts {
 	payments_by_month: PaymentsMonth[];
 	attendance_by_hour: AttendanceHour[];
+	attendance_by_day: AttendanceByDay[];
+	attendance_by_month: AttendanceByMonth[];
 }
 
 /*
@@ -56,6 +69,9 @@ export interface Charts {
     ],
     "attendance_by_day": [
       { "day": "Lun", "count": 180 }
+    ],
+	"attendance_by_month": [
+      { "month": "Ene", "count": 180 }
     ]
   }
 }
