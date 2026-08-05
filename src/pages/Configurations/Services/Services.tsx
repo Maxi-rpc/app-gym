@@ -24,6 +24,7 @@ import ModalEdit from "./modals/ModalEdit";
 
 export default function Services() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const {
 		isOpen: isOpenAdd,
@@ -44,6 +45,7 @@ export default function Services() {
 	const getData = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			const resp = await serviceService.getAll();
 			if (resp.error) {
@@ -60,6 +62,8 @@ export default function Services() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -131,6 +135,7 @@ export default function Services() {
 						size="sm"
 						variant="outline"
 						onClick={getData}
+						disabled={isLoading}
 						startIcon={
 							<Lineicons
 								icon={RefreshCircle1ClockwiseOutlined}

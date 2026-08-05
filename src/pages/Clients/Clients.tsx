@@ -27,6 +27,7 @@ import ModalDelete from "./ModalDelete";
 
 export default function Clients() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const {
 		isOpen: isOpenAdd,
@@ -54,6 +55,7 @@ export default function Clients() {
 	const getData = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			const resp = await clientService.getAll();
 			if (resp.error) {
@@ -70,6 +72,8 @@ export default function Clients() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -155,6 +159,7 @@ export default function Clients() {
 						size="sm"
 						variant="outline"
 						onClick={getData}
+						disabled={isLoading}
 						startIcon={
 							<Lineicons
 								icon={RefreshCircle1ClockwiseOutlined}

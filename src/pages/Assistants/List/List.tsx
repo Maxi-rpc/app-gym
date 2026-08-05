@@ -21,6 +21,7 @@ import ModalDelete from "./modals/ModalDelete";
 
 export default function List() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const {
 		isOpen: isOpenEdit,
@@ -41,6 +42,7 @@ export default function List() {
 	const getData = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			const resp = await attendanceService.getAll();
 			if (resp.error) throw resp.error;
@@ -55,6 +57,8 @@ export default function List() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -131,6 +135,7 @@ export default function List() {
 						size="sm"
 						variant="outline"
 						onClick={getData}
+						disabled={isLoading}
 						startIcon={
 							<Lineicons
 								icon={RefreshCircle1ClockwiseOutlined}

@@ -25,6 +25,7 @@ import ModalDelete from "./ModalDelete";
 
 export default function Employeers() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const {
 		isOpen: isOpenAdd,
@@ -51,6 +52,7 @@ export default function Employeers() {
 	const getData = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
 
 			const resp = await employeeService.getAll();
 			if (resp.error) {
@@ -67,6 +69,8 @@ export default function Employeers() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -148,6 +152,7 @@ export default function Employeers() {
 						size="sm"
 						variant="outline"
 						onClick={getData}
+						disabled={isLoading}
 						startIcon={
 							<Lineicons
 								icon={RefreshCircle1ClockwiseOutlined}
