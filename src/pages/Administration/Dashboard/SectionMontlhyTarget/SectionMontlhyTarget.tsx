@@ -1,7 +1,22 @@
+import { useState, useEffect } from "react";
+
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-export default function SectionMontlhyTarget() {
+import { Charts } from "../../../../service/types/Dashboard";
+
+type Props = {
+	data: Charts | null;
+};
+
+export default function SectionMontlhyTarget({ data }: Props) {
+	const [listValues, setListValues] = useState([
+		{
+			name: "Ventas",
+			data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		},
+	]);
+
 	const options: ApexOptions = {
 		colors: ["#465fff"],
 		chart: {
@@ -81,24 +96,36 @@ export default function SectionMontlhyTarget() {
 			},
 		},
 	};
-	const series = [
-		{
-			name: "Ventas",
-			data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
-		},
-	];
+
+	useEffect(() => {
+		if (data) {
+			const values = data?.payments_by_month.map((item) => item.amount);
+			const newSeries = [
+				{
+					name: "Ventas",
+					data: values,
+				},
+			];
+			setListValues(newSeries);
+		}
+	}, [data]);
 
 	return (
 		<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/3 sm:px-6 sm:pt-6">
 			<div className="flex items-center justify-between">
 				<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-					Ventas Mensuales
+					Membresías Mensuales
 				</h3>
 			</div>
 
 			<div className="max-w-full overflow-x-auto custom-scrollbar">
 				<div className="-ml-5 min-w-162.5 xl:min-w-full pl-2">
-					<Chart options={options} series={series} type="bar" height={180} />
+					<Chart
+						options={options}
+						series={listValues}
+						type="bar"
+						height={180}
+					/>
 				</div>
 			</div>
 		</div>

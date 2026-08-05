@@ -57,7 +57,7 @@ export default function SectionMontlhly() {
 				<div className="flex justify-between">
 					<div>
 						<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-							Objetivo Mensual
+							DEMO Objetivo Mensual
 						</h3>
 						<p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
 							Objetivo que te has fijado para cada mes

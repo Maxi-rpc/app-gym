@@ -69,7 +69,7 @@ export default function SectionRecentOrders() {
 			<div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-						Ventas Recientes
+						DEMO Ventas Recientes
 					</h3>
 				</div>
 

@@ -13,10 +13,13 @@ import SectionMontlhyTarget from "./SectionMontlhyTarget/SectionMontlhyTarget";
 import SectionRecentOrders from "./SectionRecentOrders/SectionRecentOrders";
 
 import SectionClients from "./SectionClients/SectionClients";
+import SectionAttendances from "./SectionAttendances/SectionAttendances";
 
 export default function Dashboard() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [client, setClient] = useState();
+	const [attendance, setAttendance] = useState();
+	const [charts, setCharts] = useState();
 
 	const getData = async () => {
 		try {
@@ -26,6 +29,8 @@ export default function Dashboard() {
 			if (resp.error) throw resp.error;
 
 			setClient(resp?.data?.clients);
+			setAttendance(resp?.data?.attendance);
+			setCharts(resp?.data?.charts);
 		} catch (error) {
 			console.error("Error No se puede obtener datos", error);
 
@@ -64,10 +69,14 @@ export default function Dashboard() {
 					<SectionClients data={client || null} />
 				</div>
 
+				<div className="col-span-12">
+					<SectionAttendances data={attendance || null} />
+				</div>
+
 				<div className="col-span-12 space-y-6 xl:col-span-7">
 					<SectionMetrics />
 
-					<SectionMontlhyTarget />
+					<SectionMontlhyTarget data={charts || null} />
 				</div>
 
 				<div className="col-span-12 xl:col-span-5">
