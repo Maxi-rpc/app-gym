@@ -7,6 +7,7 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../components/ui/button/IconSpinner";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Pencil1Outlined } from "@lineiconshq/free-icons";
@@ -19,6 +20,9 @@ export default function EmployeeCard() {
 	const { profile } = useAuth();
 	const [employee, setEmployee] = useState<UpdateEmployeeInput | null>(null);
 	const { isOpen, openModal, closeModal } = useModal();
+	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
+
 	const [formData, setFormData] = useState({
 		user_id: "",
 		salary: 0,
@@ -27,17 +31,16 @@ export default function EmployeeCard() {
 		employee_number: "",
 		observations: "",
 	});
-	const [feedback, setFeedback] = useState<Feedback>(null);
 
 	const handleCloseModal = () => {
 		setFeedback(null);
 		closeModal();
 	};
 
-	const handleSave = async () => {
+	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
-			// Validación básica
+			setIsLoading(true);
 
 			const resp = await employeeService.update(formData);
 			if (resp.data) {
@@ -69,6 +72,8 @@ export default function EmployeeCard() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -172,7 +177,7 @@ export default function EmployeeCard() {
 						</p>
 					</div>
 					<form className="flex flex-col">
-						<div className="px-2 overflow-y-auto custom-scrollbar">
+						<div className="px-2 overflow-y-auto custom-scrollbar md:h-auto">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 								<div className="col-span-2 lg:col-span-1">
 									<Label>Fecha de Ingreso</Label>
@@ -209,8 +214,9 @@ export default function EmployeeCard() {
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
-							<Button size="sm" onClick={handleSave}>
-								Guadar Cambios
+							<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+								{isLoading && <IconSpinner />}
+								Guadar
 							</Button>
 						</div>
 						<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">

@@ -9,6 +9,7 @@ import Label from "../form/Label";
 import Badge from "../ui/badge/Badge";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../components/ui/button/IconSpinner";
 import QRCard from "../../components/ui/qr/QRCard";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
@@ -22,6 +23,7 @@ export default function UserDataCard() {
 	const { isOpen, openModal, closeModal } = useModal();
 	const { profile } = useAuth();
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
 		id: profile?.id,
@@ -45,9 +47,11 @@ export default function UserDataCard() {
 		closeModal();
 	};
 
-	const handleSave = async () => {
+	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
+
 			const resp = await profileService.update(formData);
 			if (resp.data) {
 				if (resp?.data?.success) {
@@ -77,6 +81,8 @@ export default function UserDataCard() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -203,7 +209,7 @@ export default function UserDataCard() {
 						</p>
 					</div>
 					<form className="flex flex-col">
-						<div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
+						<div className="custom-scrollbar h-112.5 md:h-auto overflow-y-auto px-2 pb-3">
 							<div className="mt-7">
 								<h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
 									Información personal
@@ -263,7 +269,7 @@ export default function UserDataCard() {
 									<div className="col-span-2 lg:col-span-1">
 										<Label>Fecha de Cumpleaños</Label>
 										<Input
-											type="text"
+											type="date"
 											placeholder="AAAA-MM-DD"
 											value={formData?.birth_date}
 											name="birth_date"
@@ -277,8 +283,9 @@ export default function UserDataCard() {
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
-							<Button size="sm" onClick={handleSave}>
-								Guardar Cambios
+							<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+								{isLoading && <IconSpinner />}
+								Guardar
 							</Button>
 						</div>
 						<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">

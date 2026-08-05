@@ -7,6 +7,7 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../components/ui/button/IconSpinner";
 
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 
@@ -17,6 +18,7 @@ export default function UserSecurityCard() {
 	const { profile } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
 		id: profile?.id || "",
@@ -38,9 +40,11 @@ export default function UserSecurityCard() {
 		}));
 	};
 
-	const handleSave = async () => {
+	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
+
 			const resp = await userService.update_password(formData);
 			if (resp.data) {
 				if (resp?.data?.success) {
@@ -70,6 +74,8 @@ export default function UserSecurityCard() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 	return (
@@ -117,16 +123,6 @@ export default function UserSecurityCard() {
 					<form className="flex flex-col">
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-								{feedback && (
-									<div className="col-span-2 text-start">
-										<Alert
-											variant={feedback?.variant}
-											title={feedback?.title}
-											message={feedback?.message}
-										/>
-									</div>
-								)}
-
 								<div className="col-span-2">
 									<Label>Email</Label>
 									<Input type="text" value={profile?.email} disabled />
@@ -185,10 +181,20 @@ export default function UserSecurityCard() {
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
-							<Button size="sm" onClick={handleSave}>
-								Guadar Cambios
+							<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+								{isLoading && <IconSpinner />}
+								Guardar
 							</Button>
 						</div>
+						{feedback && (
+							<div className="my-4 text-start">
+								<Alert
+									variant={feedback?.variant}
+									title={feedback?.title}
+									message={feedback?.message}
+								/>
+							</div>
+						)}
 					</form>
 				</div>
 			</Modal>

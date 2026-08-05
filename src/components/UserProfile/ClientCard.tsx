@@ -7,6 +7,7 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../components/ui/button/IconSpinner";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import { Pencil1Outlined } from "@lineiconshq/free-icons";
@@ -20,6 +21,7 @@ export default function ClientCard() {
 	const [client, setClient] = useState<UpdateClientInput | null>(null);
 	const { isOpen, openModal, closeModal } = useModal();
 	const [feedback, setFeedback] = useState<Feedback>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
 		user_id: "",
@@ -34,9 +36,11 @@ export default function ClientCard() {
 		closeModal();
 	};
 
-	const handleSave = async () => {
+	const handleSubmit = async () => {
 		try {
 			setFeedback(null);
+			setIsLoading(true);
+
 			const resp = await clientService.update(formData);
 			if (resp.data) {
 				if (resp?.data?.success) {
@@ -68,6 +72,8 @@ export default function ClientCard() {
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -227,8 +233,9 @@ export default function ClientCard() {
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
-							<Button size="sm" onClick={handleSave}>
-								Guadar Cambios
+							<Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+								{isLoading && <IconSpinner />}
+								Guardar
 							</Button>
 						</div>
 						<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">

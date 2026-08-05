@@ -89,9 +89,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 			}
 
 			const newCheckInAt =
-				checkIn.date && checkIn.time
-					? `${checkIn.date}T${checkIn.time}`
-					: null;
+				checkIn.date && checkIn.time ? `${checkIn.date}T${checkIn.time}` : null;
 			const newCheckOutAt =
 				checkOut.date && checkOut.time
 					? `${checkOut.date}T${checkOut.time}`
@@ -106,8 +104,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 				access_granted: formData.access_granted,
 				access_reason: formData.access_reason,
 			};
-
-			console.log(formCreate);
 
 			const resp = await attendanceService.update(formCreate);
 			if (resp.error) throw resp.error;
