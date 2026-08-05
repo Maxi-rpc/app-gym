@@ -16,8 +16,14 @@ export interface PaymentsMonth {
 	month: string;
 	amount: number;
 }
+
+export interface AttendanceHour {
+	hour: number;
+	count: number;
+}
 export interface Charts {
 	payments_by_month: PaymentsMonth[];
+	attendance_by_hour: AttendanceHour[];
 }
 
 /*

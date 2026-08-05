@@ -14,6 +14,7 @@ import SectionRecentOrders from "./SectionRecentOrders/SectionRecentOrders";
 
 import SectionClients from "./SectionClients/SectionClients";
 import SectionAttendances from "./SectionAttendances/SectionAttendances";
+import SectionAttendancesChart from "./SectionAttendances/SectionAttendancesChart";
 
 export default function Dashboard() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
@@ -69,8 +70,9 @@ export default function Dashboard() {
 					<SectionClients data={client || null} />
 				</div>
 
-				<div className="col-span-12">
+				<div className="col-span-12 space-y-6 xl:col-span-7">
 					<SectionAttendances data={attendance || null} />
+					<SectionAttendancesChart data={charts || null} />
 				</div>
 
 				<div className="col-span-12 space-y-6 xl:col-span-7">

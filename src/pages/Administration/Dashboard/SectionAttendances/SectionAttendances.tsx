@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import MetricCard from "./Cards/MetricCard";
+import MetricCard from "./cards/MetricCard";
 
 import { Attendance } from "../../../../service/types/Dashboard";
 
