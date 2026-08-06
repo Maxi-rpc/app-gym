@@ -20,7 +20,9 @@ export default function SectionAttendances({ data }: Props) {
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
 			<div className="col-span-4">
-				<h3>Asistencias</h3>
+				<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+					Asistencias
+				</h3>
 			</div>
 			<MetricCard title="Hoy" total={metric?.today || 0} />
 			<MetricCard title="Semana" total={metric?.week || 0} />
