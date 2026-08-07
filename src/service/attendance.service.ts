@@ -13,7 +13,9 @@ const ARGENTINA_OFFSET = "-03:00";
  */
 function toUtcIso(dateTime: string): string {
 	const hasTimeZone = /(Z|[+-]\d{2}:\d{2})$/i.test(dateTime);
-	const date = new Date(hasTimeZone ? dateTime : `${dateTime}${ARGENTINA_OFFSET}`);
+	const date = new Date(
+		hasTimeZone ? dateTime : `${dateTime}${ARGENTINA_OFFSET}`,
+	);
 
 	if (Number.isNaN(date.getTime())) {
 		throw new RangeError(`Fecha y hora inválida: ${dateTime}`);
@@ -79,13 +81,9 @@ async function register(formData: RegisterAttendanceInput) {
 
 	const session_token = sessionData.session.access_token;
 
-	const checkIn = formData.check_in_at
-		? toUtcIso(formData.check_in_at)
-		: "";
+	const checkIn = formData.check_in_at ? toUtcIso(formData.check_in_at) : "";
 
-	const checkOut = formData.check_out_at
-		? toUtcIso(formData.check_out_at)
-		: "";
+	const checkOut = formData.check_out_at ? toUtcIso(formData.check_out_at) : "";
 
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke(
