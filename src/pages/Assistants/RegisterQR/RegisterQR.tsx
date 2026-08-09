@@ -86,6 +86,14 @@ export default function Register() {
 
 			const resp = await attendanceService.register(body);
 			if (resp.error) throw resp.error;
+
+			if (resp.data) {
+				setFeedback({
+					variant: "info",
+					title: "Verificar",
+					message: resp.data?.message,
+				});
+			}
 		} catch (error) {
 			console.error("Error No se puede obtener datos", error);
 
