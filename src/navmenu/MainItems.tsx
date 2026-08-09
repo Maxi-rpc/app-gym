@@ -6,7 +6,7 @@ import {
 	Dumbbell1Outlined,
 	CheckCircle1Outlined,
 	CreditCardMultipleOutlined,
-	BarChart4Outlined,
+	// BarChart4Outlined,
 	Gear1Outlined,
 } from "@lineiconshq/free-icons";
 
@@ -81,12 +81,12 @@ const mainItems: NavItem[] = [
 			},
 		],
 	},
-	{
-		icon: <Lineicons icon={BarChart4Outlined} size={40} />,
-		name: "Reportes",
-		path: "/report",
-		requiredRoles: ["Admin", "Profesor"],
-	},
+	// {
+	// 	icon: <Lineicons icon={BarChart4Outlined} size={40} />,
+	// 	name: "Reportes",
+	// 	path: "/report",
+	// 	requiredRoles: ["Admin", "Profesor"],
+	// },
 	{
 		icon: <Lineicons icon={Gear1Outlined} size={40} />,
 		name: "Configuración",
