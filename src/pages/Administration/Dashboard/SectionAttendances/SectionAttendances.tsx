@@ -19,7 +19,7 @@ export default function SectionAttendances({ data }: Props) {
 
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
-			<div className="col-span-4">
+			<div className="col-span-1 md:col-span-2 xl:col-span-4">
 				<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
 					Asistencias
 				</h3>
