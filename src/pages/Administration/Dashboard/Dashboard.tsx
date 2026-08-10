@@ -70,12 +70,6 @@ export default function Dashboard() {
 					<SectionClients data={client || null} />
 				</div>
 
-				<div className="col-span-12 space-y-6 xl:col-span-12">
-					<SectionAttendances data={attendance || null} />
-
-					<SectionAttendanceNew data={charts || null} />
-				</div>
-
 				<div className="col-span-12 space-y-6 xl:col-span-7">
 					<SectionMetrics />
 
@@ -84,6 +78,12 @@ export default function Dashboard() {
 
 				<div className="col-span-12 xl:col-span-5">
 					<SectionMontlhly />
+				</div>
+
+				<div className="col-span-12 space-y-6 xl:col-span-12">
+					<SectionAttendances data={attendance || null} />
+
+					<SectionAttendanceNew data={charts || null} />
 				</div>
 
 				<div className="col-span-12 xl:col-span-7">

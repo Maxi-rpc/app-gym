@@ -2,7 +2,10 @@ export interface Clients {
 	total: number;
 	new_this_month: number;
 	active: number;
-	inactive: number;
+	expired: number;
+	cancelled: number;
+	paused: number;
+	pending: number;
 }
 
 export interface Attendance {
@@ -45,7 +48,10 @@ export interface Charts {
     "total": 185,
     "new_this_month": 12,
     "active": 163,
-    "inactive": 22
+    "expired": 22,
+    "cancelled": 22,
+    "paused": 22,
+    "pending": 22
   },
   "payments": {
     "month": 4850000,
