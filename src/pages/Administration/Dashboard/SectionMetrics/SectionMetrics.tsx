@@ -52,7 +52,7 @@ export default function SectionMetrics({ data, dataAttendance }: Props) {
 
 			{/* <!-- Metric Item Start --> */}
 			<CardIconMetric
-				title="Ingresos del mes"
+				title="Asistencias del mes"
 				total={attendance?.count}
 				icon="user"
 			/>
