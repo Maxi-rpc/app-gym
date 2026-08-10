@@ -14,7 +14,7 @@ import AnimateCount from "../common/AnimateCount";
 
 type Props = {
 	title?: string;
-	total?: number;
+	total?: number | string;
 	percent?: number;
 	arrow?: string;
 	icon?: string;

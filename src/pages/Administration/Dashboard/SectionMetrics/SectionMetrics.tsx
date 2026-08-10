@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import CardIconMetric from "../Cards/CardIconMetric";
+import CardIconMoneyMetric from "../Cards/CardIconMoneyMetric";
 
 import { Payments, Attendance } from "../../../../service/types/Dashboard";
 
@@ -42,21 +43,17 @@ export default function SectionMetrics({ dataPayment, dataAttendance }: Props) {
 
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-			{/* <!-- Metric Item Start --> */}
-			<CardIconMetric
+			<CardIconMoneyMetric
 				title="Ingresos del mes"
-				total={month?.count}
+				amount={month?.count}
 				icon="dolar"
 			/>
-			{/* <!-- Metric Item End --> */}
 
-			{/* <!-- Metric Item Start --> */}
 			<CardIconMetric
 				title="Asistencias del mes"
 				total={attendance?.count}
 				icon="user"
 			/>
-			{/* <!-- Metric Item End --> */}
 		</div>
 	);
 }

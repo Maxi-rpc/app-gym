@@ -31,7 +31,6 @@ export default function Dashboard() {
 			if (resp.error) throw resp.error;
 
 			setClient(resp?.data?.clients);
-			console.log(resp?.data?.payments);
 			setPayment(resp?.data?.payments);
 			setAttendance(resp?.data?.attendance);
 			setCharts(resp?.data?.charts);
