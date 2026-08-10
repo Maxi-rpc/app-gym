@@ -75,7 +75,7 @@ export default function Dashboard() {
 
 				<div className="col-span-12 space-y-6 xl:col-span-7">
 					<SectionMetrics
-						data={payment || null}
+						dataPayment={payment || null}
 						dataAttendance={attendance || null}
 					/>
 

@@ -5,11 +5,11 @@ import CardIconMetric from "../Cards/CardIconMetric";
 import { Payments, Attendance } from "../../../../service/types/Dashboard";
 
 type Props = {
-	data: Payments | null;
+	dataPayment: Payments | null;
 	dataAttendance: Attendance | null;
 };
 
-export default function SectionMetrics({ data, dataAttendance }: Props) {
+export default function SectionMetrics({ dataPayment, dataAttendance }: Props) {
 	const [month, setMonth] = useState({
 		count: 0,
 		percent: 0,
@@ -25,10 +25,10 @@ export default function SectionMetrics({ data, dataAttendance }: Props) {
 	});
 
 	useEffect(() => {
-		if (data) {
+		if (dataPayment) {
 			setMonth((prev) => ({
 				...prev,
-				count: data?.month,
+				count: dataPayment?.month,
 			}));
 		}
 
@@ -38,7 +38,7 @@ export default function SectionMetrics({ data, dataAttendance }: Props) {
 				count: dataAttendance?.month,
 			}));
 		}
-	}, [data, dataAttendance]);
+	}, [dataPayment, dataAttendance]);
 
 	return (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
