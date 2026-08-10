@@ -8,6 +8,12 @@ export interface Clients {
 	pending: number;
 }
 
+export interface Payments {
+	today: number;
+	month: number;
+	year: number;
+}
+
 export interface Attendance {
 	today: number;
 	week: number;

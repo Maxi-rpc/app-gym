@@ -19,6 +19,7 @@ import SectionAttendanceNew from "./SectionAttendances/SectionAttendancesNew";
 export default function Dashboard() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [client, setClient] = useState();
+	const [payment, setPayment] = useState();
 	const [attendance, setAttendance] = useState();
 	const [charts, setCharts] = useState();
 
@@ -30,6 +31,8 @@ export default function Dashboard() {
 			if (resp.error) throw resp.error;
 
 			setClient(resp?.data?.clients);
+			console.log(resp?.data?.payments);
+			setPayment(resp?.data?.payments);
 			setAttendance(resp?.data?.attendance);
 			setCharts(resp?.data?.charts);
 		} catch (error) {
@@ -71,7 +74,10 @@ export default function Dashboard() {
 				</div>
 
 				<div className="col-span-12 space-y-6 xl:col-span-7">
-					<SectionMetrics />
+					<SectionMetrics
+						data={payment || null}
+						dataAttendance={attendance || null}
+					/>
 
 					<SectionMontlhyTarget data={charts || null} />
 				</div>
