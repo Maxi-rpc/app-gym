@@ -91,11 +91,7 @@ export default function Dashboard() {
 					<SectionAttendanceNew data={charts || null} />
 				</div>
 
-				<div className="col-span-12 xl:col-span-7">
-					<SectionRecentOrders />
-				</div>
-
-				<div className="col-span-12 xl:col-span-5">
+				<div className="col-span-12">
 					<SectionRecentOrders />
 				</div>
 			</div>
