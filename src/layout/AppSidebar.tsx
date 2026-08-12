@@ -332,7 +332,7 @@ const AppSidebar: React.FC = () => {
 									<HorizontaLDots />
 								)}
 							</h2>
-							{/* {renderMenuItems(filteredOthersItems, "others")} */}
+							{renderMenuItems(filteredOthersItems, "others")}
 						</div>
 					</div>
 				</nav>

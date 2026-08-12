@@ -1,35 +1,58 @@
 // Assume these icons are imported from an icon library
-import { BoxCubeIcon, PieChartIcon, PlugInIcon } from "../icons";
+import { Lineicons } from "@lineiconshq/react-lineicons";
+import { Gear1Outlined } from "@lineiconshq/free-icons";
 
 import { NavItem } from "./types/NavItem";
 
 const otherItems: NavItem[] = [
 	{
-		icon: <PieChartIcon />,
-		name: "Charts",
+		icon: <Lineicons icon={Gear1Outlined} size={40} />,
+		name: "Configuración",
+		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
-			{ name: "Line Chart", path: "/line-chart", pro: false },
-			{ name: "Bar Chart", path: "/bar-chart", pro: false },
-		],
-	},
-	{
-		icon: <BoxCubeIcon />,
-		name: "UI Elements",
-		subItems: [
-			{ name: "Alerts", path: "/alerts", pro: false },
-			{ name: "Avatar", path: "/avatars", pro: false },
-			{ name: "Badge", path: "/badge", pro: false },
-			{ name: "Buttons", path: "/buttons", pro: false },
-			{ name: "Images", path: "/images", pro: false },
-			{ name: "Videos", path: "/videos", pro: false },
-		],
-	},
-	{
-		icon: <PlugInIcon />,
-		name: "Authentication",
-		subItems: [
-			{ name: "Sign In", path: "/signin", pro: false },
-			{ name: "Sign Up", path: "/signup", pro: false },
+			{
+				name: "Roles",
+				path: "/configurations/roles",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Estados de usuario",
+				path: "/configurations/user-status",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+
+			{
+				name: "Estados de membresía",
+				path: "/configurations/membership-status",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Estados de pago",
+				path: "/configurations/payment-status",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Métodos de pago",
+				path: "/configurations/payment-methods",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Servicios",
+				path: "/configurations/services",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Categorías de productos",
+				path: "/configurations/product-categories",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
 		],
 	},
 ];

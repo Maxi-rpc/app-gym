@@ -15,14 +15,14 @@ import {
 	RefreshCircle1ClockwiseOutlined,
 } from "@lineiconshq/free-icons";
 
-import { Role } from "../../../service/types/Role";
-import { rolesService } from "../../../service/role.service";
+import { ProductCategories } from "../../../service/types/ProductCategories";
+import { productCategoriesService } from "../../../service/productCategories.service";
 
 import DataTable from "./DataTable";
 import ModalAdd from "./modals/ModalAdd";
 import ModalEdit from "./modals/ModalEdit";
 
-export default function Roles() {
+export default function ProductCategoriesView() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -39,26 +39,26 @@ export default function Roles() {
 	} = useModal();
 
 	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<Role | null>(null);
-	const [listData, setListData] = useState<Role[] | []>([]);
+	const [selectData, setSelectData] = useState<ProductCategories | null>(null);
+	const [listData, setListData] = useState<ProductCategories[] | []>([]);
 
 	const getData = async () => {
 		try {
 			setFeedback(null);
 			setIsLoading(true);
 
-			const resp = await rolesService.getAll();
+			const resp = await productCategoriesService.getAll();
 			if (resp.error) {
 				throw resp.error;
 			}
 
 			setListData(resp.data ?? []);
 		} catch (error) {
-			console.error("Error al obtener roles:", error);
+			console.error("Error al obtener datos:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se pudieron cargar los roles",
+				title: "No se puede cargar datos",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
@@ -81,7 +81,7 @@ export default function Roles() {
 		getData();
 	};
 
-	const handleEdit = (item: Role) => {
+	const handleEdit = (item: ProductCategories) => {
 		setSelectData(item);
 		openModalEdit();
 	};
@@ -96,15 +96,16 @@ export default function Roles() {
 				title="App Gym - Administration Configuration"
 				description="Panel de administracion para Configuración"
 			/>
-			<PageBreadcrumb pageTitle="Roles" />
+			<PageBreadcrumb pageTitle="Product Categories" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-						Listado de Roles
+						Listado de Categorías de Productos
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran los roles de la app, se puede Agregar o Editar.
+						Se muestran las categorias de productos de la app, se puede Agregar
+						o Editar.
 					</p>
 
 					{feedback && (

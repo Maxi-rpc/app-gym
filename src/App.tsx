@@ -41,6 +41,7 @@ import ConfigMembershipStatus from "./pages/Configurations/MembershipStatus/Memb
 import ConfigPaymentStatus from "./pages/Configurations/PaymentStatus/PaymentStatus";
 import ConfigPaymentMethods from "./pages/Configurations/PaymentMethods/PaymentMethods";
 import ConfigServices from "./pages/Configurations/Services/Services";
+import ConfigProductCategories from "./pages/Configurations/ProductCategories/ProductCategories";
 
 export default function App() {
 	return (
@@ -212,6 +213,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<ConfigServices />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="product-categories"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ConfigProductCategories />
 										</ProtectedRoute>
 									}
 								/>

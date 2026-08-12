@@ -7,7 +7,6 @@ import {
 	CheckCircle1Outlined,
 	CreditCardMultipleOutlined,
 	// BarChart4Outlined,
-	Gear1Outlined,
 } from "@lineiconshq/free-icons";
 
 import { NavItem } from "./types/NavItem";
@@ -42,7 +41,7 @@ const mainItems: NavItem[] = [
 		name: "Asistencias",
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
-		{
+			{
 				name: "Escanear QR",
 				path: "/assistants/register-qr",
 				requiredRoles: ["Admin", "Profesor"],
@@ -87,50 +86,6 @@ const mainItems: NavItem[] = [
 	// 	path: "/report",
 	// 	requiredRoles: ["Admin", "Profesor"],
 	// },
-	{
-		icon: <Lineicons icon={Gear1Outlined} size={40} />,
-		name: "Configuración",
-		requiredRoles: ["Admin", "Profesor"],
-		subItems: [
-			{
-				name: "Roles",
-				path: "/configurations/roles",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-			{
-				name: "Estados de usuario",
-				path: "/configurations/user-status",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-
-			{
-				name: "Estados de membresía",
-				path: "/configurations/membership-status",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-			{
-				name: "Estados de pago",
-				path: "/configurations/payment-status",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-			{
-				name: "Métodos de pago",
-				path: "/configurations/payment-methods",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-			{
-				name: "Servicios",
-				path: "/configurations/services",
-				requiredRoles: ["Admin", "Profesor"],
-				pro: false,
-			},
-		],
-	},
 ];
 
 export default mainItems;
