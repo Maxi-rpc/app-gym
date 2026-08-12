@@ -6,6 +6,7 @@ import {
 	Dumbbell1Outlined,
 	CheckCircle1Outlined,
 	CreditCardMultipleOutlined,
+	//BoxClosedOutlined,
 	// BarChart4Outlined,
 } from "@lineiconshq/free-icons";
 
@@ -80,6 +81,19 @@ const mainItems: NavItem[] = [
 			},
 		],
 	},
+	// {
+	// 	icon: <Lineicons icon={BoxClosedOutlined} size={40} />,
+	// 	name: "Productos",
+	// 	requiredRoles: ["Admin", "Profesor"],
+	// 	subItems: [
+	// 		{
+	// 			name: "Productos",
+	// 			path: "/products/list",
+	// 			requiredRoles: ["Admin", "Profesor"],
+	// 			pro: false,
+	// 		},
+	// 	],
+	// },
 	// {
 	// 	icon: <Lineicons icon={BarChart4Outlined} size={40} />,
 	// 	name: "Reportes",

@@ -53,6 +53,12 @@ const otherItems: NavItem[] = [
 				requiredRoles: ["Admin", "Profesor"],
 				pro: false,
 			},
+			{
+				name: "Estados de productos",
+				path: "/configurations/product-status",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
 		],
 	},
 ];

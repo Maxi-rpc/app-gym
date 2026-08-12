@@ -34,6 +34,9 @@ import AssistantsRegister from "./pages/Assistants/Register/Register";
 import Payments from "./pages/Payments/List/List";
 import PaymentsRegister from "./pages/Payments/Register/Register";
 
+// products
+import Products from "./pages/Products/List/List";
+
 // configurations
 import ConfigRoles from "./pages/Configurations/Roles/Roles";
 import ConfigUserStatus from "./pages/Configurations/UserStatus/UserStatus";
@@ -42,6 +45,7 @@ import ConfigPaymentStatus from "./pages/Configurations/PaymentStatus/PaymentSta
 import ConfigPaymentMethods from "./pages/Configurations/PaymentMethods/PaymentMethods";
 import ConfigServices from "./pages/Configurations/Services/Services";
 import ConfigProductCategories from "./pages/Configurations/ProductCategories/ProductCategories";
+import ConfigProductStatus from "./pages/Configurations/ProductStatus/ProductStatus";
 
 export default function App() {
 	return (
@@ -166,6 +170,18 @@ export default function App() {
 								/>
 							</Route>
 
+							{/* Products Page */}
+							<Route path="/products">
+								<Route
+									path="list"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<Products />
+										</ProtectedRoute>
+									}
+								/>
+							</Route>
+
 							{/* Configuration Page */}
 							<Route path="/configurations">
 								<Route
@@ -221,6 +237,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<ConfigProductCategories />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="product-status"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ConfigProductStatus />
 										</ProtectedRoute>
 									}
 								/>
