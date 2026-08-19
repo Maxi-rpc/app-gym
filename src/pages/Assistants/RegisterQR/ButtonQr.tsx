@@ -27,6 +27,7 @@ export default function ButtonQr({ onRegister, onRegistered }: Props) {
 			// Mostrar mensaje de error en pantalla
 		} finally {
 			setIsRegistering(false);
+			setIsScanning(false);
 		}
 	};
 
@@ -42,7 +43,7 @@ export default function ButtonQr({ onRegister, onRegistered }: Props) {
 			</Button>
 
 			{isScanning && (
-				<div className="w-full mt-4 mx-auto">
+				<div className=" md:w-1/2 sm:w-full mt-4 mx-auto">
 					<Scanner
 						onScan={handleScan}
 						allowMultiple

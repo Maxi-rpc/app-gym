@@ -19,7 +19,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 
 	const [formData, setFormData] = useState({ deletetext: "" });
 
-	const [validText] = useState(deleteText);
+	const [validText] = useState("eliminar");
 
 	const handleClose = () => {
 		onSubmit?.();
@@ -71,7 +71,6 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
 	};
 
 	const validateDelete = () => {
-		console.log("validateDelete", validText, formData?.deletetext);
 		const isValid =
 			validText?.toLocaleLowerCase() ===
 			formData?.deletetext?.toLocaleLowerCase();
