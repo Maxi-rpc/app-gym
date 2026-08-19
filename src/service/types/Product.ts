@@ -15,7 +15,37 @@ export interface Product {
 	stock: number;
 	minimum_stock: number;
 	status: ProductStatus;
+	image?: string;
 }
+
+export interface CreateProductInput {
+	name: string;
+	description?: string | null;
+	category: number;
+	sku?: string;
+	barcode?: string;
+	cost_price: number;
+	sale_price: number;
+	stock: number;
+	minimum_stock: number;
+	image?: string;
+}
+
+export interface UpdateProductInput {
+	id: string;
+	name: string;
+	description?: string | null;
+	category: number;
+	sku?: string;
+	barcode?: string;
+	cost_price: number;
+	sale_price: number;
+	stock?: number;
+	minimum_stock?: number;
+	status: number;
+	image?: string;
+}
+
 /*
 
   id uuid not null default gen_random_uuid (),

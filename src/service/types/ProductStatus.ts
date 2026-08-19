@@ -1,5 +1,5 @@
 export interface ProductStatus {
-	id: string;
+	id: number;
 	created_at: string;
 	name: string;
 	description: string;
@@ -12,7 +12,7 @@ export interface CreateProductStatusInput {
 }
 
 export interface UpdateProductStatusInput {
-	id: string;
+	id: number;
 	name: string;
 	description?: string;
 }

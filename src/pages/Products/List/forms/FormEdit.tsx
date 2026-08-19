@@ -1,31 +1,25 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
-import Select from "../../../../components/form/Select";
-import DatePicker from "../../../../components/form/date-picker";
 import Alert from "../../../../components/ui/alert/Alert";
+import Select from "../../../../components/form/Select";
 import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
 import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { TimeIcon } from "../../../../icons";
-
-import { formatLocalDateTime } from "../../../../utils/date";
-
-import { UpdateAttendanceInput } from "../../../../service/types/Attendance";
-import { attendanceService } from "../../../../service/attendance.service";
+import { productService } from "../../../../service/products.service";
+import { Product } from "../../../../service/types/Product";
+import { productCategoriesService } from "../../../../service/productCategories.service";
+import { ProductCategories } from "../../../../service/types/ProductCategories";
+import { ProductStatus } from "../../../../service/types/ProductStatus";
+import { productStatusService } from "../../../../service/productStatus.service";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
-	defaultData: UpdateAttendanceInput | null;
+	defaultData: Product | null;
 };
-
-const options = [
-	{ value: "true", label: "Si" },
-	{ value: "false", label: "No" },
-];
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
@@ -33,25 +27,69 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
 	const [formData, setFormData] = useState({
 		id: defaultData?.id || "",
-		check_in_at: defaultData?.check_in_at || "",
-		check_out_at: defaultData?.check_out_at || null,
-		access_granted: defaultData?.access_granted || false,
-		access_reason: defaultData?.access_reason || "",
+		name: defaultData?.name || "",
+		description: defaultData?.description || "",
+		category: defaultData?.category?.id || 0,
+		sku: defaultData?.sku || "",
+		barcode: defaultData?.barcode || "",
+		cost_price: defaultData?.cost_price || 0,
+		sale_price: defaultData?.sale_price || 0,
+		stock: defaultData?.stock || 0,
+		minimum_stock: defaultData?.minimum_stock || 0,
+		status: defaultData?.status?.id || 1,
+		image: defaultData?.image || "",
 	});
+	const [listCategories, setListCategories] = useState([
+		{ value: "SIN DATOS", label: "SIN DATOS" },
+	]);
 
-	const [checkIn, setCheckIn] = useState({
-		date: "",
-		time: "",
-	});
-
-	const [checkOut, setCheckOut] = useState({
-		date: "",
-		time: "",
-	});
+	const [listStatus, setListStatus] = useState([
+		{ value: "SIN DATOS", label: "SIN DATOS" },
+	]);
 
 	const handleClose = () => {
+		setFeedback(null);
 		onSubmit?.();
 		onClose?.();
+	};
+
+	const handleSubmit = async () => {
+		try {
+			setFeedback(null);
+			setIsLoading(true);
+
+			// Validación básica
+			if (!formData.name) {
+				setFeedback({
+					variant: "info",
+					title: "Por favor completa todos los campos*",
+					message: "",
+				});
+				return;
+			}
+
+			const resp = await productService.update(formData);
+			if (resp.error) {
+				throw resp.error;
+			}
+
+			setFeedback({
+				variant: "success",
+				title: "Registro guardado.",
+				message: resp?.data?.message,
+			});
+		} catch (error) {
+			console.error("Error al guardar registro:", error);
+
+			setFeedback({
+				variant: "error",
+				title: "No se puede guardar registro",
+				message:
+					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
+			});
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,201 +101,171 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	};
 
 	const handleSelectChange = (value: string) => {
-		let newValue = false;
-		if (value === "true") {
-			newValue = true;
-		}
 		setFormData((prev) => ({
 			...prev,
-			access_granted: newValue,
+			category: Number(value),
 		}));
 	};
 
-	const handleSubmit = async () => {
+	const handleSelectChangeStatus = (value: string) => {
+		setFormData((prev) => ({
+			...prev,
+			status: Number(value),
+		}));
+	};
+
+	const getData = async () => {
 		try {
-			setFeedback(null);
-			setIsLoading(true);
-
-			const hasPartialCheckIn = Boolean(checkIn.date) !== Boolean(checkIn.time);
-			const hasPartialCheckOut =
-				Boolean(checkOut.date) !== Boolean(checkOut.time);
-
-			if (hasPartialCheckIn || hasPartialCheckOut) {
-				throw new Error(
-					"Para modificar un horario debés indicar la fecha y la hora.",
-				);
+			const resp = await productCategoriesService.getAll();
+			if (resp.error) {
+				throw resp.error;
 			}
 
-			const newCheckInAt =
-				checkIn.date && checkIn.time ? `${checkIn.date}T${checkIn.time}` : null;
-			const newCheckOutAt =
-				checkOut.date && checkOut.time
-					? `${checkOut.date}T${checkOut.time}`
-					: null;
+			const resp_status = await productStatusService.getAll();
+			if (resp_status.error) {
+				throw resp.error;
+			}
 
-			const formCreate = {
-				id: formData.id,
-				check_in_at: formData.check_in_at,
-				new_check_in_at: newCheckInAt,
-				check_out_at: formData.check_out_at || null,
-				new_check_out_at: newCheckOutAt,
-				access_granted: formData.access_granted,
-				access_reason: formData.access_reason,
-			};
-
-			const resp = await attendanceService.update(formCreate);
-			if (resp.error) throw resp.error;
-
-			setFeedback({
-				variant: "success",
-				title: "Info",
-				message: resp.data?.message,
+			const categories = resp?.data?.map((item: ProductCategories) => {
+				return { value: String(item?.id), label: item?.name };
 			});
+
+			setListCategories(categories ?? []);
+
+			const prod_status = resp_status?.data?.map((item: ProductStatus) => {
+				return { value: String(item?.id), label: item?.name };
+			});
+
+			setListStatus(prod_status ?? []);
 		} catch (error) {
-			console.error("Error No se puede obtener datos", error);
+			console.error("Error al obtener datos:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se puede obtener datos",
+				title: "No se puede cargar datos",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
+	useEffect(() => {
+		getData();
+	}, []);
+
 	return (
 		<form className="flex flex-col">
-			<div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-					<div className="col-span-2">
-						<Label>Id</Label>
-						<Input type="text" value={formData?.id} name="id" disabled />
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label>Acceso Actual</Label>
-						<Input
-							type="text"
-							value={formData?.access_granted == true ? "Si" : "No"}
-							disabled
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label>Puede Acceder?</Label>
-						<Select
-							className="dark:bg-dark-900"
-							options={options}
-							placeholder="Seleccionar una opción"
-							onChange={handleSelectChange}
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label>Razón Actual</Label>
-						<Input type="text" value={formData.access_reason} disabled />
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label>Razón</Label>
-						<Input
-							type="text"
-							value={formData.access_reason}
-							name="access_reason"
-							onChange={handleChange}
-						/>
-					</div>
-
-					<div className="col-span-2">
-						<Label>Check In - Actual</Label>
-						<Input
-							type="text"
-							value={formatLocalDateTime(formData.check_in_at)}
-							disabled
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<DatePicker
-							id="date-picker-in"
-							label="Check In - Fecha"
-							placeholder="Seleccionar"
-							onChange={(dates, currentDateString) => {
-								// Handle your logic
-								console.log({ dates, currentDateString });
-								setCheckIn((prev) => ({
-									...prev,
-									date: currentDateString,
-								}));
-							}}
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label htmlFor="tm">Check In - Hora</Label>
-						<div className="relative">
+			<div className="px-2 overflow-y-auto custom-scrollbar">
+				<div className="px-2 h-112.5 overflow-y-auto custom-scrollbar">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+						<div className="col-span-2 md:col-span-1">
+							<Label>Nombre*</Label>
 							<Input
-								type="time"
-								id="tm-in"
-								name="tm"
-								onChange={(e) => {
-									console.log(e.target.value);
-									setCheckIn((prev) => ({
-										...prev,
-										time: e.target.value,
-									}));
-								}}
+								type="text"
+								value={formData.name}
+								name="name"
+								onChange={handleChange}
 							/>
-							<span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-								<TimeIcon className="size-6" />
-							</span>
 						</div>
-					</div>
 
-					<div className="col-span-2">
-						<Label>Check Out - Actual</Label>
-						<Input
-							type="text"
-							value={formatLocalDateTime(formData.check_out_at)}
-							disabled
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<DatePicker
-							id="date-picker-out"
-							label="Check Out - Fecha"
-							placeholder="Seleccionar"
-							onChange={(dates, currentDateString) => {
-								// Handle your logic
-								console.log({ dates, currentDateString });
-								setCheckOut((prev) => ({
-									...prev,
-									date: currentDateString,
-								}));
-							}}
-						/>
-					</div>
-
-					<div className="col-span-2 md:col-span-1">
-						<Label htmlFor="tm">Check Out - Hora</Label>
-						<div className="relative">
+						<div className="col-span-2 md:col-span-1">
+							<Label>Descripción</Label>
 							<Input
-								type="time"
-								id="tm-out"
-								name="tm"
-								onChange={(e) =>
-									setCheckOut((prev) => ({
-										...prev,
-										time: e.target.value,
-									}))
-								}
+								type="text"
+								value={formData.description}
+								name="description"
+								onChange={handleChange}
 							/>
-							<span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-								<TimeIcon className="size-6" />
-							</span>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Categoría*</Label>
+							<Select
+								options={listCategories}
+								placeholder="Selecionar una opción"
+								onChange={handleSelectChange}
+								className="dark:bg-dark-900"
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>SKU</Label>
+							<Input
+								type="text"
+								value={formData.sku}
+								name="sku"
+								onChange={handleChange}
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Barcode</Label>
+							<Input
+								type="text"
+								value={formData.barcode}
+								name="barcode"
+								onChange={handleChange}
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Precio de Costo*</Label>
+							<Input
+								type="number"
+								value={formData.cost_price}
+								name="cost_price"
+								onChange={handleChange}
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Precio de Venta*</Label>
+							<Input
+								type="number"
+								value={formData.sale_price}
+								name="sale_price"
+								onChange={handleChange}
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Stock*</Label>
+							<Input
+								type="number"
+								value={formData.stock}
+								name="stock"
+								disabled
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Min Stock*</Label>
+							<Input
+								type="number"
+								value={formData.minimum_stock}
+								name="minimum_stock"
+								onChange={handleChange}
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Imagen - URL</Label>
+							<Input
+								type="text"
+								value={formData.image}
+								name="image"
+								onChange={handleChange}
+							/>
+						</div>
+
+						<div className="col-span-2 md:col-span-1">
+							<Label>Estado*</Label>
+							<Select
+								options={listStatus}
+								placeholder="Selecionar una opción"
+								onChange={handleSelectChangeStatus}
+								className="dark:bg-dark-900"
+							/>
 						</div>
 					</div>
 				</div>
@@ -271,15 +279,17 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 					Guardar
 				</Button>
 			</div>
-			{feedback && (
-				<div className="my-4 text-start">
-					<Alert
-						variant={feedback?.variant}
-						title={feedback?.title}
-						message={feedback?.message}
-					/>
-				</div>
-			)}
+			<div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">
+				{feedback && (
+					<div className="col-span-2 text-start">
+						<Alert
+							variant={feedback?.variant}
+							title={feedback?.title}
+							message={feedback?.message}
+						/>
+					</div>
+				)}
+			</div>
 		</form>
 	);
 }

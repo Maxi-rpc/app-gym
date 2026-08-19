@@ -69,7 +69,7 @@ async function update(formData: UpdateProductCategoriesInput) {
 		"product-categories",
 		{
 			body: {
-				id: formData.id || "",
+				id: formData.id || 0,
 				name: formData.name || "",
 				description: formData.description || "",
 			},

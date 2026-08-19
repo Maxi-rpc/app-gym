@@ -1,5 +1,5 @@
 export interface ProductCategories {
-	id: string;
+	id: number;
 	created_at: string;
 	name: string;
 	description: string;
@@ -12,7 +12,7 @@ export interface CreateProductCategoriesInput {
 }
 
 export interface UpdateProductCategoriesInput {
-	id: string;
+	id: number;
 	name: string;
 	description?: string;
 }

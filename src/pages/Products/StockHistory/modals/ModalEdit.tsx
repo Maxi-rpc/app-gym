@@ -1,13 +1,13 @@
 import { Modal } from "../../../../components/ui/modal";
 import FormEdit from "../forms/FormEdit";
 
-import { Product } from "../../../../service/types/Product";
+import { StockMovement } from "../../../../service/types/ProductStock";
 
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: () => void | undefined;
-	defaultData: Product | null;
+	defaultData: StockMovement | null;
 };
 
 export default function ModalEdit({
@@ -21,10 +21,10 @@ export default function ModalEdit({
 			<div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
 				<div className="px-2 pr-14">
 					<h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-						Editar Registro
+						Ver Registro
 					</h4>
 					<p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-						Complete los campos requeridos*.
+						Se muestra el detalle del movimiento.
 					</p>
 				</div>
 

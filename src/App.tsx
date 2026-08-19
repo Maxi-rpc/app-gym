@@ -36,6 +36,8 @@ import PaymentsRegister from "./pages/Payments/Register/Register";
 
 // products
 import Products from "./pages/Products/List/List";
+import ProductsStock from "./pages/Products/Stock/List";
+import ProductsHistoryStock from "./pages/Products/StockHistory/List";
 
 // configurations
 import ConfigRoles from "./pages/Configurations/Roles/Roles";
@@ -177,6 +179,22 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<Products />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="stock"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ProductsStock />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="stock-history"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ProductsHistoryStock />
 										</ProtectedRoute>
 									}
 								/>

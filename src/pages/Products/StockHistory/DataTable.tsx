@@ -3,23 +3,21 @@ import { useState } from "react";
 import Badge from "../../../components/ui/badge/Badge";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import { Pencil1Outlined } from "@lineiconshq/free-icons";
-import { AlertHexaIcon } from "../../../icons";
+import { Search1Outlined } from "@lineiconshq/free-icons";
 
-import { Product } from "../../../service/types/Product";
+import { StockMovement } from "../../../service/types/ProductStock";
 
-import { formatLocalMoney } from "../../../utils/number";
-
-// import { formatLocalDateTime } from "../../../utils/date";
+import { formatLocalDateTime } from "../../../utils/date";
 
 type SortKey =
-	| "barcode"
+	| "createdAt"
 	| "name"
-	| "image"
-	| "category"
-	| "salePrice"
-	| "stock"
-	| "status";
+	| "movementType"
+	| "quantity"
+	| "previousStock"
+	| "newStock"
+	| "productName"
+	| "employeeName";
 
 type SortConfig = {
 	key: SortKey;
@@ -27,22 +25,22 @@ type SortConfig = {
 };
 
 type Props = {
-	listData: Product[] | [];
+	listData: StockMovement[] | [];
 	searchText: string;
-	onEdit?: (data: Product) => void;
+	onEdit?: (data: StockMovement) => void;
 };
 
 export default function DataTable({ listData, searchText, onEdit }: Props) {
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
-		key: "barcode",
+		key: "createdAt",
 		direction: "asc",
 	});
 
-	const handleEdit = (data: Product) => {
+	const handleEdit = (data: StockMovement) => {
 		onEdit?.(data);
 	};
 
-	const filterData = (listData: Product[]) => {
+	const filterData = (listData: StockMovement[]) => {
 		if (!searchText.trim()) {
 			return listData;
 		}
@@ -50,8 +48,8 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 		const searchLower = searchText.toLowerCase();
 
 		return listData.filter((data) => {
-			const nameMatch = data.name?.toLowerCase().includes(searchLower);
-			const descriptionMatch = data?.description
+			const nameMatch = data.product?.name?.toLowerCase().includes(searchLower);
+			const descriptionMatch = data?.employee?.name
 				?.toLowerCase()
 				.includes(searchLower);
 
@@ -59,22 +57,24 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 		});
 	};
 
-	const getSortValue = (data: Product, key: SortKey): string | number => {
+	const getSortValue = (data: StockMovement, key: SortKey): string | number => {
 		switch (key) {
-			case "barcode":
-				return data.barcode ?? "";
+			case "createdAt":
+				return data.created_at ? new Date(data.created_at).getTime() : 0;
 			case "name":
-				return data?.name ?? "";
-			case "image":
-				return data?.image ?? "";
-			case "category":
-				return data?.category?.name ?? "";
-			case "salePrice":
-				return data?.sale_price ?? "";
-			case "stock":
-				return data?.stock ?? "";
-			case "status":
-				return data?.status?.name ?? "";
+				return data.name ?? "";
+			case "movementType":
+				return data?.movement_type ?? "";
+			case "quantity":
+				return data?.quantity ?? "";
+			case "previousStock":
+				return data?.previous_stock ?? "";
+			case "newStock":
+				return data?.new_stock ?? "";
+			case "productName":
+				return data?.product?.name ?? "";
+			case "employeeName":
+				return data?.employee?.name ?? "";
 		}
 	};
 
@@ -114,20 +114,12 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("barcode")}
+								onClick={() => handleSort("createdAt")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Barcode <SortIcon column="barcode" />
+								Fecha <SortIcon column="createdAt" />
 							</button>
 						</th>
-						{/* <th className="px-4 py-3 text-left">
-							<button
-								onClick={() => handleSort("image")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Imagen <SortIcon column="image" />
-							</button>
-						</th> */}
 						<th className="px-4 py-3 text-left">
 							<button
 								onClick={() => handleSort("name")}
@@ -136,36 +128,29 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 								Producto <SortIcon column="name" />
 							</button>
 						</th>
+
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("category")}
+								onClick={() => handleSort("movementType")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Categoría <SortIcon column="category" />
+								Movimiento <SortIcon column="movementType" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("salePrice")}
+								onClick={() => handleSort("quantity")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Precio <SortIcon column="salePrice" />
+								Cantidad <SortIcon column="quantity" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("stock")}
+								onClick={() => handleSort("employeeName")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
-								Stock <SortIcon column="stock" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
-								onClick={() => handleSort("status")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Estado <SortIcon column="status" />
+								Empleado <SortIcon column="employeeName" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -186,45 +171,19 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item.barcode}
+								{formatLocalDateTime(item.created_at)}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								<div className="flex items-center gap-3">
-									<div className="h-12.5 w-12.5 overflow-hidden rounded-md">
-										<img
-											src={item?.image}
-											className="h-12.5 w-12.5"
-											alt={item.name}
-										/>
-									</div>
-									<div>
-										<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-											{item?.name}
-										</p>
-									</div>
-								</div>
-							</td>
-							{/* <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item?.name}
-							</td> */}
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item?.category?.name}
+								{item?.product?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{formatLocalMoney(item?.sale_price)}
+								{item?.movement_type}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								<Badge
-									color={
-										item?.stock > item?.minimum_stock ? "success" : "warning"
-									}
-								>
-									{item?.stock}{" "}
-									{item?.stock <= item?.minimum_stock && <AlertHexaIcon />}
-								</Badge>
+								<Badge color={"info"}>{item?.quantity}</Badge>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item?.status?.name}
+								{item?.employee?.name} {item?.employee?.last_name}
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
@@ -232,7 +191,7 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 										onClick={() => handleEdit(item)}
 										className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
 									>
-										<Lineicons icon={Pencil1Outlined} size={20} />
+										<Lineicons icon={Search1Outlined} size={20} />
 									</button>
 								</div>
 							</td>

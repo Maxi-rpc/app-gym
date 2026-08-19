@@ -1,9 +1,6 @@
 import { supabase } from "../utils/supabase";
 
-import {
-	CreateProductStatusInput,
-	UpdateProductStatusInput,
-} from "./types/ProductStatus";
+import { CreateProductInput, UpdateProductInput } from "./types/Product";
 
 async function getAll() {
 	const { data: sessionData, error: sessionError } =
@@ -15,7 +12,7 @@ async function getAll() {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("product-status", {
+	const { data, error } = await supabase.functions.invoke("get-products", {
 		headers: {
 			Authorization: `Bearer ${session_token}`,
 		},
@@ -25,7 +22,7 @@ async function getAll() {
 	return { data: data?.data, error: error };
 }
 
-async function create(formData: CreateProductStatusInput) {
+async function create(formData: CreateProductInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -35,10 +32,18 @@ async function create(formData: CreateProductStatusInput) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("product-status", {
+	const { data, error } = await supabase.functions.invoke("create-product", {
 		body: {
 			name: formData.name,
 			description: formData.description,
+			category: formData.category,
+			sku: formData.sku,
+			barcode: formData.barcode,
+			cost_price: formData.cost_price,
+			sale_price: formData.sale_price,
+			stock: formData.stock,
+			minimum_stock: formData.minimum_stock,
+			image: formData.image,
 		},
 		headers: {
 			Authorization: `Bearer ${session_token}`,
@@ -49,7 +54,7 @@ async function create(formData: CreateProductStatusInput) {
 	return { data: data, error: error };
 }
 
-async function update(formData: UpdateProductStatusInput) {
+async function update(formData: UpdateProductInput) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -59,11 +64,20 @@ async function update(formData: UpdateProductStatusInput) {
 	const session_token = sessionData.session.access_token;
 
 	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("product-status", {
+	const { data, error } = await supabase.functions.invoke("update-product", {
 		body: {
-			id: formData.id || 0,
+			id: formData.id || "",
 			name: formData.name || "",
 			description: formData.description || "",
+			category: formData?.category || 0,
+			sku: formData?.sku || "",
+			barcode: formData?.barcode || "",
+			cost_price: formData?.cost_price || 0,
+			sale_price: formData?.sale_price || 0,
+			stock: formData.stock,
+			minimum_stock: formData.minimum_stock,
+			status: formData?.status || 1,
+			image: formData?.image || "",
 		},
 		headers: {
 			Authorization: `Bearer ${session_token}`,
@@ -74,7 +88,7 @@ async function update(formData: UpdateProductStatusInput) {
 	return { data: data, error: error };
 }
 
-export const productStatusService = {
+export const productService = {
 	getAll,
 	create,
 	update,

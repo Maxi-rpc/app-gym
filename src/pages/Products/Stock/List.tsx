@@ -10,27 +10,17 @@ import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 import { useModal } from "../../../hooks/useModal";
 
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import {
-	PlusOutlined,
-	RefreshCircle1ClockwiseOutlined,
-} from "@lineiconshq/free-icons";
+import { RefreshCircle1ClockwiseOutlined } from "@lineiconshq/free-icons";
 
 import { Product } from "../../../service/types/Product";
 import { productService } from "../../../service/products.service";
 
 import DataTable from "./DataTable";
-import ModalAdd from "./modals/ModalAdd";
 import ModalEdit from "./modals/ModalEdit";
 
-export default function ProductsView() {
+export default function StockView() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const {
-		isOpen: isOpenAdd,
-		openModal: openModalAdd,
-		closeModal: closeModalAdd,
-	} = useModal();
 
 	const {
 		isOpen: isOpenEdit,
@@ -76,11 +66,6 @@ export default function ProductsView() {
 		setSearchText(e.target.value);
 	};
 
-	const handleSave = () => {
-		closeModalAdd();
-		getData();
-	};
-
 	const handleEdit = (item: Product) => {
 		setSelectData(item);
 		openModalEdit();
@@ -96,15 +81,15 @@ export default function ProductsView() {
 				title="App Gym - Administration Configuration"
 				description="Panel de administracion para Configuración"
 			/>
-			<PageBreadcrumb pageTitle="Product" />
+			<PageBreadcrumb pageTitle="Stock" />
 			<div className="rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/3 xl:px-10 xl:py-12">
 				<div className="mx-auto w-full text-center mb-8">
 					<h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-						Listado de Productos
+						Listado de Productos en Stock
 					</h3>
 
 					<p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-						Se muestran los productos de la app, se puede Agregar o Editar.
+						Se muestran los productos de la app, se puede Ajustar el stock.
 					</p>
 
 					{feedback && (
@@ -146,15 +131,6 @@ export default function ProductsView() {
 					>
 						Actualizar
 					</Button>
-					<Button
-						size="sm"
-						onClick={openModalAdd}
-						startIcon={
-							<Lineicons icon={PlusOutlined} size={20} color="white" />
-						}
-					>
-						Agregar
-					</Button>
 				</div>
 
 				{/* Data Table */}
@@ -164,13 +140,6 @@ export default function ProductsView() {
 					onEdit={handleEdit}
 				/>
 			</div>
-
-			{/* Modal Add */}
-			<ModalAdd
-				isOpen={isOpenAdd}
-				onClose={closeModalAdd}
-				onSubmit={handleSave}
-			/>
 
 			{/* Modal Edit */}
 			<ModalEdit

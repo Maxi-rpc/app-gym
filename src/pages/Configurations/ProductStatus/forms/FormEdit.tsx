@@ -21,7 +21,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
-		id: defaultData?.id || "",
+		id: defaultData?.id || 0,
 		name: defaultData?.name || "",
 		description: defaultData?.description || "",
 	});
@@ -53,7 +53,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
 			setFeedback({
 				variant: "success",
-				title: "Reegistro guardado.",
+				title: "Registro guardado.",
 				message: resp?.data?.message,
 			});
 		} catch (error) {

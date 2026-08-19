@@ -8,10 +8,6 @@ import { AlertHexaIcon } from "../../../icons";
 
 import { Product } from "../../../service/types/Product";
 
-import { formatLocalMoney } from "../../../utils/number";
-
-// import { formatLocalDateTime } from "../../../utils/date";
-
 type SortKey =
 	| "barcode"
 	| "name"
@@ -19,6 +15,7 @@ type SortKey =
 	| "category"
 	| "salePrice"
 	| "stock"
+	| "minimumStock"
 	| "status";
 
 type SortConfig = {
@@ -73,6 +70,8 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 				return data?.sale_price ?? "";
 			case "stock":
 				return data?.stock ?? "";
+			case "minimumStock":
+				return data?.minimum_stock ?? "";
 			case "status":
 				return data?.status?.name ?? "";
 		}
@@ -114,22 +113,6 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 					<tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("barcode")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Barcode <SortIcon column="barcode" />
-							</button>
-						</th>
-						{/* <th className="px-4 py-3 text-left">
-							<button
-								onClick={() => handleSort("image")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Imagen <SortIcon column="image" />
-							</button>
-						</th> */}
-						<th className="px-4 py-3 text-left">
-							<button
 								onClick={() => handleSort("name")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
@@ -146,18 +129,18 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 						</th>
 						<th className="px-4 py-3 text-left">
 							<button
-								onClick={() => handleSort("salePrice")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								Precio <SortIcon column="salePrice" />
-							</button>
-						</th>
-						<th className="px-4 py-3 text-left">
-							<button
 								onClick={() => handleSort("stock")}
 								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
 							>
 								Stock <SortIcon column="stock" />
+							</button>
+						</th>
+						<th className="px-4 py-3 text-left">
+							<button
+								onClick={() => handleSort("minimumStock")}
+								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+							>
+								Stock Mínimo <SortIcon column="minimumStock" />
 							</button>
 						</th>
 						<th className="px-4 py-3 text-left">
@@ -186,9 +169,6 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 							} hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
 						>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item.barcode}
-							</td>
-							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								<div className="flex items-center gap-3">
 									<div className="h-12.5 w-12.5 overflow-hidden rounded-md">
 										<img
@@ -204,14 +184,11 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 									</div>
 								</div>
 							</td>
-							{/* <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item?.name}
-							</td> */}
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								{item?.category?.name}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{formatLocalMoney(item?.sale_price)}
+								{item?.stock}
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
 								<Badge
@@ -219,12 +196,19 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
 										item?.stock > item?.minimum_stock ? "success" : "warning"
 									}
 								>
-									{item?.stock}{" "}
+									{item?.minimum_stock}
 									{item?.stock <= item?.minimum_stock && <AlertHexaIcon />}
 								</Badge>
 							</td>
 							<td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{item?.status?.name}
+								<Badge
+									color={
+										item?.stock > item?.minimum_stock ? "success" : "warning"
+									}
+								>
+									{item?.stock > item?.minimum_stock ? "Normal" : "Bajo"}
+									{item?.stock <= item?.minimum_stock && <AlertHexaIcon />}
+								</Badge>
 							</td>
 							<td className="px-4 py-3 text-sm">
 								<div className="flex gap-2">
