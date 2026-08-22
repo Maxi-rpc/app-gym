@@ -18,6 +18,13 @@ export interface Product {
 	image?: string;
 }
 
+export interface ProductById {
+	id?: string;
+	name?: string;
+	sku?: string;
+	barcode?: string;
+}
+
 export interface CreateProductInput {
 	name: string;
 	description?: string | null;

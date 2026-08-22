@@ -38,6 +38,7 @@ import PaymentsRegister from "./pages/Payments/Register/Register";
 import Products from "./pages/Products/List/List";
 import ProductsStock from "./pages/Products/Stock/List";
 import ProductsHistoryStock from "./pages/Products/StockHistory/List";
+import ProductRegisterSale from "./pages/Products/Register/Register";
 
 // configurations
 import ConfigRoles from "./pages/Configurations/Roles/Roles";
@@ -174,6 +175,14 @@ export default function App() {
 
 							{/* Products Page */}
 							<Route path="/products">
+								<Route
+									path="register-sale"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ProductRegisterSale />
+										</ProtectedRoute>
+									}
+								/>
 								<Route
 									path="list"
 									element={

@@ -87,6 +87,12 @@ const mainItems: NavItem[] = [
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
+				name: "Registrar venta",
+				path: "/products/register-sale",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
 				name: "Productos",
 				path: "/products/list",
 				requiredRoles: ["Admin", "Profesor"],
