@@ -6,7 +6,7 @@ type Props = {
 
 export default function QRCard({ value }: Props) {
 	return (
-		<div className="p-2 mx-auto sm:mx-0 border-gray-20 overflow-hidden rounded-2xl border dark:border-gray-800">
+		<div className="p-2 mx-auto sm:mx-0 border-gray-20 overflow-hidden rounded-2xl border bg-white dark:border-gray-800">
 			<QRCode className="size-34" value={value || "no data"} />
 		</div>
 	);

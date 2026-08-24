@@ -27,13 +27,12 @@ const tabs: Tab[] = [
 		id: "saleFast",
 		label: "Venta Rápida",
 		title: "Venta Rápida",
-		description:
-			"EN DESARROLLO",
+		description: "EN DESARROLLO",
 	},
 ];
 
 export default function Tabs({ tabBodyOne, tabBodyTwo }: Props) {
-	const [activeTab, setActiveTab] = useState<TabId>("saleFast");
+	const [activeTab, setActiveTab] = useState<TabId>("saleManual");
 	const tabListId = useId();
 	const selectedTab = tabs.find((tab) => tab.id === activeTab) ?? tabs[0];
 
