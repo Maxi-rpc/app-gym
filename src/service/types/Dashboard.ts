@@ -48,6 +48,15 @@ export interface Charts {
 	attendance_by_month: AttendanceByMonth[];
 }
 
+export interface ProductSummary {
+	sales_today: number;
+	revenue_month: number;
+	units_sold_month: number;
+	top_product_id: string;
+	top_product_name: string;
+	top_product_quantity: number;
+}
+
 /*
 {
   "clients": {
@@ -85,6 +94,14 @@ export interface Charts {
 	"attendance_by_month": [
       { "month": "Ene", "count": 180 }
     ]
+  },
+  "product": {
+      "sales_today": 1,
+      "revenue_month": 150,
+      "units_sold_month": 1,
+      "top_product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+      "top_product_name": "Chicle Top Line",
+      "top_product_quantity": 1
   }
 }
 */

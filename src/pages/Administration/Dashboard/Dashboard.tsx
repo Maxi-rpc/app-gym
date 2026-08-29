@@ -16,12 +16,15 @@ import SectionClients from "./SectionClients/SectionClients";
 import SectionAttendances from "./SectionAttendances/SectionAttendances";
 import SectionAttendanceNew from "./SectionAttendances/SectionAttendancesNew";
 
+import SectionProductSummary from "./SectionProductSummary/SectionProductSummary";
+
 export default function Dashboard() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [client, setClient] = useState();
 	const [payment, setPayment] = useState();
 	const [attendance, setAttendance] = useState();
 	const [charts, setCharts] = useState();
+	const [product, setProduct] = useState();
 
 	const getData = async () => {
 		try {
@@ -34,6 +37,7 @@ export default function Dashboard() {
 			setPayment(resp?.data?.payments);
 			setAttendance(resp?.data?.attendance);
 			setCharts(resp?.data?.charts);
+			setProduct(resp?.data?.product);
 		} catch (error) {
 			console.error("Error No se puede obtener datos", error);
 
@@ -91,8 +95,12 @@ export default function Dashboard() {
 					<SectionAttendanceNew data={charts || null} />
 				</div>
 
-				<div className="col-span-12">
+				{/* <div className="col-span-12">
 					<SectionRecentOrders />
+				</div> */}
+
+				<div className="col-span-12">
+					<SectionProductSummary product={product || null} />
 				</div>
 			</div>
 		</div>
