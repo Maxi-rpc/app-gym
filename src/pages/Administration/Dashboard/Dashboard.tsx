@@ -10,13 +10,14 @@ import { dashboardService } from "../../../service/dashboard.service";
 import SectionMetrics from "./SectionMetrics/SectionMetrics";
 import SectionMontlhly from "./SectionMontlhly/SectionMontlhly";
 import SectionMontlhyTarget from "./SectionMontlhyTarget/SectionMontlhyTarget";
-import SectionRecentOrders from "./SectionRecentOrders/SectionRecentOrders";
+// import SectionRecentOrders from "./SectionRecentOrders/SectionRecentOrders";
 
 import SectionClients from "./SectionClients/SectionClients";
 import SectionAttendances from "./SectionAttendances/SectionAttendances";
 import SectionAttendanceNew from "./SectionAttendances/SectionAttendancesNew";
 
 import SectionProductSummary from "./SectionProductSummary/SectionProductSummary";
+import SectionProductRanking from "./SectionProductRanking/ProductRanking";
 
 export default function Dashboard() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
@@ -25,6 +26,7 @@ export default function Dashboard() {
 	const [attendance, setAttendance] = useState();
 	const [charts, setCharts] = useState();
 	const [product, setProduct] = useState();
+	const [productRanking, setProductRanking] = useState();
 
 	const getData = async () => {
 		try {
@@ -38,6 +40,7 @@ export default function Dashboard() {
 			setAttendance(resp?.data?.attendance);
 			setCharts(resp?.data?.charts);
 			setProduct(resp?.data?.product);
+			setProductRanking(resp?.data?.product_ranking);
 		} catch (error) {
 			console.error("Error No se puede obtener datos", error);
 
@@ -99,8 +102,10 @@ export default function Dashboard() {
 					<SectionRecentOrders />
 				</div> */}
 
-				<div className="col-span-12">
+				<div className="col-span-12 space-y-6 xl:col-span-12">
 					<SectionProductSummary product={product || null} />
+
+					<SectionProductRanking data={productRanking || null} />
 				</div>
 			</div>
 		</div>

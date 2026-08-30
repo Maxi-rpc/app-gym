@@ -57,6 +57,13 @@ export interface ProductSummary {
 	top_product_quantity: number;
 }
 
+export interface ProductRanking {
+	product_id: string;
+	product_name: string;
+	quantity_sold: number;
+	total_revenue: number;
+}
+
 /*
 {
   "clients": {
@@ -102,6 +109,14 @@ export interface ProductSummary {
       "top_product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
       "top_product_name": "Chicle Top Line",
       "top_product_quantity": 1
-  }
+  },
+  "product_ranking": [
+      {
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 1,
+          "total_revenue": 150
+      }
+  ]
 }
 */

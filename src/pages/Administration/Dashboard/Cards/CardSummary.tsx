@@ -47,9 +47,13 @@ export default function CardSummary({
 						</span>
 					)}
 
-					{total && (
+					{total ? (
 						<h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
 							<AnimateCount target={total ? total : 0} />
+						</h4>
+					) : (
+						<h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+							{total}
 						</h4>
 					)}
 				</div>
