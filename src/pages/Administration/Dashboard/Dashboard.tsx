@@ -18,6 +18,7 @@ import SectionAttendanceNew from "./SectionAttendances/SectionAttendancesNew";
 
 import SectionProductSummary from "./SectionProductSummary/SectionProductSummary";
 import SectionProductRanking from "./SectionProductRanking/ProductRanking";
+import SectionProductRevenue from "./SectionProductRevenue/SectionProductRevenue";
 
 export default function Dashboard() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
@@ -27,6 +28,7 @@ export default function Dashboard() {
 	const [charts, setCharts] = useState();
 	const [product, setProduct] = useState();
 	const [productRanking, setProductRanking] = useState();
+	const [productRevenue, setProductRevenue] = useState();
 
 	const getData = async () => {
 		try {
@@ -41,6 +43,7 @@ export default function Dashboard() {
 			setCharts(resp?.data?.charts);
 			setProduct(resp?.data?.product);
 			setProductRanking(resp?.data?.product_ranking);
+			setProductRevenue(resp?.data?.product_revenue_month);
 		} catch (error) {
 			console.error("Error No se puede obtener datos", error);
 
@@ -106,6 +109,8 @@ export default function Dashboard() {
 					<SectionProductSummary product={product || null} />
 
 					<SectionProductRanking data={productRanking || null} />
+
+					<SectionProductRevenue data={productRevenue || null} />
 				</div>
 			</div>
 		</div>
