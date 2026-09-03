@@ -48,6 +48,36 @@ export interface Charts {
 	attendance_by_month: AttendanceByMonth[];
 }
 
+export interface ProductSummary {
+	sales_today: number;
+	revenue_month: number;
+	units_sold_month: number;
+	top_product_id: string;
+	top_product_name: string;
+	top_product_quantity: number;
+}
+
+export interface ProductRanking {
+	product_id: string;
+	product_name: string;
+	quantity_sold: number;
+	total_revenue: number;
+}
+
+export interface ProductSaleEvo {
+	month: number;
+	product_id: string;
+	product_name: string;
+	quantity_sold: number;
+	total_revenue: number;
+}
+
+export interface ProductRevenueMonth {
+	month: number;
+	total_quantity: number;
+	total_revenue: number;
+}
+
 /*
 {
   "clients": {
@@ -85,6 +115,338 @@ export interface Charts {
 	"attendance_by_month": [
       { "month": "Ene", "count": 180 }
     ]
-  }
+  },
+  "product": {
+      "sales_today": 1,
+      "revenue_month": 150,
+      "units_sold_month": 1,
+      "top_product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+      "top_product_name": "Chicle Top Line",
+      "top_product_quantity": 1
+  },
+  "product_ranking": [
+      {
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 1,
+          "total_revenue": 150
+      }
+  ],
+  "product_sale_month": [
+      {
+          "month": 1,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 1,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 1,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 2,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 2,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 2,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 3,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 3,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 3,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 4,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 4,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 4,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 5,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 5,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 5,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 6,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 6,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 6,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 7,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 7,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 7,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 8,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 8,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 8,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 1,
+          "total_revenue": 150
+      },
+      {
+          "month": 9,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 9,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 9,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 10,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 10,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 10,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 11,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 11,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 11,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 12,
+          "product_id": "6e9218da-d38f-45ae-884d-2a955da7f273",
+          "product_name": "Agua Mineral 1,5 l Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 12,
+          "product_id": "2e79a950-734e-41ab-8c83-7db72acd9118",
+          "product_name": "Agua Mineral 500ml Corazon",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      },
+      {
+          "month": 12,
+          "product_id": "7029b0c6-6027-47a4-9a85-07c1f7463d20",
+          "product_name": "Chicle Top Line",
+          "quantity_sold": 0,
+          "total_revenue": 0
+      }
+  ],
+  "product_revenue_month": [
+        {
+            "month": 1,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 2,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 3,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 4,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 5,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 6,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 7,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 8,
+            "total_quantity": 1,
+            "total_revenue": 150
+        },
+        {
+            "month": 9,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 10,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 11,
+            "total_quantity": 0,
+            "total_revenue": 0
+        },
+        {
+            "month": 12,
+            "total_quantity": 0,
+            "total_revenue": 0
+        }
+    ]
 }
 */
