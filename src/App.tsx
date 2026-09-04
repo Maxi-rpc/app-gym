@@ -19,7 +19,8 @@ import UserProfiles from "./pages/UserProfiles";
 import Dashboards from "./pages/Administration/Dashboard/Dashboard";
 
 // clients
-import Clients from "./pages/Clients/Clients";
+import Clients from "./pages/Clients/List/Clients";
+import ClientsAdd from "./pages/Clients/Add/ClientAdd";
 import ClientDetails from "./pages/Clients/Details/ClientDetails";
 
 // employee
@@ -100,6 +101,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<Clients />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="add"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<ClientsAdd />
 										</ProtectedRoute>
 									}
 								/>

@@ -39,3 +39,28 @@ export interface UpdateClientInput {
 export interface DeleteClientInput {
 	id: string;
 }
+
+export type ClientPageSize = 5 | 10 | 15 | 20;
+
+export type ClientSortKey =
+	| "user_id"
+	| "name"
+	| "last_name"
+	| "created_at"
+	| "status"
+	| "updated_at";
+
+export interface GetClientsInput {
+	page?: number;
+	pageSize?: ClientPageSize;
+	search?: string;
+	sortBy?: ClientSortKey;
+	sortDirection?: "asc" | "desc";
+}
+
+export interface ClientsPagination {
+	page: number;
+	pageSize: ClientPageSize;
+	total: number;
+	totalPages: number;
+}

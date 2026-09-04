@@ -30,6 +30,20 @@ const mainItems: NavItem[] = [
 		name: "Clientes",
 		path: "/clients",
 		requiredRoles: ["Admin", "Profesor"],
+		subItems: [
+			{
+				name: "Listado",
+				path: "/clients",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Registrar",
+				path: "/clients/add",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+		],
 	},
 	{
 		icon: <Lineicons icon={Dumbbell1Outlined} size={40} />,

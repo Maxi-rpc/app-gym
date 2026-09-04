@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-import Alert from "../../components/ui/alert/Alert";
-import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
-import IconSpinner from "../../components/ui/button/IconSpinner";
+import Label from "../../../../components/form/Label";
+import Input from "../../../../components/form/input/InputField";
+import Button from "../../../../components/ui/button/Button";
+import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { Client } from "../../service/types/Client";
-import { clientService } from "../../service/client.service";
-import { profileService } from "../../service/profile.service";
+import { Client } from "../../../../service/types/Client";
+import { clientService } from "../../../../service/client.service";
+import { profileService } from "../../../../service/profile.service";
 
 type Props = {
 	onSubmit?: () => void;
