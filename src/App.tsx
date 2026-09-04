@@ -19,7 +19,7 @@ import UserProfiles from "./pages/UserProfiles";
 import Dashboards from "./pages/Administration/Dashboard/Dashboard";
 
 // clients
-import Clients from "./pages/Clients/Clients";
+import Clients from "./pages/Clients/List/Clients";
 import ClientDetails from "./pages/Clients/Details/ClientDetails";
 
 // employee

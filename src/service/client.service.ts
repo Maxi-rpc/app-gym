@@ -3,6 +3,7 @@ import {
 	CreateClientInput,
 	UpdateClientInput,
 	DeleteClientInput,
+	GetClientsInput,
 } from "./types/Client";
 
 async function getById(id: string) {
@@ -52,7 +53,7 @@ async function getByCustomId(search: string) {
 	return { data: data?.clients, error: error };
 }
 
-async function getAll() {
+async function getAll(input: GetClientsInput = {}) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -63,13 +64,18 @@ async function getAll() {
 
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke("get-client-all", {
+		body: input,
 		headers: {
 			Authorization: `Bearer ${session_token}`,
 		},
-		method: "GET",
+		method: "POST",
 	});
 
-	return { data: data?.clients, error: error };
+	return {
+		data: data?.data?.clients,
+		pagination: data?.data?.pagination,
+		error: error,
+	};
 }
 
 async function create(formData: CreateClientInput) {
