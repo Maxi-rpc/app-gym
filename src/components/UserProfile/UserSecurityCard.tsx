@@ -153,7 +153,7 @@ export default function UserSecurityCard() {
 								</div> */}
 
 								<div className="col-span-2">
-									<Label>
+									<Label htmlFor="password">
 										Password Nueva <span className="text-error-500">*</span>
 									</Label>
 									<div className="relative">
@@ -177,7 +177,7 @@ export default function UserSecurityCard() {
 								</div>
 							</div>
 						</div>
-						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+						<div className="flex items-center gap-3 px-2 mt-6 justify-end">
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>

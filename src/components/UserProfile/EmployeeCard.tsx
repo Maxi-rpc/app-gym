@@ -4,6 +4,7 @@ import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
+import TextArea from "../form/input/TextArea";
 import Label from "../form/Label";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
@@ -119,7 +120,7 @@ export default function EmployeeCard() {
 				<div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 					<div>
 						<h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-							Empleado
+							Datos Opcionales
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
@@ -201,11 +202,15 @@ export default function EmployeeCard() {
 
 								<div className="col-span-2 lg:col-span-1">
 									<Label htmlFor="observations">Observación</Label>
-									<Input
-										type="text"
+									<TextArea
 										value={formData?.observations}
-										name="observations"
-										onChange={handleChange}
+										onChange={(value) =>
+											setFormData((prev) => ({
+												...prev,
+												observations: value,
+											}))
+										}
+										rows={3}
 									/>
 								</div>
 							</div>
