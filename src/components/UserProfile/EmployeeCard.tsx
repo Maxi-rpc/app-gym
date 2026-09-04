@@ -4,6 +4,7 @@ import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
+import TextArea from "../form/input/TextArea";
 import Label from "../form/Label";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
@@ -119,7 +120,7 @@ export default function EmployeeCard() {
 				<div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 					<div>
 						<h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-							Empleado
+							Datos Opcionales
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
@@ -180,7 +181,7 @@ export default function EmployeeCard() {
 						<div className="px-2 overflow-y-auto custom-scrollbar md:h-auto">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Fecha de Ingreso</Label>
+									<Label htmlFor="hire_date">Fecha de Ingreso</Label>
 									<Input
 										type="date"
 										value={formData?.hire_date || ""}
@@ -190,7 +191,7 @@ export default function EmployeeCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Especialidad</Label>
+									<Label htmlFor="specialist">Especialidad</Label>
 									<Input
 										type="text"
 										value={formData?.specialist}
@@ -200,17 +201,21 @@ export default function EmployeeCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Observación</Label>
-									<Input
-										type="text"
+									<Label htmlFor="observations">Observación</Label>
+									<TextArea
 										value={formData?.observations}
-										name="observations"
-										onChange={handleChange}
+										onChange={(value) =>
+											setFormData((prev) => ({
+												...prev,
+												observations: value,
+											}))
+										}
+										rows={3}
 									/>
 								</div>
 							</div>
 						</div>
-						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+						<div className="flex items-center gap-3 px-2 mt-6 justify-end">
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>

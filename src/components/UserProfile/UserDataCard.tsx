@@ -118,15 +118,6 @@ export default function UserDataCard() {
 										{profile?.name} {profile?.last_name}{" "}
 										<Badge color="success">{profile?.status?.name}</Badge>
 									</h4>
-									<div className="flex items-center gap-1 sm:gap-3">
-										<p className="text-sm text-gray-500 dark:text-gray-400">
-											{roleNames}
-										</p>
-										<div className="hidden h-3.5 w-px bg-gray-300 sm:block dark:bg-gray-700"></div>
-										{/* <p className="text-sm text-gray-500 dark:text-gray-400">
-											Buenos Aires, Argentina.
-										</p> */}
-									</div>
 								</div>
 							</div>
 						</div>
@@ -210,76 +201,70 @@ export default function UserDataCard() {
 					</div>
 					<form className="flex flex-col">
 						<div className="custom-scrollbar h-112.5 md:h-auto overflow-y-auto px-2 pb-3">
-							<div className="mt-7">
-								<h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-									Información personal
-								</h5>
+							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+								<div className="col-span-2 lg:col-span-1">
+									<Label htmlFor="name">Nombre</Label>
+									<Input
+										type="text"
+										value={formData?.name}
+										name="name"
+										onChange={handleChange}
+									/>
+								</div>
 
-								<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-									<div className="col-span-2 lg:col-span-1">
-										<Label>Nombre</Label>
-										<Input
-											type="text"
-											value={formData?.name}
-											name="name"
-											onChange={handleChange}
-										/>
-									</div>
+								<div className="col-span-2 lg:col-span-1">
+									<Label htmlFor="last_name">Apellido</Label>
+									<Input
+										type="text"
+										value={formData?.last_name}
+										name="last_name"
+										onChange={handleChange}
+									/>
+								</div>
 
-									<div className="col-span-2 lg:col-span-1">
-										<Label>Apellido</Label>
-										<Input
-											type="text"
-											value={formData?.last_name}
-											name="last_name"
-											onChange={handleChange}
-										/>
-									</div>
-
-									<div className="col-span-2 lg:col-span-1">
-										<Label>Email</Label>
+								{/* <div className="col-span-2 lg:col-span-1">
+										<Label htmlFor="email">Email</Label>
 										<Input
 											type="text"
 											value={formData?.email}
 											name="email"
 											onChange={handleChange}
 										/>
-									</div>
+									</div> */}
 
-									<div className="col-span-2 lg:col-span-1">
-										<Label>Documento</Label>
-										<Input
-											type="text"
-											value={formData?.document || ""}
-											name="document"
-											onChange={handleChange}
-										/>
-									</div>
+								<div className="col-span-2 lg:col-span-1">
+									<Label htmlFor="document">Documento</Label>
+									<Input
+										type="text"
+										value={formData?.document || ""}
+										name="document"
+										onChange={handleChange}
+									/>
+								</div>
 
-									<div className="col-span-2 lg:col-span-1">
-										<Label>Teléfono</Label>
-										<Input
-											type="text"
-											value={formData?.phone || ""}
-											name="phone"
-											onChange={handleChange}
-										/>
-									</div>
+								<div className="col-span-2 lg:col-span-1">
+									<Label htmlFor="phone">Teléfono</Label>
+									<Input
+										type="text"
+										value={formData?.phone || ""}
+										name="phone"
+										onChange={handleChange}
+									/>
+								</div>
 
-									<div className="col-span-2 lg:col-span-1">
-										<Label>Fecha de Cumpleaños</Label>
-										<Input
-											type="date"
-											placeholder="AAAA-MM-DD"
-											value={formData?.birth_date}
-											name="birth_date"
-											onChange={handleChange}
-										/>
-									</div>
+								<div className="col-span-2 lg:col-span-1">
+									<Label htmlFor="birth_date">Fecha de Cumpleaños</Label>
+									<Input
+										type="date"
+										placeholder="AAAA-MM-DD"
+										value={formData?.birth_date}
+										name="birth_date"
+										onChange={handleChange}
+									/>
 								</div>
 							</div>
 						</div>
-						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+						<div className="flex items-center gap-3 px-2 mt-6 justify-end">
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>

@@ -4,6 +4,7 @@ import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
+import TextArea from "../form/input/TextArea";
 import Label from "../form/Label";
 import Alert from "../../components/ui/alert/Alert";
 import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
@@ -119,7 +120,7 @@ export default function ClientCard() {
 				<div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 					<div>
 						<h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-							Cliente
+							Datos Opcionales
 						</h4>
 
 						<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
@@ -189,7 +190,7 @@ export default function ClientCard() {
 						<div className="px-2 overflow-y-auto custom-scrollbar">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Altura (cm)</Label>
+									<Label htmlFor="height">Altura (cm)</Label>
 									<Input
 										type="number"
 										value={formData?.height}
@@ -199,7 +200,7 @@ export default function ClientCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Peso (kg)</Label>
+									<Label htmlFor="height">Peso (kg)</Label>
 									<Input
 										type="number"
 										value={formData?.weight}
@@ -209,7 +210,9 @@ export default function ClientCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Contacto de Emergencia</Label>
+									<Label htmlFor="emergency_contact">
+										Contacto de Emergencia
+									</Label>
 									<Input
 										type="text"
 										value={formData?.emergency_contact}
@@ -219,17 +222,21 @@ export default function ClientCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Notas Médicas</Label>
-									<Input
-										type="text"
+									<Label htmlFor="medical_notes">Notas Médicas</Label>
+									<TextArea
 										value={formData?.medical_notes}
-										name="medical_notes"
-										onChange={handleChange}
+										onChange={(value) =>
+											setFormData((prev) => ({
+												...prev,
+												medical_notes: value,
+											}))
+										}
+										rows={3}
 									/>
 								</div>
 							</div>
 						</div>
-						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+						<div className="flex items-center gap-3 px-2 mt-6 justify-end">
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
