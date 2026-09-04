@@ -180,7 +180,7 @@ export default function EmployeeCard() {
 						<div className="px-2 overflow-y-auto custom-scrollbar md:h-auto">
 							<div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Fecha de Ingreso</Label>
+									<Label htmlFor="hire_date">Fecha de Ingreso</Label>
 									<Input
 										type="date"
 										value={formData?.hire_date || ""}
@@ -190,7 +190,7 @@ export default function EmployeeCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Especialidad</Label>
+									<Label htmlFor="specialist">Especialidad</Label>
 									<Input
 										type="text"
 										value={formData?.specialist}
@@ -200,7 +200,7 @@ export default function EmployeeCard() {
 								</div>
 
 								<div className="col-span-2 lg:col-span-1">
-									<Label>Observación</Label>
+									<Label htmlFor="observations">Observación</Label>
 									<Input
 										type="text"
 										value={formData?.observations}
@@ -210,7 +210,7 @@ export default function EmployeeCard() {
 								</div>
 							</div>
 						</div>
-						<div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+						<div className="flex items-center gap-3 px-2 mt-6 justify-end">
 							<Button size="sm" variant="outline" onClick={handleCloseModal}>
 								Cerrar
 							</Button>
