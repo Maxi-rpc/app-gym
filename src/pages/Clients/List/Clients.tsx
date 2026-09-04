@@ -25,19 +25,12 @@ import {
 import { clientService } from "../../../service/client.service";
 
 import DataTable from "./DataTable";
-import ModalAdd from "./modals/ModalAdd";
 import ModalEdit from "./modals/ModalEdit";
 import ModalDelete from "./modals/ModalDelete";
 
 export default function Clients() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const {
-		isOpen: isOpenAdd,
-		openModal: openModalAdd,
-		closeModal: closeModalAdd,
-	} = useModal();
 
 	const {
 		isOpen: isOpenEdit,
@@ -149,11 +142,6 @@ export default function Clients() {
 		setSearchText(e.target.value);
 	};
 
-	const handleSave = () => {
-		closeModalAdd();
-		getData();
-	};
-
 	const handleEdit = (client: Client) => {
 		setSelectData(client);
 		openModalEdit();
@@ -167,6 +155,10 @@ export default function Clients() {
 	const handleDelete = (client: Client) => {
 		setSelectData(client);
 		openModalDelete();
+	};
+
+	const handleAdd = () => {
+		navigate("/clients/add");
 	};
 
 	const handleDetail = (client: Client) => {
@@ -241,7 +233,7 @@ export default function Clients() {
 					</Button>
 					<Button
 						size="sm"
-						onClick={openModalAdd}
+						onClick={handleAdd}
 						startIcon={
 							<Lineicons icon={PlusOutlined} size={20} color="white" />
 						}
@@ -266,13 +258,6 @@ export default function Clients() {
 					onDelet={handleDelete}
 				/>
 			</div>
-
-			{/* Modal Add */}
-			<ModalAdd
-				isOpen={isOpenAdd}
-				onClose={closeModalAdd}
-				onSubmit={handleSave}
-			/>
 
 			{/* Modal Edit */}
 			<ModalEdit
