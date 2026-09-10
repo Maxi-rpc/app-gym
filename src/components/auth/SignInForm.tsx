@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+
 import { EyeCloseIcon, EyeIcon } from "../../icons";
+
+import Form from "../form/Form";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
+
 import { useAuth } from "../../hooks/useAuth";
 
 // const IconGoogle = () => {
@@ -60,8 +64,7 @@ export default function SignInForm() {
 	const { login, isLoading } = useAuth();
 	const navigate = useNavigate();
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const handleSubmit = async () => {
 		setError("");
 
 		// Validación básica
@@ -76,7 +79,7 @@ export default function SignInForm() {
 		}
 
 		try {
-			await login(email, password); // maxirpc Maximiliano.26
+			await login(email, password);
 			navigate("/");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Error al iniciar sesión");
@@ -121,7 +124,7 @@ export default function SignInForm() {
 								</span>
 							</div>
 						</div> */}
-						<form onSubmit={handleSubmit}>
+						<Form onSubmit={handleSubmit}>
 							<div className="space-y-6">
 								{error && (
 									<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
@@ -131,7 +134,7 @@ export default function SignInForm() {
 									</div>
 								)}
 								<div>
-									<Label>
+									<Label htmlFor="email">
 										Email <span className="text-error-500">*</span>{" "}
 									</Label>
 									<Input
@@ -141,10 +144,12 @@ export default function SignInForm() {
 										onChange={(e) => setEmail(e.target.value)}
 										disabled={isLoading}
 										autocomplete={email}
+										name="email"
+										id="email"
 									/>
 								</div>
 								<div>
-									<Label>
+									<Label htmlFor="password">
 										Password <span className="text-error-500">*</span>{" "}
 									</Label>
 									<div className="relative">
@@ -155,6 +160,8 @@ export default function SignInForm() {
 											onChange={(e) => setPassword(e.target.value)}
 											disabled={isLoading}
 											autocomplete="current-password"
+											name="password"
+											id="password"
 										/>
 										<span
 											onClick={() => setShowPassword(!showPassword)}
@@ -197,7 +204,7 @@ export default function SignInForm() {
 									</Button>
 								</div>
 							</div>
-						</form>
+						</Form>
 
 						<div className="mt-5">
 							<p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
