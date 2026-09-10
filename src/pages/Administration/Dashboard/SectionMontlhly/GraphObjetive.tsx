@@ -60,7 +60,12 @@ export default function GraphObjetive({ series }: Props) {
 
 	return (
 		<div className="max-h-82.5" id="chartDarkStyle">
-			<Chart options={options} series={series} type="radialBar" height={330} />
+			<Chart
+				options={options}
+				series={series}
+				type="radialBar"
+				height={"auto"}
+			/>
 		</div>
 	);
 }
