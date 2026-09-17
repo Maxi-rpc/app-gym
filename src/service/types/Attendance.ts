@@ -37,6 +37,13 @@ export interface RegisterAttendanceInput {
 	access_reason?: string;
 }
 
+export interface RegisterAttendanceTerminalInput {
+	qr_token?: string;
+	dni?: string;
+	check_in_at?: string;
+	check_out_at?: string;
+}
+
 // manual
 
 // update

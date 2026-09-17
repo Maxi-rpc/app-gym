@@ -57,6 +57,12 @@ const mainItems: NavItem[] = [
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
+				name: "Registro de Asistencia Clientes",
+				path: "/assistants/register-clients",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
 				name: "Escanear QR",
 				path: "/assistants/register-qr",
 				requiredRoles: ["Admin", "Profesor"],
