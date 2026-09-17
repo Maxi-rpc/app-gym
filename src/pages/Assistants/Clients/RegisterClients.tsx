@@ -107,8 +107,8 @@ export default function RegisterClients() {
 										{feedback && (
 											<Alert
 												variant={feedback?.variant || "info"}
-												title={feedback?.title || ""}
-												message={feedback?.message || ""}
+												title={feedback?.title}
+												message={feedback?.message}
 											/>
 										)}
 
