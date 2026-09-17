@@ -1,6 +1,7 @@
 import { supabase } from "../utils/supabase";
 import {
 	RegisterAttendanceInput,
+	RegisterAttendanceTerminalInput,
 	UpdateAttendanceInput,
 	DeleteAttendanceInput,
 } from "./types/Attendance";
@@ -105,6 +106,27 @@ async function register(formData: RegisterAttendanceInput) {
 	return { data: data, error: error };
 }
 
+async function registerTerminal(formData: RegisterAttendanceTerminalInput) {
+	const checkIn = formData.check_in_at ? toUtcIso(formData.check_in_at) : "";
+
+	const checkOut = formData.check_out_at ? toUtcIso(formData.check_out_at) : "";
+
+	// 2) Invocar la Edge Function
+	const { data, error } = await supabase.functions.invoke(
+		"attendance-by-terminal",
+		{
+			body: {
+				qr_token: formData.qr_token,
+				dni: formData.dni,
+				check_in_at: checkIn,
+				check_out_at: checkOut,
+			},
+		},
+	);
+
+	return { data: data, error: error };
+}
+
 async function create() {
 	console.log("attendanceService.create");
 }
@@ -174,6 +196,7 @@ export const attendanceService = {
 	getAll,
 	getById,
 	register,
+	registerTerminal,
 	create, // to do
 	update,
 	remove,

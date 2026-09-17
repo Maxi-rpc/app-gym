@@ -1,7 +1,6 @@
-import { SetStateAction, useState, useEffect } from "react";
+import { useState } from "react";
 
 import Layout from "./Layout";
-import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import PageMeta from "../../../components/common/PageMeta";
 
 import Form from "../../../components/form/Form";
@@ -11,105 +10,76 @@ import Button from "../../../components/ui/button/Button";
 import Alert from "../../../components/ui/alert/Alert";
 import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
-import { Lineicons } from "@lineiconshq/react-lineicons";
-import { RefreshCircle1ClockwiseOutlined } from "@lineiconshq/free-icons";
-
-import { ClientAssistant } from "../../../service/types/ClientAssistant";
 import { attendanceService } from "../../../service/attendance.service";
 
 export default function RegisterClients() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [searchText, setSearchText] = useState("");
-	const [selectData, setSelectData] = useState<ClientAssistant | null>(null);
-	const [listData, setListData] = useState<ClientAssistant[] | []>([]);
+	const [formData, setFormData] = useState({ qr: "", dni: "" });
 
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 
-	const getData = async () => {
-		try {
-			setFeedback(null);
-			setIsLoading(true);
-
-			const resp = await attendanceService.getAll();
-			if (resp.error) throw resp.error;
-
-			setListData(resp.data);
-		} catch (error) {
-			console.error("Error No se puede obtener datos", error);
-
-			setFeedback({
-				variant: "error",
-				title: "No se puede obtener datos",
-				message:
-					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
-			});
-		} finally {
-			setIsLoading(false);
-		}
+	const validateArgentineDNI = (dni: string) => {
+		const regex = /^\d{7,8}$/;
+		return regex.test(dni);
 	};
 
-	const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
-		setSearchText(e.target.value);
-	};
-
-	const handleSave = async (qrValue: string) => {
-		try {
-			setFeedback(null);
-
-			const date_to_string = new Date().toISOString();
-
-			const body = {
-				qr_token: qrValue,
-				check_in_at: date_to_string,
-				check_out_at: null,
-			};
-
-			const resp = await attendanceService.register(body);
-			if (resp.error) throw resp.error;
-
-			if (resp.data) {
-				setFeedback({
-					variant: "info",
-					title: "Verificar",
-					message: resp.data?.message,
-				});
-			}
-		} catch (error) {
-			console.error("Error No se puede obtener datos", error);
-
-			setFeedback({
-				variant: "error",
-				title: "No se puede obtener datos",
-				message:
-					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
-			});
-		}
-		getData();
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
 	};
 
 	const handleSubmit = async () => {
 		setError("");
+		setIsLoading(true);
 
 		// Validación básica
-		if (!email || !password) {
-			setError("Por favor completa todos los campos*");
+		if (!formData.qr && !formData.dni) {
+			setError("Por favor completa uno de los campos QR o DNI.");
 			return;
 		}
 
-		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-			setError("Email inválido");
-			return;
+		// Validación dni
+		if (formData.dni) {
+			if (!validateArgentineDNI(formData.dni)) {
+				setError("El campo DNI debe ser solo números.");
+				return;
+			}
 		}
+		//return;
+
+		const date_to_string = new Date().toISOString();
+
+		const body = {
+			qr_token: formData.qr,
+			dni: formData.dni,
+			check_in_at: date_to_string,
+		};
 
 		try {
-			//await login(email, password);
-			console.log("");
+			const resp = await attendanceService.registerTerminal(body);
+			console.log("resp", resp.data);
+			if (resp.error) throw resp.error;
+
+			if (resp.data) {
+				setFeedback({
+					variant: "success",
+					title: resp.data?.data,
+					message: resp.data?.message,
+				});
+			}
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Error al iniciar sesión");
+			console.log("resp", err);
+			setError(
+				err instanceof Error ? err.message : "Error al registrar asistencia",
+			);
+		} finally {
+			setIsLoading(false);
+			setFormData({ qr: "", dni: "" });
 		}
 	};
 
@@ -128,12 +98,20 @@ export default function RegisterClients() {
 									Bienvenido a Degani Gym
 								</h1>
 								<p className="text-sm text-gray-500 dark:text-gray-400">
-									¡Introduce tu DNI o Escanea tu cod QR!
+									¡Escanea tu cod QR o Introduce tu DNI!
 								</p>
 							</div>
 							<div>
 								<Form onSubmit={handleSubmit}>
 									<div className="space-y-6">
+										{feedback && (
+											<Alert
+												variant={feedback?.variant || "info"}
+												title={feedback?.title || ""}
+												message={feedback?.message || ""}
+											/>
+										)}
+
 										{error && (
 											<div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
 												<p className="text-sm text-error-600 dark:text-error-400">
@@ -141,26 +119,30 @@ export default function RegisterClients() {
 												</p>
 											</div>
 										)}
+
 										<div>
-											<Label htmlFor="email">
-												DNI <span className="text-error-500">*</span>{" "}
-											</Label>
+											<Label htmlFor="qr">QR</Label>
 											<Input
-												placeholder="info@gmail.com"
-												type="email"
-												value={email}
-												onChange={(e) => setEmail(e.target.value)}
+												type="text"
+												value={formData?.qr}
+												onChange={handleChange}
 												disabled={isLoading}
-												autocomplete={email}
-												name="email"
-												id="email"
+												name="qr"
+												id="qr"
 											/>
-										</div>
-										<div>
-											<Label htmlFor="password">
-												Password <span className="text-error-500">*</span>{" "}
-											</Label>
 											<div className="relative"></div>
+										</div>
+
+										<div>
+											<Label htmlFor="dni">DNI (Solo números)</Label>
+											<Input
+												type="text"
+												value={formData?.dni}
+												onChange={handleChange}
+												disabled={isLoading}
+												name="dni"
+												id="dni"
+											/>
 										</div>
 
 										<div>
@@ -170,17 +152,11 @@ export default function RegisterClients() {
 												type="submit"
 												disabled={isLoading}
 											>
-												{isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+												{isLoading ? "Cargando..." : "Registrar!"}
 											</Button>
 										</div>
 									</div>
 								</Form>
-
-								<div className="mt-5">
-									<p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-										¿No tienes una cuenta? {""}
-									</p>
-								</div>
 							</div>
 						</div>
 					</div>
