@@ -27,7 +27,7 @@ import ClientDetails from "./pages/Clients/Details/ClientDetails";
 import Coachs from "./pages/Employeers/Employeers";
 
 // assistance
-import AssistantsRegisterClients from "./pages/Assistants/Clients/RegisterClients";
+import AssistantsTerminal from "./pages/Assistants/Terminal/Terminal";
 import Assistants from "./pages/Assistants/List/List";
 import AssistantsRegisterQR from "./pages/Assistants/RegisterQR/RegisterQR";
 import AssistantsRegister from "./pages/Assistants/Register/Register";
@@ -63,8 +63,8 @@ export default function App() {
 						<Route path="/signin" element={<SignIn />} />
 						<Route path="/signup" element={<SignUp />} />
 						<Route
-							path="/assistants/register-clients"
-							element={<AssistantsRegisterClients />}
+							path="/assistants/terminal"
+							element={<AssistantsTerminal />}
 						/>
 
 						{/* Dashboard Layout - Protected Routes */}
@@ -142,10 +142,10 @@ export default function App() {
 							{/* Assistant Page */}
 							<Route path="/assistants">
 								<Route
-									path="register-clients"
+									path="terminal"
 									element={
 										<ProtectedRoute>
-											<AssistantsRegisterClients />
+											<AssistantsTerminal />
 										</ProtectedRoute>
 									}
 								/>

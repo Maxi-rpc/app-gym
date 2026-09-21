@@ -12,7 +12,7 @@ import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
 
 import { attendanceService } from "../../../service/attendance.service";
 
-export default function RegisterClients() {
+export default function Terminal() {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
