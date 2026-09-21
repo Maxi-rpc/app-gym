@@ -1,9 +1,10 @@
-import { FormEvent, SetStateAction, useState, useEffect } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import PageMeta from "../../../components/common/PageMeta";
 
+import Form from "../../../components/form/Form";
 import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
@@ -103,8 +104,7 @@ export default function Clients() {
 		}
 	};
 
-	const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const handleSearchSubmit = () => {
 		setPage(1);
 		getData({ page: 1 });
 	};
@@ -198,7 +198,7 @@ export default function Clients() {
 				</div>
 
 				{/* Search */}
-				<form
+				<Form
 					onSubmit={handleSearchSubmit}
 					className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3"
 				>
@@ -240,7 +240,7 @@ export default function Clients() {
 					>
 						Agregar
 					</Button>
-				</form>
+				</Form>
 
 				{/* Data Table */}
 				<DataTable
