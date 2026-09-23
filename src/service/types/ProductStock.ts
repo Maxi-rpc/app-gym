@@ -1,38 +1,38 @@
 export interface Product {
-	id: string;
-	name: string;
+    id: string;
+    name: string;
 }
 
 export interface Employee {
-	id: string;
-	name: string;
-	last_name: string;
+    id: string;
+    name: string;
+    last_name: string;
 }
 
 export interface StockMovement {
-	id: string;
-	created_at?: string;
-	updated_at?: string;
-	name?: string;
-	movement_type: string;
-	quantity: number;
-	previous_stock: number;
-	new_stock: number;
-	reference_id?: string | null;
-	observation?: string;
-	product: Product;
-	employee: Employee;
+    id: string;
+    created_at?: string;
+    updated_at?: string;
+    name?: string;
+    movement_type: string;
+    quantity: number;
+    previous_stock: number;
+    new_stock: number;
+    reference_id?: string | null;
+    observation?: string;
+    product: Product;
+    employee: Employee;
 }
 
 export interface CreateStocktInput {
-	id: string;
-	name?: string;
-	movement_type: string;
-	quantity: number;
-	previous_stock: number;
-	new_stock: number;
-	reference_id?: string | null;
-	observation?: string;
+    id: string;
+    name?: string;
+    movement_type: string;
+    quantity: number;
+    previous_stock: number;
+    new_stock: number;
+    reference_id?: string | null;
+    observation?: string;
 }
 
 /*

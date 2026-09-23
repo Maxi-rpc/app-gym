@@ -1,170 +1,170 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-import { Session, User as SupabaseUser } from "@supabase/supabase-js";
+import { createContext, ReactNode, useEffect, useState } from 'react';
+import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 
-import { supabase } from "../utils/supabase";
-import { profileService } from "../service/profile.service.ts";
+import { supabase } from '../utils/supabase';
+import { profileService } from '../service/profile.service.ts';
 
-import { Profile } from "./types/Profile.ts";
+import { Profile } from './types/Profile.ts';
 
 export interface AuthContextType {
-	session: Session | null;
-	authUser: SupabaseUser | null;
-	profile: Profile | null;
+    session: Session | null;
+    authUser: SupabaseUser | null;
+    profile: Profile | null;
 
-	isLoading: boolean;
-	isAuthenticated: boolean;
+    isLoading: boolean;
+    isAuthenticated: boolean;
 
-	login: (email: string, password: string) => Promise<void>;
-	logout: () => Promise<void>;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
 
-	hasRole: (role: string) => boolean;
-	hasAnyRole: (roles: string[]) => boolean;
+    hasRole: (role: string) => boolean;
+    hasAnyRole: (roles: string[]) => boolean;
 
-	refreshProfile: () => Promise<void>;
+    refreshProfile: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-	undefined,
+    undefined,
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	const [session, setSession] = useState<Session | null>(null);
-	const [authUser, setAuthUser] = useState<SupabaseUser | null>(null);
-	const [profile, setProfile] = useState<Profile | null>(null);
+    const [session, setSession] = useState<Session | null>(null);
+    const [authUser, setAuthUser] = useState<SupabaseUser | null>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
 
-	const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
-	/**
-	 * Carga el perfil desde tu tabla profiles
-	 */
-	const loadProfile = async (userId: string) => {
-		try {
-			const profileData = await profileService.getById(userId);
+    /**
+     * Carga el perfil desde tu tabla profiles
+     */
+    const loadProfile = async (userId: string) => {
+        try {
+            const profileData = await profileService.getById(userId);
 
-			setProfile(profileData);
-		} catch (err) {
-			console.error("Error cargando profile", err);
+            setProfile(profileData);
+        } catch (err) {
+            console.error('Error cargando profile', err);
 
-			setProfile(null);
-		}
-	};
+            setProfile(null);
+        }
+    };
 
-	/**
-	 * Login
-	 */
-	const login = async (email: string, password: string) => {
-		const { error } = await supabase.auth.signInWithPassword({
-			email,
-			password,
-		});
+    /**
+     * Login
+     */
+    const login = async (email: string, password: string) => {
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-		if (error) throw error;
+        if (error) throw error;
 
-		// NO hacemos nada más.
-		// onAuthStateChange se encargará de cargar el profile.
-	};
+        // NO hacemos nada más.
+        // onAuthStateChange se encargará de cargar el profile.
+    };
 
-	/**
-	 * Logout
-	 */
-	const logout = async () => {
-		await supabase.auth.signOut();
-	};
+    /**
+     * Logout
+     */
+    const logout = async () => {
+        await supabase.auth.signOut();
+    };
 
-	/**
-	 * Recargar profile manualmente
-	 */
-	const refreshProfile = async () => {
-		if (!authUser) return;
+    /**
+     * Recargar profile manualmente
+     */
+    const refreshProfile = async () => {
+        if (!authUser) return;
 
-		await loadProfile(authUser.id);
-	};
+        await loadProfile(authUser.id);
+    };
 
-	/**
-	 * Escuchar cambios de autenticación
-	 */
-	useEffect(() => {
-		let mounted = true;
+    /**
+     * Escuchar cambios de autenticación
+     */
+    useEffect(() => {
+        let mounted = true;
 
-		const initialize = async () => {
-			setIsLoading(true);
+        const initialize = async () => {
+            setIsLoading(true);
 
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
 
-			if (!mounted) return;
+            if (!mounted) return;
 
-			setSession(session);
-			setAuthUser(session?.user ?? null);
+            setSession(session);
+            setAuthUser(session?.user ?? null);
 
-			if (session?.user) {
-				await loadProfile(session.user.id);
-			}
+            if (session?.user) {
+                await loadProfile(session.user.id);
+            }
 
-			if (mounted) {
-				setIsLoading(false);
-			}
-		};
+            if (mounted) {
+                setIsLoading(false);
+            }
+        };
 
-		initialize();
+        initialize();
 
-		const {
-			data: { subscription },
-		} = supabase.auth.onAuthStateChange(async (_event, session) => {
-			setSession(session);
-			setAuthUser(session?.user ?? null);
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            setSession(session);
+            setAuthUser(session?.user ?? null);
 
-			if (session?.user) {
-				await loadProfile(session.user.id);
-			} else {
-				setProfile(null);
-			}
-		});
+            if (session?.user) {
+                await loadProfile(session.user.id);
+            } else {
+                setProfile(null);
+            }
+        });
 
-		return () => {
-			mounted = false;
-			subscription.unsubscribe();
-		};
-	}, []);
+        return () => {
+            mounted = false;
+            subscription.unsubscribe();
+        };
+    }, []);
 
-	const hasRole = (role: string): boolean => {
-		return Boolean(
-			profile?.user_roles?.some((ur) => ur.role && ur.role.name === role),
-		);
-	};
+    const hasRole = (role: string): boolean => {
+        return Boolean(
+            profile?.user_roles?.some((ur) => ur.role && ur.role.name === role),
+        );
+    };
 
-	const hasAnyRole = (roles: string[]): boolean => {
-		if (!profile?.user_roles) return false;
+    const hasAnyRole = (roles: string[]): boolean => {
+        if (!profile?.user_roles) return false;
 
-		return roles.some((r) =>
-			profile.user_roles?.some((ur) => ur.role && ur.role.name === r),
-		);
-	};
+        return roles.some((r) =>
+            profile.user_roles?.some((ur) => ur.role && ur.role.name === r),
+        );
+    };
 
-	return (
-		<AuthContext.Provider
-			value={{
-				session,
-				authUser,
-				profile,
+    return (
+        <AuthContext.Provider
+            value={{
+                session,
+                authUser,
+                profile,
 
-				isLoading,
+                isLoading,
 
-				isAuthenticated: !!session,
+                isAuthenticated: !!session,
 
-				login,
-				logout,
+                login,
+                logout,
 
-				hasRole,
-				hasAnyRole,
+                hasRole,
+                hasAnyRole,
 
-				refreshProfile,
-			}}
-		>
-			{children}
-		</AuthContext.Provider>
-	);
+                refreshProfile,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 // Mock API - reemplazar con llamada real al backend

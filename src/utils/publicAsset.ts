@@ -1,4 +1,4 @@
 export function publicAsset(path: string) {
-	const normalizedPath = path.replace(/^\/+/, "");
-	return `${import.meta.env.BASE_URL}${normalizedPath}`;
+    const normalizedPath = path.replace(/^\/+/, '');
+    return `${import.meta.env.BASE_URL}${normalizedPath}`;
 }

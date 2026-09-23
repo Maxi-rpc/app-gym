@@ -1,25 +1,25 @@
-import { Membership_status } from "./Membership";
+import { Membership_status } from './Membership';
 export interface User {
-	id: string;
-	name: string;
-	document: string;
-	last_name: string;
+    id: string;
+    name: string;
+    document: string;
+    last_name: string;
 }
 
 export interface Membership {
-	id: string;
-	end_date: string;
-	start_date: string;
-	membership_status: Membership_status;
+    id: string;
+    end_date: string;
+    start_date: string;
+    membership_status: Membership_status;
 }
 
 export interface ClientAssistant {
-	id: string;
-	check_in_at: string;
-	check_out_at: string;
-	access_granted: boolean;
-	access_reason: string;
-	user: User;
-	membership: Membership;
-	created_by_profile: User;
+    id: string;
+    check_in_at: string;
+    check_out_at: string;
+    access_granted: boolean;
+    access_reason: string;
+    user: User;
+    membership: Membership;
+    created_by_profile: User;
 }

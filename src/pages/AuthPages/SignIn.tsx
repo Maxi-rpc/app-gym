@@ -1,17 +1,14 @@
-import PageMeta from "../../components/common/PageMeta";
-import AuthLayout from "./AuthPageLayout";
-import SignInForm from "../../components/auth/SignInForm";
+import PageMeta from '../../components/common/PageMeta';
+import AuthLayout from './AuthPageLayout';
+import SignInForm from '../../components/auth/SignInForm';
 
 export default function SignIn() {
-	return (
-		<>
-			<PageMeta
-				title="My Gym App | SignIn"
-				description="My Gym App"
-			/>
-			<AuthLayout>
-				<SignInForm />
-			</AuthLayout>
-		</>
-	);
+    return (
+        <>
+            <PageMeta title="My Gym App | SignIn" description="My Gym App" />
+            <AuthLayout>
+                <SignInForm />
+            </AuthLayout>
+        </>
+    );
 }

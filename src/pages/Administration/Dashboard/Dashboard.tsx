@@ -1,118 +1,118 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
-import PageMeta from "../../../components/common/PageMeta";
-import Alert from "../../../components/ui/alert/Alert";
-import { Feedback } from "../../../components/ui/alert/types/AlertFeedback";
+import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
+import PageMeta from '../../../components/common/PageMeta';
+import Alert from '../../../components/ui/alert/Alert';
+import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
 
-import { dashboardService } from "../../../service/dashboard.service";
+import { dashboardService } from '../../../service/dashboard.service';
 
-import SectionMetrics from "./SectionMetrics/SectionMetrics";
-import SectionMontlhly from "./SectionMontlhly/SectionMontlhly";
-import SectionMontlhyTarget from "./SectionMontlhyTarget/SectionMontlhyTarget";
+import SectionMetrics from './SectionMetrics/SectionMetrics';
+import SectionMontlhly from './SectionMontlhly/SectionMontlhly';
+import SectionMontlhyTarget from './SectionMontlhyTarget/SectionMontlhyTarget';
 // import SectionRecentOrders from "./SectionRecentOrders/SectionRecentOrders";
 
-import SectionClients from "./SectionClients/SectionClients";
-import SectionAttendances from "./SectionAttendances/SectionAttendances";
-import SectionAttendanceNew from "./SectionAttendances/SectionAttendancesNew";
+import SectionClients from './SectionClients/SectionClients';
+import SectionAttendances from './SectionAttendances/SectionAttendances';
+import SectionAttendanceNew from './SectionAttendances/SectionAttendancesNew';
 
-import SectionProductSummary from "./SectionProductSummary/SectionProductSummary";
-import SectionProductRanking from "./SectionProductRanking/ProductRanking";
-import SectionProductRevenue from "./SectionProductRevenue/SectionProductRevenue";
+import SectionProductSummary from './SectionProductSummary/SectionProductSummary';
+import SectionProductRanking from './SectionProductRanking/ProductRanking';
+import SectionProductRevenue from './SectionProductRevenue/SectionProductRevenue';
 
 export default function Dashboard() {
-	const [feedback, setFeedback] = useState<Feedback>(null);
-	const [client, setClient] = useState();
-	const [payment, setPayment] = useState();
-	const [attendance, setAttendance] = useState();
-	const [charts, setCharts] = useState();
-	const [product, setProduct] = useState();
-	const [productRanking, setProductRanking] = useState();
-	const [productRevenue, setProductRevenue] = useState();
+    const [feedback, setFeedback] = useState<Feedback>(null);
+    const [client, setClient] = useState();
+    const [payment, setPayment] = useState();
+    const [attendance, setAttendance] = useState();
+    const [charts, setCharts] = useState();
+    const [product, setProduct] = useState();
+    const [productRanking, setProductRanking] = useState();
+    const [productRevenue, setProductRevenue] = useState();
 
-	const getData = async () => {
-		try {
-			setFeedback(null);
+    const getData = async () => {
+        try {
+            setFeedback(null);
 
-			const resp = await dashboardService.getAll();
-			if (resp.error) throw resp.error;
+            const resp = await dashboardService.getAll();
+            if (resp.error) throw resp.error;
 
-			setClient(resp?.data?.clients);
-			setPayment(resp?.data?.payments);
-			setAttendance(resp?.data?.attendance);
-			setCharts(resp?.data?.charts);
-			setProduct(resp?.data?.product);
-			setProductRanking(resp?.data?.product_ranking);
-			setProductRevenue(resp?.data?.product_revenue_month);
-		} catch (error) {
-			console.error("Error No se puede obtener datos", error);
+            setClient(resp?.data?.clients);
+            setPayment(resp?.data?.payments);
+            setAttendance(resp?.data?.attendance);
+            setCharts(resp?.data?.charts);
+            setProduct(resp?.data?.product);
+            setProductRanking(resp?.data?.product_ranking);
+            setProductRevenue(resp?.data?.product_revenue_month);
+        } catch (error) {
+            console.error('Error No se puede obtener datos', error);
 
-			setFeedback({
-				variant: "error",
-				title: "No se puede obtener datos",
-				message:
-					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
-			});
-		}
-	};
+            setFeedback({
+                variant: 'error',
+                title: 'No se puede obtener datos',
+                message:
+                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+            });
+        }
+    };
 
-	useEffect(() => {
-		getData();
-	}, []);
+    useEffect(() => {
+        getData();
+    }, []);
 
-	return (
-		<div>
-			<PageMeta
-				title="React.js Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-				description="This is React.js Blank Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-			/>
-			<PageBreadcrumb pageTitle="Dashboard" />
+    return (
+        <div>
+            <PageMeta
+                title="React.js Dashboard | TailAdmin - Next.js Admin Dashboard Template"
+                description="This is React.js Blank Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+            />
+            <PageBreadcrumb pageTitle="Dashboard" />
 
-			<div className="grid grid-cols-12 gap-4 md:gap-6">
-				{feedback && (
-					<div className="col-span-12 text-start">
-						<Alert
-							variant={feedback?.variant}
-							title={feedback?.title}
-							message={feedback?.message}
-						/>
-					</div>
-				)}
-				<div className="col-span-12">
-					<SectionClients data={client || null} />
-				</div>
+            <div className="grid grid-cols-12 gap-4 md:gap-6">
+                {feedback && (
+                    <div className="col-span-12 text-start">
+                        <Alert
+                            variant={feedback?.variant}
+                            title={feedback?.title}
+                            message={feedback?.message}
+                        />
+                    </div>
+                )}
+                <div className="col-span-12">
+                    <SectionClients data={client || null} />
+                </div>
 
-				<div className="col-span-12 space-y-6 xl:col-span-7">
-					<SectionMetrics
-						dataPayment={payment || null}
-						dataAttendance={attendance || null}
-					/>
+                <div className="col-span-12 space-y-6 xl:col-span-7">
+                    <SectionMetrics
+                        dataPayment={payment || null}
+                        dataAttendance={attendance || null}
+                    />
 
-					<SectionMontlhyTarget data={charts || null} />
-				</div>
+                    <SectionMontlhyTarget data={charts || null} />
+                </div>
 
-				<div className="col-span-12 xl:col-span-5">
-					<SectionMontlhly />
-				</div>
+                <div className="col-span-12 xl:col-span-5">
+                    <SectionMontlhly />
+                </div>
 
-				<div className="col-span-12 space-y-6 xl:col-span-12">
-					<SectionAttendances data={attendance || null} />
+                <div className="col-span-12 space-y-6 xl:col-span-12">
+                    <SectionAttendances data={attendance || null} />
 
-					<SectionAttendanceNew data={charts || null} />
-				</div>
+                    <SectionAttendanceNew data={charts || null} />
+                </div>
 
-				{/* <div className="col-span-12">
+                {/* <div className="col-span-12">
 					<SectionRecentOrders />
 				</div> */}
 
-				<div className="col-span-12 space-y-6 xl:col-span-12">
-					<SectionProductSummary product={product || null} />
+                <div className="col-span-12 space-y-6 xl:col-span-12">
+                    <SectionProductSummary product={product || null} />
 
-					<SectionProductRanking data={productRanking || null} />
+                    <SectionProductRanking data={productRanking || null} />
 
-					<SectionProductRevenue data={productRevenue || null} />
-				</div>
-			</div>
-		</div>
-	);
+                    <SectionProductRevenue data={productRevenue || null} />
+                </div>
+            </div>
+        </div>
+    );
 }
