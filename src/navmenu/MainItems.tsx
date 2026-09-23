@@ -28,7 +28,6 @@ const mainItems: NavItem[] = [
 	{
 		icon: <Lineicons icon={UserMultiple4Outlined} size={40} />,
 		name: "Clientes",
-		path: "/clients",
 		requiredRoles: ["Admin", "Profesor"],
 		subItems: [
 			{
@@ -48,8 +47,21 @@ const mainItems: NavItem[] = [
 	{
 		icon: <Lineicons icon={Dumbbell1Outlined} size={40} />,
 		name: "Profesores",
-		path: "/coachs",
 		requiredRoles: ["Admin", "Profesor"],
+		subItems: [
+			{
+				name: "Listado",
+				path: "/coachs",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+			{
+				name: "Registrar",
+				path: "/coachs/add",
+				requiredRoles: ["Admin", "Profesor"],
+				pro: false,
+			},
+		],
 	},
 	{
 		icon: <Lineicons icon={CheckCircle1Outlined} size={40} />,

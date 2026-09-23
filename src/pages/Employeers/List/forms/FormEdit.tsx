@@ -1,41 +1,84 @@
 import React, { useState } from "react";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-import Alert from "../../components/ui/alert/Alert";
-import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
-import IconSpinner from "../../components/ui/button/IconSpinner";
+import Label from "../../../../components/form/Label";
+import Input from "../../../../components/form/input/InputField";
+import Button from "../../../../components/ui/button/Button";
+import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { employeeService } from "../../service/employee.service";
+import { Employee } from "../../../../service/types/Employee";
+import { employeeService } from "../../../../service/employee.service";
+import { profileService } from "../../../../service/profile.service";
 
 type Props = {
 	onSubmit?: () => void;
 	onClose?: () => void;
+	defaultData: Employee | null;
 };
 
-export default function FormAdd({ onSubmit, onClose }: Props) {
+export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 	const [feedback, setFeedback] = useState<Feedback>(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState({
-		email: "",
-		name: "",
-		last_name: "",
-		document: "",
-		phone: "",
-		image: "",
-		birth_date: "",
-		salary: 0, // employee
-		hire_date: null,
-		specialist: "",
-		employee_number: "",
-		observations: "",
+
+	const [formProfile, setFormProfile] = useState({
+		id: defaultData?.user_id,
+		email: defaultData?.profile?.email || "",
+		name: defaultData?.profile?.name,
+		last_name: defaultData?.profile?.last_name,
+		document: defaultData?.profile?.document || "",
+		phone: defaultData?.profile?.phone || "",
+		birth_date: defaultData?.profile?.birth_date,
 	});
 
+	const [formData, setFormData] = useState({
+		user_id: defaultData?.user_id,
+		salary: defaultData?.salary ?? 0,
+		hire_date: defaultData?.hire_date ?? null,
+		specialist: defaultData?.specialist,
+		employee_number: defaultData?.employee_number,
+		observations: defaultData?.observations,
+	});
 	const handleClose = () => {
 		setFeedback(null);
 		onSubmit?.();
 		onClose?.();
+	};
+
+	const saveEmployee = async () => {
+		try {
+			const resp = await employeeService.update(formData);
+			if (resp.data) {
+				if (!resp?.data?.success) {
+					return false;
+				}
+			}
+			if (resp.error) {
+				return false;
+			}
+			return true;
+		} catch (error) {
+			console.error("Error al guardar datos coach:", error);
+			return false;
+		}
+	};
+
+	const saveProfile = async () => {
+		try {
+			const resp = await profileService.update(formProfile);
+			if (resp.data) {
+				if (!resp?.data?.success) {
+					return false;
+				}
+			}
+			if (resp.error) {
+				return false;
+			}
+			return true;
+		} catch (error) {
+			console.error("Error al guardar datos profile:", error);
+			return false;
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -44,7 +87,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 			setIsLoading(true);
 
 			// Validación básica
-			if (!formData.email || !formData.name || !formData.last_name) {
+			if (!formProfile.email || !formProfile.name || !formProfile.last_name) {
 				setFeedback({
 					variant: "info",
 					title: "Por favor completa todos los campos*",
@@ -53,7 +96,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				return;
 			}
 
-			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formProfile.email)) {
 				setFeedback({
 					variant: "warning",
 					title: "Verificar el campo email.",
@@ -63,28 +106,44 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 				return;
 			}
 
-			const resp = await employeeService.create(formData);
-			if (resp.error) {
-				throw resp.error;
+			const resp = await saveEmployee();
+			const resp_profile = await saveProfile();
+
+			let msg = "";
+			let isOk = resp;
+			isOk = resp_profile;
+
+			if (resp && resp_profile) {
+				msg = "Se actualizaron datos.";
+			} else {
+				msg = "Hubo un error al actualizar datos.";
 			}
 
 			setFeedback({
-				variant: "success",
-				title: "Coach creado.",
-				message: resp?.data?.message,
+				variant: isOk ? "info" : "error",
+				title: "Info",
+				message: msg,
 			});
 		} catch (error) {
-			console.error("Error al crear coach:", error);
+			console.error("Error al guardar datos:", error);
 
 			setFeedback({
 				variant: "error",
-				title: "No se puede crear coach",
+				title: "No se puede guardar datos",
 				message:
 					"Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.",
 			});
 		} finally {
 			setIsLoading(false);
 		}
+	};
+
+	const handleProfileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormProfile({
+			...formProfile,
+			[name]: value,
+		});
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,9 +162,9 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Email*</Label>
 						<Input
 							type="text"
-							value={formData.email}
+							value={formProfile.email}
 							name="email"
-							onChange={handleChange}
+							onChange={handleProfileChange}
 						/>
 					</div>
 
@@ -113,9 +172,9 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Nombre*</Label>
 						<Input
 							type="text"
-							value={formData.name}
+							value={formProfile.name}
 							name="name"
-							onChange={handleChange}
+							onChange={handleProfileChange}
 						/>
 					</div>
 
@@ -123,9 +182,9 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Apellido*</Label>
 						<Input
 							type="text"
-							value={formData.last_name}
+							value={formProfile.last_name}
 							name="last_name"
-							onChange={handleChange}
+							onChange={handleProfileChange}
 						/>
 					</div>
 
@@ -133,9 +192,9 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Documento</Label>
 						<Input
 							type="text"
-							value={formData.document}
+							value={formProfile.document}
 							name="document"
-							onChange={handleChange}
+							onChange={handleProfileChange}
 						/>
 					</div>
 
@@ -143,9 +202,9 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Teléfono</Label>
 						<Input
 							type="text"
-							value={formData.phone}
+							value={formProfile.phone}
 							name="phone"
-							onChange={handleChange}
+							onChange={handleProfileChange}
 						/>
 					</div>
 
@@ -153,10 +212,10 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Fecha de Nacimiento</Label>
 						<Input
 							type="date"
-							value={formData.birth_date}
+							value={formProfile.birth_date}
 							name="birth_date"
 							placeholder="YYYY-MM-DD"
-							onChange={handleChange}
+							onChange={handleProfileChange}
 						/>
 					</div>
 
@@ -170,7 +229,7 @@ export default function FormAdd({ onSubmit, onClose }: Props) {
 						<Label>Salario</Label>
 						<Input
 							type="number"
-							value={formData.salary}
+							value={formData?.salary}
 							name="salary"
 							onChange={handleChange}
 						/>
