@@ -1,89 +1,89 @@
 export interface Profile {
-	id: string;
-	name: string;
-	last_name: string;
+    id: string;
+    name: string;
+    last_name: string;
 }
 
 export interface Membership {
-	id: string;
-	active: boolean;
-	user_id: string;
-	client: {
-		profile: Profile;
-	};
-	end_date: string;
-	start_date: string;
-	next_due_date: string;
+    id: string;
+    active: boolean;
+    user_id: string;
+    client: {
+        profile: Profile;
+    };
+    end_date: string;
+    start_date: string;
+    next_due_date: string;
 }
 
 export interface Employee {
-	user_id: string;
-	profile: Profile;
+    user_id: string;
+    profile: Profile;
 }
 
 export interface Payment_method {
-	id: number;
-	name: string;
-	description: string;
+    id: number;
+    name: string;
+    description: string;
 }
 
 export interface Payment_status {
-	id: number;
-	name: string;
-	description: string;
+    id: number;
+    name: string;
+    description: string;
 }
 
 export interface Membership_payment {
-	id: string;
-	created_at: string;
-	client_membership_id: string;
-	employee_id: string;
-	original_amount: number;
-	discount: number;
-	amount_paid: number;
-	payment_method_id: number;
-	payment_date: string;
-	billing_period: string;
-	next_due_date: string;
-	status_id: number;
-	receipt_number: string;
-	observations: string;
-	updated_at: string;
-	membership: Membership;
-	employee: Employee;
-	payment_method: Payment_method;
-	payment_status: Payment_status;
+    id: string;
+    created_at: string;
+    client_membership_id: string;
+    employee_id: string;
+    original_amount: number;
+    discount: number;
+    amount_paid: number;
+    payment_method_id: number;
+    payment_date: string;
+    billing_period: string;
+    next_due_date: string;
+    status_id: number;
+    receipt_number: string;
+    observations: string;
+    updated_at: string;
+    membership: Membership;
+    employee: Employee;
+    payment_method: Payment_method;
+    payment_status: Payment_status;
 }
 
 export interface CreateMembershipPaymentInput {
-	client_id: string;
-	service_id: number;
-	start_date: string;
-	end_date: string;
-	observations: string;
-	original_amount: number;
-	discount: number;
-	amount_paid: number;
-	payment_method_id: number;
-	billing_period: string;
-	status_id: number;
-	receipt_number: string;
+    client_id: string;
+    service_id: number;
+    start_date: string;
+    end_date: string;
+    observations: string;
+    original_amount: number;
+    discount: number;
+    amount_paid: number;
+    payment_method_id: number;
+    billing_period: string;
+    status_id: number;
+    receipt_number: string;
 }
 
 export interface UpdateMembershipPaymentsInput {
-	id: string;
-	original_amount: number | 0;
-	discount: number | 0;
-	amount_paid: number | 0;
-	payment_method_id: number | 0;
-	payment_date: string | null;
-	billing_period: string | null;
-	next_due_date: string | null;
-	status_id: number | 0;
-	receipt_number: string;
-	observations: string;
+    id: string;
+    original_amount: number | 0;
+    discount: number | 0;
+    amount_paid: number | 0;
+    payment_method_id: number | 0;
+    payment_date: string | null;
+    billing_period: string | null;
+    next_due_date: string | null;
+    status_id: number | 0;
+    receipt_number: string;
+    observations: string;
 }
 
 export interface DeleteMembershipPaymentInput {
-	id: string;
+    id: string;
 }

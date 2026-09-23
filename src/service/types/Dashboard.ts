@@ -1,81 +1,81 @@
 export interface Clients {
-	total: number;
-	new_this_month: number;
-	active: number;
-	expired: number;
-	cancelled: number;
-	paused: number;
-	pending: number;
+    total: number;
+    new_this_month: number;
+    active: number;
+    expired: number;
+    cancelled: number;
+    paused: number;
+    pending: number;
 }
 
 export interface Payments {
-	today: number;
-	month: number;
-	year: number;
+    today: number;
+    month: number;
+    year: number;
 }
 
 export interface Attendance {
-	today: number;
-	week: number;
-	month: number;
-	year: number;
+    today: number;
+    week: number;
+    month: number;
+    year: number;
 }
 
 export interface PaymentsMonth {
-	month: string;
-	amount: number;
+    month: string;
+    amount: number;
 }
 
 export interface AttendanceHour {
-	hour: number;
-	count: number;
+    hour: number;
+    count: number;
 }
 
 export interface AttendanceByDay {
-	day: string;
-	count: number;
+    day: string;
+    count: number;
 }
 
 export interface AttendanceByMonth {
-	month: string;
-	count: number;
+    month: string;
+    count: number;
 }
 
 export interface Charts {
-	payments_by_month: PaymentsMonth[];
-	attendance_by_hour: AttendanceHour[];
-	attendance_by_day: AttendanceByDay[];
-	attendance_by_month: AttendanceByMonth[];
+    payments_by_month: PaymentsMonth[];
+    attendance_by_hour: AttendanceHour[];
+    attendance_by_day: AttendanceByDay[];
+    attendance_by_month: AttendanceByMonth[];
 }
 
 export interface ProductSummary {
-	sales_today: number;
-	revenue_month: number;
-	units_sold_month: number;
-	top_product_id: string;
-	top_product_name: string;
-	top_product_quantity: number;
+    sales_today: number;
+    revenue_month: number;
+    units_sold_month: number;
+    top_product_id: string;
+    top_product_name: string;
+    top_product_quantity: number;
 }
 
 export interface ProductRanking {
-	product_id: string;
-	product_name: string;
-	quantity_sold: number;
-	total_revenue: number;
+    product_id: string;
+    product_name: string;
+    quantity_sold: number;
+    total_revenue: number;
 }
 
 export interface ProductSaleEvo {
-	month: number;
-	product_id: string;
-	product_name: string;
-	quantity_sold: number;
-	total_revenue: number;
+    month: number;
+    product_id: string;
+    product_name: string;
+    quantity_sold: number;
+    total_revenue: number;
 }
 
 export interface ProductRevenueMonth {
-	month: number;
-	total_quantity: number;
-	total_revenue: number;
+    month: number;
+    total_quantity: number;
+    total_revenue: number;
 }
 
 /*

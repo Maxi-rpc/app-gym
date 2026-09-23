@@ -1,69 +1,64 @@
-import { Profile } from "../../context/types/Profile";
+import { Profile } from '../../context/types/Profile';
 
 export interface EmployeeProfile {
-	user_id?: string;
-	created_at?: string;
-	salary?: number | null;
-	hire_date?: string | null;
-	specialist?: string;
-	employee_number?: string;
-	observations?: string;
-	updated_at?: string;
+    user_id?: string;
+    created_at?: string;
+    salary?: number | null;
+    hire_date?: string | null;
+    specialist?: string;
+    employee_number?: string;
+    observations?: string;
+    updated_at?: string;
 }
 
 export interface Employee extends EmployeeProfile {
-	profile: Profile;
+    profile: Profile;
 }
 
 export interface CreateEmployeeInput {
-	email?: string;
-	name?: string;
-	last_name?: string;
-	document?: string | null;
-	phone?: string | null;
-	image?: string | null;
-	birth_date?: string | null;
-	salary?: number | null;
-	hire_date?: string | null;
-	specialist?: string | null;
-	employee_number?: string | null;
-	observations?: string | null;
+    email?: string;
+    name?: string;
+    last_name?: string;
+    document?: string | null;
+    phone?: string | null;
+    image?: string | null;
+    birth_date?: string | null;
+    salary?: number | null;
+    hire_date?: string | null;
+    specialist?: string | null;
+    employee_number?: string | null;
+    observations?: string | null;
 }
 
 export interface UpdateEmployeeInput {
-	user_id?: string;
-	salary?: number | null;
-	hire_date?: string | null;
-	specialist?: string | null;
-	employee_number?: string | null;
-	observations?: string | null;
+    user_id?: string;
+    salary?: number | null;
+    hire_date?: string | null;
+    specialist?: string | null;
+    employee_number?: string | null;
+    observations?: string | null;
 }
 
 export interface DeleteEmployeeInput {
-	id: string;
+    id: string;
 }
 
 export type EmployeePageSize = 5 | 10 | 15 | 20;
 
 export type EmployeeSortKey =
-	| "user_id"
-	| "name"
-	| "last_name"
-	| "created_at"
-	| "status"
-	| "updated_at";
+    'user_id' | 'name' | 'last_name' | 'created_at' | 'status' | 'updated_at';
 
 export interface GetEmployeersInput {
-	page?: number;
-	pageSize?: EmployeePageSize;
-	search?: string;
-	sortBy?: EmployeeSortKey;
-	sortDirection?: "asc" | "desc";
+    page?: number;
+    pageSize?: EmployeePageSize;
+    search?: string;
+    sortBy?: EmployeeSortKey;
+    sortDirection?: 'asc' | 'desc';
 }
 
 export interface EmployeersPagination {
-	page: number;
-	pageSize: EmployeePageSize;
-	total: number;
-	totalPages: number;
+    page: number;
+    pageSize: EmployeePageSize;
+    total: number;
+    totalPages: number;
 }
