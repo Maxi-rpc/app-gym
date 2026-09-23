@@ -42,3 +42,28 @@ export interface UpdateEmployeeInput {
 export interface DeleteEmployeeInput {
 	id: string;
 }
+
+export type EmployeePageSize = 5 | 10 | 15 | 20;
+
+export type EmployeeSortKey =
+	| "user_id"
+	| "name"
+	| "last_name"
+	| "created_at"
+	| "status"
+	| "updated_at";
+
+export interface GetEmployeersInput {
+	page?: number;
+	pageSize?: EmployeePageSize;
+	search?: string;
+	sortBy?: EmployeeSortKey;
+	sortDirection?: "asc" | "desc";
+}
+
+export interface EmployeersPagination {
+	page: number;
+	pageSize: EmployeePageSize;
+	total: number;
+	totalPages: number;
+}

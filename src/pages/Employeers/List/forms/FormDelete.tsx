@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import Button from "../../components/ui/button/Button";
-import Alert from "../../components/ui/alert/Alert";
-import { Feedback } from "../../components/ui/alert/types/AlertFeedback";
-import IconSpinner from "../../components/ui/button/IconSpinner";
+import Label from "../../../../components/form/Label";
+import Input from "../../../../components/form/input/InputField";
+import Button from "../../../../components/ui/button/Button";
+import Alert from "../../../../components/ui/alert/Alert";
+import { Feedback } from "../../../../components/ui/alert/types/AlertFeedback";
+import IconSpinner from "../../../../components/ui/button/IconSpinner";
 
-import { employeeService } from "../../service/employee.service";
+import { employeeService } from "../../../../service/employee.service";
 
 type Props = {
 	onSubmit?: () => void;

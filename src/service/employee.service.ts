@@ -3,6 +3,7 @@ import {
 	CreateEmployeeInput,
 	UpdateEmployeeInput,
 	DeleteEmployeeInput,
+	GetEmployeersInput,
 } from "../service/types/Employee";
 
 async function getById(id: string) {
@@ -31,7 +32,7 @@ async function getById(id: string) {
 	return data?.employee;
 }
 
-async function getAll() {
+async function getAll(input: GetEmployeersInput = {}) {
 	const { data: sessionData, error: sessionError } =
 		await supabase.auth.getSession();
 
@@ -42,13 +43,18 @@ async function getAll() {
 
 	// 2) Invocar la Edge Function
 	const { data, error } = await supabase.functions.invoke("get-employee-all", {
+		body: input,
 		headers: {
 			Authorization: `Bearer ${session_token}`,
 		},
-		method: "GET",
+		method: "POST",
 	});
 
-	return { data: data?.employeers, error: error };
+	return {
+		data: data?.data?.employeers,
+		pagination: data?.data?.pagination,
+		error: error,
+	};
 }
 
 async function create(formData: CreateEmployeeInput) {
