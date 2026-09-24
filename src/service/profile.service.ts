@@ -1,58 +1,61 @@
-import { supabase } from "../utils/supabase";
-import { UpdateProfilInput } from "../context/types/Profile";
+import { supabase } from '../utils/supabase';
+import { UpdateProfilInput } from '../context/types/Profile';
 
 async function getById(id: string) {
-	// 1) Obtener el token desde la sesión actual (si aplica)
-	// Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
-	const { data: sessionData, error: sessionError } =
-		await supabase.auth.getSession();
+    // 1) Obtener el token desde la sesión actual (si aplica)
+    // Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
+    const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
 
-	if (sessionError) throw sessionError;
-	if (!sessionData?.session) throw new Error("No hay sesión activa");
+    if (sessionError) throw sessionError;
+    if (!sessionData?.session) throw new Error('No hay sesión activa');
 
-	const session_token = sessionData.session.access_token;
+    const session_token = sessionData.session.access_token;
 
-	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("get-profile-by-id", {
-		body: { id },
-		headers: {
-			Authorization: `Bearer ${session_token}`,
-		},
-	});
+    // 2) Invocar la Edge Function
+    const { data, error } = await supabase.functions.invoke(
+        'get-profile-by-id',
+        {
+            body: { id },
+            headers: {
+                Authorization: `Bearer ${session_token}`,
+            },
+        },
+    );
 
-	if (error) throw error;
-	return data?.profile;
+    if (error) throw error;
+    return data?.profile;
 }
 
 async function update(formData: UpdateProfilInput) {
-	const { data: sessionData, error: sessionError } =
-		await supabase.auth.getSession();
+    const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
 
-	if (sessionError) throw sessionError;
-	if (!sessionData?.session) throw new Error("No hay sesión activa");
+    if (sessionError) throw sessionError;
+    if (!sessionData?.session) throw new Error('No hay sesión activa');
 
-	const session_token = sessionData.session.access_token;
+    const session_token = sessionData.session.access_token;
 
-	// 2) Invocar la Edge Function
-	const { data, error } = await supabase.functions.invoke("update-profile", {
-		body: {
-			id: formData?.id,
-			email: formData?.email,
-			name: formData?.name,
-			last_name: formData?.last_name,
-			document: formData?.document,
-			phone: formData?.phone,
-			birth_date: formData?.birth_date,
-		},
-		headers: {
-			Authorization: `Bearer ${session_token}`,
-		},
-	});
+    // 2) Invocar la Edge Function
+    const { data, error } = await supabase.functions.invoke('update-profile', {
+        body: {
+            id: formData?.id,
+            email: formData?.email,
+            name: formData?.name,
+            last_name: formData?.last_name,
+            document: formData?.document,
+            phone: formData?.phone,
+            birth_date: formData?.birth_date,
+        },
+        headers: {
+            Authorization: `Bearer ${session_token}`,
+        },
+    });
 
-	return { data: data, error: error };
+    return { data: data, error: error };
 }
 
 export const profileService = {
-	getById,
-	update,
+    getById,
+    update,
 };

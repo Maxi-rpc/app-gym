@@ -1,120 +1,120 @@
-import { useEffect, useState } from "react";
-import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
+import { useEffect, useState } from 'react';
+import Chart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
 
-import { Charts } from "../../../../../service/types/Dashboard";
+import { Charts } from '../../../../../service/types/Dashboard';
 
 type Props = {
-	data: Charts | null;
+    data: Charts | null;
 };
 
 export default function BarChartLine({ data }: Props) {
-	const [listValues, setListValues] = useState([
-		{
-			name: "Asistencias",
-			data: [0, 0, 0, 0, 0, 0, 0],
-		},
-	]);
+    const [listValues, setListValues] = useState([
+        {
+            name: 'Asistencias',
+            data: [0, 0, 0, 0, 0, 0, 0],
+        },
+    ]);
 
-	const options: ApexOptions = {
-		legend: {
-			show: false, // Hide legend
-			position: "top",
-			horizontalAlign: "left",
-		},
-		colors: ["#465FFF", "#9CB9FF"], // Define line colors
-		chart: {
-			fontFamily: "Outfit, sans-serif",
-			height: 310,
-			type: "line", // Set the chart type to 'line'
-			toolbar: {
-				show: false, // Hide chart toolbar
-			},
-		},
-		stroke: {
-			curve: "straight", // Define the line style (straight, smooth, or step)
-			width: [2, 2], // Line width for each dataset
-		},
+    const options: ApexOptions = {
+        legend: {
+            show: false, // Hide legend
+            position: 'top',
+            horizontalAlign: 'left',
+        },
+        colors: ['#465FFF', '#9CB9FF'], // Define line colors
+        chart: {
+            fontFamily: 'Outfit, sans-serif',
+            height: 310,
+            type: 'line', // Set the chart type to 'line'
+            toolbar: {
+                show: false, // Hide chart toolbar
+            },
+        },
+        stroke: {
+            curve: 'straight', // Define the line style (straight, smooth, or step)
+            width: [2, 2], // Line width for each dataset
+        },
 
-		fill: {
-			type: "gradient",
-			gradient: {
-				opacityFrom: 0.55,
-				opacityTo: 0,
-			},
-		},
-		markers: {
-			size: 0, // Size of the marker points
-			strokeColors: "#fff", // Marker border color
-			strokeWidth: 2,
-			hover: {
-				size: 6, // Marker size on hover
-			},
-		},
-		grid: {
-			xaxis: {
-				lines: {
-					show: false, // Hide grid lines on x-axis
-				},
-			},
-			yaxis: {
-				lines: {
-					show: true, // Show grid lines on y-axis
-				},
-			},
-		},
-		dataLabels: {
-			enabled: false, // Disable data labels
-		},
-		tooltip: {
-			enabled: true, // Enable tooltip
-			x: {
-				format: "dd MMM yyyy", // Format for x-axis tooltip
-			},
-		},
-		xaxis: {
-			type: "category", // Category-based x-axis
-			categories: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-			axisBorder: {
-				show: false, // Hide x-axis border
-			},
-			axisTicks: {
-				show: false, // Hide x-axis ticks
-			},
-			tooltip: {
-				enabled: false, // Disable tooltip for x-axis points
-			},
-		},
-		yaxis: {
-			labels: {
-				style: {
-					fontSize: "12px", // Adjust font size for y-axis labels
-					colors: ["#6B7280"], // Color of the labels
-				},
-			},
-			title: {
-				text: "", // Remove y-axis title
-				style: {
-					fontSize: "0px",
-				},
-			},
-		},
-	};
+        fill: {
+            type: 'gradient',
+            gradient: {
+                opacityFrom: 0.55,
+                opacityTo: 0,
+            },
+        },
+        markers: {
+            size: 0, // Size of the marker points
+            strokeColors: '#fff', // Marker border color
+            strokeWidth: 2,
+            hover: {
+                size: 6, // Marker size on hover
+            },
+        },
+        grid: {
+            xaxis: {
+                lines: {
+                    show: false, // Hide grid lines on x-axis
+                },
+            },
+            yaxis: {
+                lines: {
+                    show: true, // Show grid lines on y-axis
+                },
+            },
+        },
+        dataLabels: {
+            enabled: false, // Disable data labels
+        },
+        tooltip: {
+            enabled: true, // Enable tooltip
+            x: {
+                format: 'dd MMM yyyy', // Format for x-axis tooltip
+            },
+        },
+        xaxis: {
+            type: 'category', // Category-based x-axis
+            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            axisBorder: {
+                show: false, // Hide x-axis border
+            },
+            axisTicks: {
+                show: false, // Hide x-axis ticks
+            },
+            tooltip: {
+                enabled: false, // Disable tooltip for x-axis points
+            },
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    fontSize: '12px', // Adjust font size for y-axis labels
+                    colors: ['#6B7280'], // Color of the labels
+                },
+            },
+            title: {
+                text: '', // Remove y-axis title
+                style: {
+                    fontSize: '0px',
+                },
+            },
+        },
+    };
 
-	useEffect(() => {
-		if (data) {
-			const values = data?.attendance_by_day.map((item) => item.count);
-			const newSeries = [
-				{
-					name: "Asistencias",
-					data: values,
-				},
-			];
-			setListValues(newSeries);
-		}
-	}, [data]);
+    useEffect(() => {
+        if (data) {
+            const values = data?.attendance_by_day.map((item) => item.count);
+            const newSeries = [
+                {
+                    name: 'Asistencias',
+                    data: values,
+                },
+            ];
+            setListValues(newSeries);
+        }
+    }, [data]);
 
-	return (
-		<Chart options={options} series={listValues} type="area" height={310} />
-	);
+    return (
+        <Chart options={options} series={listValues} type="area" height={310} />
+    );
 }
