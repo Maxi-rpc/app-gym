@@ -162,9 +162,9 @@ export default function Employeers() {
         navigate('/coachs/add');
     };
 
-    const handleDetail = (employee: Employee) => {
-        navigate(`/employees/${employee?.user_id}`);
-    };
+	const handleDetail = (employee: Employee) => {
+		navigate(`/coachs/${employee?.user_id}`);
+	};
 
     useEffect(() => {
         getData();
