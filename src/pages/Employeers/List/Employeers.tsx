@@ -163,7 +163,7 @@ export default function Employeers() {
 	};
 
 	const handleDetail = (employee: Employee) => {
-		navigate(`/employees/${employee?.user_id}`);
+		navigate(`/coachs/${employee?.user_id}`);
 	};
 
 	useEffect(() => {

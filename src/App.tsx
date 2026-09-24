@@ -26,6 +26,7 @@ import ClientDetails from "./pages/Clients/Details/ClientDetails";
 // employee
 import Coachs from "./pages/Employeers/List/Employeers";
 import CoachsAdd from "./pages/Employeers/Add/EmployeersAdd";
+import CoachDetails from "./pages/Employeers/Details/CoachDetails";
 
 // assistance
 import AssistantsTerminal from "./pages/Assistants/Terminal/Terminal";
@@ -143,6 +144,14 @@ export default function App() {
 									element={
 										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
 											<CoachsAdd />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path=":id"
+									element={
+										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
+											<CoachDetails />
 										</ProtectedRoute>
 									}
 								/>
