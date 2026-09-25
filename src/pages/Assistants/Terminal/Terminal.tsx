@@ -9,8 +9,11 @@ import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
 import Alert from '../../../components/ui/alert/Alert';
 import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
+import ButtonQr from './ButtonQr';
 
 import { attendanceService } from '../../../service/attendance.service';
+
+import { validateArgentineDNI } from '../../../utils/validation';
 
 export default function Terminal() {
     const [feedback, setFeedback] = useState<Feedback>(null);
@@ -20,11 +23,6 @@ export default function Terminal() {
 
     const [error, setError] = useState('');
 
-    const validateArgentineDNI = (dni: string) => {
-        const regex = /^\d{7,8}$/;
-        return regex.test(dni);
-    };
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setFormData((prev) => ({
@@ -33,7 +31,14 @@ export default function Terminal() {
         }));
     };
 
+    const autoClose = () => {
+        setTimeout(() => {
+            setFeedback(null);
+        }, 5000);
+    };
+
     const handleSubmit = async () => {
+        setFeedback(null);
         setError('');
         setIsLoading(true);
 
@@ -50,7 +55,6 @@ export default function Terminal() {
                 return;
             }
         }
-        //return;
 
         const date_to_string = new Date().toISOString();
 
@@ -82,6 +86,48 @@ export default function Terminal() {
         } finally {
             setIsLoading(false);
             setFormData({ qr: '', dni: '' });
+            autoClose();
+        }
+    };
+
+    const handleSave = async (qrValue: string) => {
+        setFeedback(null);
+        setError('');
+        setIsLoading(true);
+
+        const date_to_string = new Date().toISOString();
+
+        const body = {
+            qr_token: qrValue,
+            dni: formData.dni,
+            check_in_at: date_to_string,
+        };
+
+        try {
+            const resp = await attendanceService.registerTerminal(body);
+
+            if (resp.error) throw resp.error;
+
+            if (resp.data) {
+                setFeedback({
+                    variant: 'success',
+                    title: resp.data?.data,
+                    message: resp.data?.message,
+                });
+            }
+        } catch (error) {
+            console.error('Error No se puede obtener datos', error);
+
+            setFeedback({
+                variant: 'error',
+                title: 'No se puede obtener datos',
+                message:
+                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+            });
+        } finally {
+            setIsLoading(false);
+            setFormData({ qr: '', dni: '' });
+            autoClose();
         }
     };
 
@@ -103,6 +149,12 @@ export default function Terminal() {
                                     ¡Escanea tu cod QR o Introduce tu DNI!
                                 </p>
                             </div>
+                            <div className="mx-auto w-full text-center mb-8">
+                                <ButtonQr onRegister={handleSave}>
+                                    Abrir Cámara
+                                </ButtonQr>
+                            </div>
+
                             <div>
                                 <Form onSubmit={handleSubmit}>
                                     <div className="space-y-6">
