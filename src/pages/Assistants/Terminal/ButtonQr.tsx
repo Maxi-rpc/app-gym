@@ -1,0 +1,71 @@
+import { useState, ReactNode } from 'react';
+import { Scanner } from '@yudiel/react-qr-scanner';
+
+import Button from '../../../components/ui/button/Button';
+
+type Props = {
+    children?: ReactNode; // Button text or content
+    onRegister: (qrValue: string) => Promise<void>;
+    onRegistered?: () => void;
+};
+
+export default function ButtonQr({
+    children,
+    onRegister,
+    onRegistered,
+}: Props) {
+    const [isRegistering, setIsRegistering] = useState(false);
+
+    const [isScanning, setIsScanning] = useState(false);
+
+    const handleScan = async (codes: { rawValue: string }[]) => {
+        const qrValue = codes[0]?.rawValue;
+        if (!qrValue || isRegistering) return;
+
+        try {
+            setIsRegistering(true);
+
+            await onRegister(qrValue); // POST al backend
+            onRegistered?.(); // refresca la tabla tras éxito
+        } catch (error) {
+            console.error('No se pudo registrar la asistencia:', error);
+            // Mostrar mensaje de error en pantalla
+        } finally {
+            setIsRegistering(false);
+            setIsScanning(false);
+        }
+    };
+
+    return (
+        <div>
+            <Button
+                size="sm"
+                onClick={() => {
+                    setIsScanning(true);
+                }}
+            >
+                {children ? children : 'Escanear QR'}
+            </Button>
+
+            {isScanning && (
+                <div className="md:w-1/2 sm:w-full mt-4 mx-auto">
+                    <Scanner
+                        onScan={handleScan}
+                        allowMultiple
+                        scanDelay={1000}
+                        formats={['qr_code']}
+                    />
+
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsScanning(false)}
+                        className="mt-4 rounded-lg bg-gray-200 px-4 py-2 text-gray-800"
+                    >
+                        Cancelar
+                    </Button>
+                </div>
+            )}
+        </div>
+    );
+}
