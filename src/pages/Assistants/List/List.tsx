@@ -1,7 +1,9 @@
 import { SetStateAction, useState, useEffect } from 'react';
+
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
 import PageMeta from '../../../components/common/PageMeta';
 
+import Form from '../../../components/form/Form';
 import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
@@ -13,6 +15,11 @@ import { Lineicons } from '@lineiconshq/react-lineicons';
 import { RefreshCircle1ClockwiseOutlined } from '@lineiconshq/free-icons';
 
 import { ClientAssistant } from '../../../service/types/ClientAssistant';
+import {
+    Attendance,
+    AttendancePageSize,
+    AttendanceSortKey,
+} from '../../../service/types/Attendance';
 import { attendanceService } from '../../../service/attendance.service';
 
 import DataTable from './DataTable';
@@ -38,6 +45,13 @@ export default function List() {
     const [searchText, setSearchText] = useState('');
     const [selectData, setSelectData] = useState<ClientAssistant | null>(null);
     const [listData, setListData] = useState<ClientAssistant[] | []>([]);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState<EmployeePageSize>(10);
+    const [total, setTotal] = useState(0);
+    const [sortConfig, setSortConfig] = useState<{
+        key: EmployeeSortKey;
+        direction: 'asc' | 'desc';
+    }>({ key: 'user_id', direction: 'asc' });
 
     const getData = async () => {
         try {
@@ -60,6 +74,11 @@ export default function List() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleSearchSubmit = () => {
+        setPage(1);
+        getData({ page: 1 });
     };
 
     const handleUpdate = () => {
@@ -119,12 +138,48 @@ export default function List() {
                 </div>
 
                 {/* Search */}
-                <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+                <Form
+                    onSubmit={handleSearchSubmit}
+                    className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3"
+                >
                     <div className="space-y-6 w-full">
-                        <Label htmlFor="inputTwo">Buscar Cliente</Label>
+                        <Label htmlFor="searchText">Buscar Profesor</Label>
                         <Input
                             type="text"
-                            id="inputTwo"
+                            id="searchText"
+                            name="searchText"
+                            placeholder="nombre o apellido"
+                            value={searchText}
+                            onChange={handleSearch}
+                        />
+                    </div>
+                    <Button type="submit" size="sm" disabled={isLoading}>
+                        Buscar
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={getData}
+                        disabled={isLoading}
+                        startIcon={
+                            <Lineicons
+                                icon={RefreshCircle1ClockwiseOutlined}
+                                size={20}
+                                color="grey"
+                            />
+                        }
+                    >
+                        Actualizar
+                    </Button>
+                </Form>
+                <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
+                    <div className="space-y-6 w-full">
+                        <Label htmlFor="searchText">Buscar Cliente</Label>
+                        <Input
+                            type="text"
+                            id="searchText"
+                            name="searchText"
                             placeholder="nombre o apellido"
                             value={searchText}
                             onChange={handleSearch}

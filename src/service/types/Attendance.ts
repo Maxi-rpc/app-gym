@@ -60,3 +60,23 @@ export interface UpdateAttendanceInput {
 export interface DeleteAttendanceInput {
     id: string;
 }
+
+export type AttendancePageSize = 5 | 10 | 15 | 20;
+
+export type AttendanceSortKey =
+    'id' | 'name' | 'last_name' | 'check_in_at' | 'access_granted' | 'created_by_profile';
+
+export interface GetAttendancesInput {
+    page?: number;
+    pageSize?: AttendancePageSize;
+    search?: string;
+    sortBy?: AttendanceSortKey;
+    sortDirection?: 'asc' | 'desc';
+}
+
+export interface AttendancersPagination {
+    page: number;
+    pageSize: AttendancePageSize;
+    total: number;
+    totalPages: number;
+}

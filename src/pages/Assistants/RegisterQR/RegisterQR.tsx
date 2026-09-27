@@ -161,10 +161,11 @@ export default function Register() {
                 {/* Search */}
                 <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
                     <div className="space-y-6 flex-1">
-                        <Label htmlFor="inputTwo">Buscar Cliente</Label>
+                        <Label htmlFor="searchText">Buscar Cliente</Label>
                         <Input
                             type="text"
-                            id="inputTwo"
+                            id="searchText"
+                            name="searchText"
                             placeholder="nombre o apellido"
                             value={searchText}
                             onChange={handleSearch}
