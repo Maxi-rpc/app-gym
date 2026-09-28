@@ -1,7 +1,7 @@
 import { Modal } from '../../../../components/ui/modal';
 import FormDelete from '../forms/FormDelete';
 
-import { ClientAssistant } from '../../../../service/types/ClientAssistant';
+import { Attendance } from '../../../../service/types/Attendance';
 
 import { formatLocalDateTime } from '../../../../utils/date';
 
@@ -9,7 +9,7 @@ type Props = {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: () => void | undefined;
-    defaultData: ClientAssistant | null;
+    defaultData: Attendance | null;
 };
 
 export default function ModalDelete({

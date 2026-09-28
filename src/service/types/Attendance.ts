@@ -1,3 +1,5 @@
+import { Membership_status } from './Membership';
+
 export interface User {
     id: string;
     name: string;
@@ -9,6 +11,7 @@ export interface Membership {
     id: string;
     end_date: string;
     start_date: string;
+    membership_status: Membership_status;
 }
 
 export interface Created_by_profile {
@@ -64,7 +67,12 @@ export interface DeleteAttendanceInput {
 export type AttendancePageSize = 5 | 10 | 15 | 20;
 
 export type AttendanceSortKey =
-    'id' | 'name' | 'last_name' | 'check_in_at' | 'access_granted' | 'created_by_profile';
+    | 'id'
+    | 'name'
+    | 'last_name'
+    | 'check_in_at'
+    | 'access_granted'
+    | 'created_by_profile';
 
 export interface GetAttendancesInput {
     page?: number;
