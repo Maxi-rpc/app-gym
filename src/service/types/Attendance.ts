@@ -72,6 +72,7 @@ export type AttendanceSortKey =
     | 'last_name'
     | 'check_in_at'
     | 'access_granted'
+    | 'membership_status'
     | 'created_by_profile';
 
 export interface GetAttendancesInput {

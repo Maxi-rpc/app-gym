@@ -25,15 +25,14 @@ type Props = {
     onSortChange: (sortConfig: SortConfig) => void;
     onEdit?: (attendance: Attendance) => void;
     onDelet?: (attendance: Attendance) => void;
-    onView?: (attendance: Attendance) => void;
 };
 
 const columns: Array<{ label: string; key: AttendanceSortKey }> = [
-    { label: 'ID', key: 'id' },
+    { label: 'Fecha Ingreso', key: 'check_in_at' },
     { label: 'Nombre', key: 'name' },
     { label: 'Apellido', key: 'last_name' },
-    { label: 'Fecha Ingreso', key: 'check_in_at' },
-    { label: 'Estado', key: 'access_granted' },
+    { label: 'Acceso', key: 'access_granted' },
+    { label: 'Estado', key: 'membership_status' },
     { label: 'Registrado Por', key: 'created_by_profile' },
 ];
 
@@ -49,7 +48,6 @@ export default function DataTable({
     onSortChange,
     onEdit,
     onDelet,
-    onView,
 }: Props) {
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
