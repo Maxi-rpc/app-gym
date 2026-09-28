@@ -28,11 +28,11 @@ type Props = {
 };
 
 const columns: Array<{ label: string; key: AttendanceSortKey }> = [
-    { label: 'Fecha Ingreso', key: 'check_in_at' },
+    { label: 'Fecha', key: 'check_in_at' },
     { label: 'Nombre', key: 'name' },
     { label: 'Apellido', key: 'last_name' },
     { label: 'Acceso', key: 'access_granted' },
-    { label: 'Estado', key: 'membership_status' },
+    { label: 'Membresía', key: 'membership_status' },
     { label: 'Registrado Por', key: 'created_by_profile' },
 ];
 
