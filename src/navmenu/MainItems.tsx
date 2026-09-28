@@ -81,7 +81,7 @@ const mainItems: NavItem[] = [
                 pro: false,
             },
             {
-                name: 'Registrar',
+                name: 'Registrar Manualmente',
                 path: '/assistants/register',
                 requiredRoles: ['Admin', 'Profesor'],
                 pro: false,

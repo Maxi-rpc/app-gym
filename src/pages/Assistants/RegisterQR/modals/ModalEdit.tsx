@@ -1,13 +1,13 @@
 import { Modal } from '../../../../components/ui/modal';
 import FormEdit from '../forms/FormEdit';
 
-import { ClientAssistant } from '../../../../service/types/ClientAssistant';
+import { Attendance } from '../../../../service/types/Attendance';
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: () => void | undefined;
-    defaultData: ClientAssistant | null;
+    defaultData: Attendance | null;
 };
 
 export default function ModalEdit({

@@ -50,7 +50,7 @@ export default function List() {
     const [sortConfig, setSortConfig] = useState<{
         key: AttendanceSortKey;
         direction: 'asc' | 'desc';
-    }>({ key: 'id', direction: 'asc' });
+    }>({ key: 'check_in_at', direction: 'desc' });
 
     type GetDataOptions = {
         page?: number;
