@@ -1,5 +1,6 @@
 import { supabase } from '../utils/supabase';
 import {
+    GetAttendancesInput,
     RegisterAttendanceInput,
     RegisterAttendanceTerminalInput,
     UpdateAttendanceInput,
@@ -50,7 +51,7 @@ async function getById(id: string) {
     return { data: data?.attendances, error: error };
 }
 
-async function getAll() {
+async function getAll(input: GetAttendancesInput = {}) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -63,14 +64,19 @@ async function getAll() {
     const { data, error } = await supabase.functions.invoke(
         'get-attendance-all',
         {
+            body: input,
             headers: {
                 Authorization: `Bearer ${session_token}`,
             },
-            method: 'GET',
+            method: 'POST',
         },
     );
 
-    return { data: data?.attendances, error: error };
+    return {
+        data: data?.data?.attendances,
+        pagination: data?.data?.pagination,
+        error: error,
+    };
 }
 
 async function register(formData: RegisterAttendanceInput) {

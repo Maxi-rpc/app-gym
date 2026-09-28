@@ -2,6 +2,7 @@ import { SetStateAction, useState, useEffect } from 'react';
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
 import PageMeta from '../../../components/common/PageMeta';
 
+import Form from '../../../components/form/Form';
 import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
@@ -12,7 +13,11 @@ import { useModal } from '../../../hooks/useModal';
 import { Lineicons } from '@lineiconshq/react-lineicons';
 import { RefreshCircle1ClockwiseOutlined } from '@lineiconshq/free-icons';
 
-import { ClientAssistant } from '../../../service/types/ClientAssistant';
+import {
+    Attendance,
+    AttendancePageSize,
+    AttendanceSortKey,
+} from '../../../service/types/Attendance';
 import { attendanceService } from '../../../service/attendance.service';
 
 import ButtonQr from './ButtonQr';
@@ -37,18 +42,50 @@ export default function Register() {
     } = useModal();
 
     const [searchText, setSearchText] = useState('');
-    const [selectData, setSelectData] = useState<ClientAssistant | null>(null);
-    const [listData, setListData] = useState<ClientAssistant[] | []>([]);
+    const [selectData, setSelectData] = useState<Attendance | null>(null);
+    const [listData, setListData] = useState<Attendance[] | []>([]);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState<AttendancePageSize>(10);
+    const [total, setTotal] = useState(0);
+    const [sortConfig, setSortConfig] = useState<{
+        key: AttendanceSortKey;
+        direction: 'asc' | 'desc';
+    }>({ key: 'check_in_at', direction: 'desc' });
 
-    const getData = async () => {
+    type GetDataOptions = {
+        page?: number;
+        pageSize?: AttendancePageSize;
+        search?: string;
+        sortBy?: AttendanceSortKey;
+        sortDirection?: 'asc' | 'desc';
+    };
+
+    const getData = async (options: GetDataOptions = {}) => {
+        const requestedPage = options.page ?? page;
+        const requestedPageSize = options.pageSize ?? pageSize;
+        const requestedSearch = options.search ?? searchText;
+        const requestedSortBy = options.sortBy ?? sortConfig.key;
+        const requestedSortDirection =
+            options.sortDirection ?? sortConfig.direction;
+
         try {
             setFeedback(null);
             setIsLoading(true);
 
-            const resp = await attendanceService.getAll();
-            if (resp.error) throw resp.error;
+            const resp = await attendanceService.getAll({
+                page: requestedPage,
+                pageSize: requestedPageSize,
+                search: requestedSearch.trim(),
+                sortBy: requestedSortBy,
+                sortDirection: requestedSortDirection,
+            });
 
-            setListData(resp.data);
+            if (resp.error) {
+                throw resp.error;
+            }
+
+            setListData(resp.data ?? []);
+            setTotal(resp.pagination?.total ?? 0);
         } catch (error) {
             console.error('Error No se puede obtener datos', error);
 
@@ -61,6 +98,35 @@ export default function Register() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleSearchSubmit = () => {
+        setPage(1);
+        getData({ page: 1 });
+    };
+
+    const handlePageChange = (nextPage: number) => {
+        setPage(nextPage);
+        getData({ page: nextPage });
+    };
+
+    const handlePageSizeChange = (nextPageSize: AttendancePageSize) => {
+        setPageSize(nextPageSize);
+        setPage(1);
+        getData({ page: 1, pageSize: nextPageSize });
+    };
+
+    const handleSortChange = (nextSort: {
+        key: AttendanceSortKey;
+        direction: 'asc' | 'desc';
+    }) => {
+        setSortConfig(nextSort);
+        setPage(1);
+        getData({
+            page: 1,
+            sortBy: nextSort.key,
+            sortDirection: nextSort.direction,
+        });
     };
 
     const handleUpdate = () => {
@@ -107,8 +173,8 @@ export default function Register() {
         getData();
     };
 
-    const handleEdit = (client: ClientAssistant) => {
-        setSelectData(client);
+    const handleEdit = (attendance: Attendance) => {
+        setSelectData(attendance);
         openModalEdit();
     };
 
@@ -117,8 +183,8 @@ export default function Register() {
         getData();
     };
 
-    const handleDelete = (client: ClientAssistant) => {
-        setSelectData(client);
+    const handleDelete = (attendance: Attendance) => {
+        setSelectData(attendance);
         openModalDelete();
     };
 
@@ -159,17 +225,24 @@ export default function Register() {
                 </div>
 
                 {/* Search */}
-                <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
-                    <div className="space-y-6 flex-1">
-                        <Label htmlFor="inputTwo">Buscar Cliente</Label>
+                <Form
+                    onSubmit={handleSearchSubmit}
+                    className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3"
+                >
+                    <div className="space-y-6 w-full">
+                        <Label htmlFor="searchText">Buscar Asistencia</Label>
                         <Input
                             type="text"
-                            id="inputTwo"
+                            id="searchText"
+                            name="searchText"
                             placeholder="nombre o apellido"
                             value={searchText}
                             onChange={handleSearch}
                         />
                     </div>
+                    <Button type="submit" size="sm" disabled={isLoading}>
+                        Buscar
+                    </Button>
 
                     <Button
                         size="sm"
@@ -186,12 +259,19 @@ export default function Register() {
                     >
                         Actualizar
                     </Button>
-                </div>
+                </Form>
 
                 {/* Data Table */}
                 <DataTable
                     listData={listData}
-                    searchText={searchText}
+                    page={page}
+                    pageSize={pageSize}
+                    total={total}
+                    isLoading={isLoading}
+                    sortConfig={sortConfig}
+                    onPageChange={handlePageChange}
+                    onPageSizeChange={handlePageSizeChange}
+                    onSortChange={handleSortChange}
                     onEdit={handleEdit}
                     onDelet={handleDelete}
                 />
