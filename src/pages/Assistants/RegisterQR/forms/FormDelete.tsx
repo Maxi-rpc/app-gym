@@ -88,7 +88,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                     />
                 </div>
                 <div>
-                    <Label>
+                    <Label htmlFor="deletetext">
                         Ingresar el texto:{' '}
                         <span className="font-bold italic">{validText}</span>
                     </Label>
@@ -96,6 +96,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                         type="text"
                         value={formData.deletetext}
                         name="deletetext"
+                        id="deletetext"
                         onChange={handleChange}
                     />
                 </div>
