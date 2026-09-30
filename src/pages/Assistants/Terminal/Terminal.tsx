@@ -34,7 +34,7 @@ export default function Terminal() {
     const autoClose = () => {
         setTimeout(() => {
             setFeedback(null);
-        }, 5000);
+        }, 7000);
     };
 
     const handleSubmit = async () => {
@@ -42,26 +42,27 @@ export default function Terminal() {
         setError('');
         setIsLoading(true);
 
+        const qr = formData.qr.trim();
+        const dni = formData.dni.trim();
+
         // Validación básica
-        if (!formData.qr && !formData.dni) {
+        if (!qr && !dni) {
             setError('Por favor completa uno de los campos QR o DNI.');
+            setIsLoading(false);
             return;
         }
 
         // Validación dni
-        if (formData.dni) {
-            if (!validateArgentineDNI(formData.dni)) {
-                setError('El campo DNI debe ser solo números.');
-                return;
-            }
+        if (dni && !validateArgentineDNI(dni)) {
+            setError('El campo DNI debe ser solo números.');
+            setIsLoading(false);
+            return;
         }
 
-        const date_to_string = new Date().toISOString();
-
         const body = {
-            qr_token: formData.qr,
-            dni: formData.dni,
-            check_in_at: date_to_string,
+            qr_token: qr,
+            dni: dni,
+            check_in_at: new Date().toISOString(),
         };
 
         try {
@@ -69,7 +70,15 @@ export default function Terminal() {
             console.log('resp', resp.data);
             if (resp.error) throw resp.error;
 
-            if (resp.data) {
+            if (resp.data?.error) {
+                setFeedback({
+                    variant: 'warning',
+                    title: resp.data?.error,
+                    message: '',
+                });
+            }
+
+            if (resp.data?.success) {
                 setFeedback({
                     variant: 'success',
                     title: resp.data?.data,
@@ -95,12 +104,27 @@ export default function Terminal() {
         setError('');
         setIsLoading(true);
 
-        const date_to_string = new Date().toISOString();
+        const qr = qrValue.trim();
+        const dni = formData.dni.trim();
+
+        // Validación básica
+        if (!qr && !dni) {
+            setError('Por favor completa uno de los campos QR o DNI.');
+            setIsLoading(false);
+            return;
+        }
+
+        // Validación dni
+        if (dni && !validateArgentineDNI(dni)) {
+            setError('El campo DNI debe ser solo números.');
+            setIsLoading(false);
+            return;
+        }
 
         const body = {
-            qr_token: qrValue,
-            dni: formData.dni,
-            check_in_at: date_to_string,
+            qr_token: qr,
+            dni: dni,
+            check_in_at: new Date().toISOString(),
         };
 
         try {
@@ -108,7 +132,15 @@ export default function Terminal() {
 
             if (resp.error) throw resp.error;
 
-            if (resp.data) {
+            if (resp.data?.error) {
+                setFeedback({
+                    variant: 'warning',
+                    title: resp.data?.error,
+                    message: resp.data?.error,
+                });
+            }
+
+            if (resp.data?.success) {
                 setFeedback({
                     variant: 'success',
                     title: resp.data?.data,
