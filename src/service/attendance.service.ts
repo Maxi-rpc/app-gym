@@ -126,8 +126,8 @@ async function registerTerminal(formData: RegisterAttendanceTerminalInput) {
         'attendance-by-terminal',
         {
             body: {
-                qr_token: formData.qr_token,
-                dni: formData.dni,
+                qr_token: formData.qr_token?.trim() || '',
+                dni: formData.dni?.trim() || '',
                 check_in_at: checkIn,
                 check_out_at: checkOut,
             },
