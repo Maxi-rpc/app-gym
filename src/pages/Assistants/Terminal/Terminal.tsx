@@ -10,6 +10,7 @@ import Button from '../../../components/ui/button/Button';
 import Alert from '../../../components/ui/alert/Alert';
 import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
 import ButtonQr from './ButtonQr';
+import IconSpinner from '../../../components/ui/button/IconSpinner';
 
 import { attendanceService } from '../../../service/attendance.service';
 
@@ -242,9 +243,11 @@ export default function Terminal() {
                                                 type="submit"
                                                 disabled={isLoading}
                                             >
-                                                {isLoading
-                                                    ? 'Cargando...'
-                                                    : 'Registrar!'}
+                                                {isLoading ? (
+                                                    <IconSpinner />
+                                                ) : (
+                                                    'Registrar!'
+                                                )}
                                             </Button>
                                         </div>
                                     </div>
