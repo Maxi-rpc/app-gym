@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
-import { EyeCloseIcon, EyeIcon } from '../../icons';
+import { EyeCloseIcon, EyeIcon, ChevronLeftIcon } from '../../icons';
 
 import Form from '../form/Form';
 import Label from '../form/Label';
@@ -89,6 +89,15 @@ export default function SignInForm() {
     };
     return (
         <div className="flex flex-col flex-1">
+            <div className="mx-auto w-full max-w-md pt-10">
+                <Link
+                    to="/assistants/terminal"
+                    className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                >
+                    <ChevronLeftIcon className="size-5 rtl:rotate-180" />
+                    Terminal
+                </Link>
+            </div>
             <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
                 <div>
                     <div className="mb-5 sm:mb-8">
