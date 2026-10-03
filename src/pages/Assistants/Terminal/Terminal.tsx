@@ -203,7 +203,7 @@ export default function Terminal() {
                                     ¡Escanea tu cod QR o Introduce tu DNI!
                                 </p>
                             </div>
-                            <div className="mx-auto w-full text-center mb-8">
+                            <div className="mx-auto w-full text-center mb-5">
                                 <ButtonQr onRegister={handleSave}>
                                     Abrir Cámara
                                 </ButtonQr>
