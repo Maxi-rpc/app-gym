@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { publicAsset } from '../../../utils/publicAsset';
 
 export type CarouselSlide = {

@@ -17,6 +17,7 @@ import IconSpinner from '../../../components/ui/button/IconSpinner';
 import { attendanceService } from '../../../service/attendance.service';
 
 import { validateArgentineDNI } from '../../../utils/validation';
+import { publicAsset } from '../../../utils/publicAsset';
 
 export default function Terminal() {
     const [feedback, setFeedback] = useState<Feedback>(null);
@@ -185,6 +186,15 @@ export default function Terminal() {
                     </div>
                     <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
                         <div>
+                            <div className="flex justify-center w-full mb-5 sm:mb-8">
+                                <img
+                                    className="w-60"
+                                    alt="logo"
+                                    src={publicAsset(
+                                        'images/logo/logo_2_sin_fondo.png',
+                                    )}
+                                />
+                            </div>
                             <div className="mb-5 sm:mb-8">
                                 <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
                                     Bienvenido a Degani Gym
