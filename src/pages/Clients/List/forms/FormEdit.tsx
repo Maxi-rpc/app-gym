@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import Form from '../../../../components/form/Form';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
@@ -211,7 +212,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     }, []);
 
     return (
-        <form className="flex flex-col">
+        <Form onSubmit={handleSubmit} className="flex flex-col">
             <div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                     <div className="col-span-2 md:col-span-1">
@@ -349,7 +350,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                 <Button size="sm" variant="outline" onClick={handleClose}>
                     Cerrar
                 </Button>
-                <Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+                <Button size="sm" type="submit" disabled={isLoading}>
                     {isLoading && <IconSpinner />}
                     Guardar
                 </Button>
@@ -365,6 +366,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                     </div>
                 )}
             </div>
-        </form>
+        </Form>
     );
 }
