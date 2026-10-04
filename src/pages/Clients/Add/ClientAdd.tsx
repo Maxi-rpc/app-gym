@@ -41,7 +41,7 @@ export default function ClientAdd() {
             setIsLoading(true);
 
             // Validación básica
-            if (!formData.email || !formData.name || !formData.last_name) {
+            if (!formData.document || !formData.name || !formData.last_name) {
                 setFeedback({
                     variant: 'info',
                     title: 'Por favor completa todos los campos*',
@@ -50,7 +50,10 @@ export default function ClientAdd() {
                 return;
             }
 
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            if (
+                formData.email &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+            ) {
                 setFeedback({
                     variant: 'warning',
                     title: 'Verificar el campo email.',
@@ -118,7 +121,7 @@ export default function ClientAdd() {
                             )}
 
                             <div className="col-span-2 md:col-span-1">
-                                <Label htmlFor="email">Email*</Label>
+                                <Label htmlFor="email">Email</Label>
                                 <InputField
                                     type="text"
                                     value={formData.email}
@@ -153,7 +156,7 @@ export default function ClientAdd() {
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
-                                <Label htmlFor="document">Documento</Label>
+                                <Label htmlFor="document">Documento*</Label>
                                 <InputField
                                     type="text"
                                     value={formData.document}

@@ -17,7 +17,7 @@ export interface UserRole {
 export interface Profile {
     id: string;
     created_at?: string;
-    email: string;
+    email?: string;
     name: string;
     last_name: string;
     document: string | null;
@@ -40,4 +40,5 @@ export interface UpdateProfilInput {
     phone?: string | null;
     image?: string | null;
     birth_date?: string;
+    status_id?: number;
 }

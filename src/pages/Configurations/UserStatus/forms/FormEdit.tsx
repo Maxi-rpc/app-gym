@@ -21,7 +21,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        id: defaultData?.id || '',
+        id: defaultData?.id ?? 0,
         name: defaultData?.name || '',
         description: defaultData?.description || '',
     });

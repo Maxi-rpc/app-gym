@@ -20,7 +20,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({ deletetext: '' });
 
-    const [validText] = useState(deleteText);
+    const [validText] = useState('eliminar');
 
     const handleClose = () => {
         onSubmit?.();
@@ -88,7 +88,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                     <Alert
                         variant="warning"
                         title="Advertencia"
-                        message="Se va a eliminar el registro de forma definitiva."
+                        message="Se va a eliminar el registro de forma lógica. Estado Inactive"
                     />
                 </div>
                 <div>

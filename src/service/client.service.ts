@@ -113,7 +113,7 @@ async function create(formData: CreateClientInput) {
     return { data: data, error: error };
 }
 
-async function update(formData: UpdateClientInput) {
+async function update(input: UpdateClientInput) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -124,16 +124,11 @@ async function update(formData: UpdateClientInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke('update-client', {
-        body: {
-            id: formData?.user_id,
-            height: formData?.height,
-            weight: formData?.weight,
-            emergency_contact: formData?.emergency_contact,
-            medical_notes: formData?.medical_notes,
-        },
+        body: input,
         headers: {
             Authorization: `Bearer ${session_token}`,
         },
+        method: 'POST',
     });
 
     return { data: data, error: error };
