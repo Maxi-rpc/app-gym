@@ -88,7 +88,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                     <Alert
                         variant="warning"
                         title="Advertencia"
-                        message="Se va a eliminar el registro de forma definitiva."
+                        message="Se va a eliminar el registro de forma lógica. Estado Inactive"
                     />
                 </div>
                 <div>

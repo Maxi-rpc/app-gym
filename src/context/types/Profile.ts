@@ -40,4 +40,5 @@ export interface UpdateProfilInput {
     phone?: string | null;
     image?: string | null;
     birth_date?: string;
+    status_id?: number;
 }

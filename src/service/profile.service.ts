@@ -27,7 +27,7 @@ async function getById(id: string) {
     return data?.profile;
 }
 
-async function update(formData: UpdateProfilInput) {
+async function update(input: UpdateProfilInput) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -38,18 +38,11 @@ async function update(formData: UpdateProfilInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke('update-profile', {
-        body: {
-            id: formData?.id,
-            email: formData?.email,
-            name: formData?.name,
-            last_name: formData?.last_name,
-            document: formData?.document,
-            phone: formData?.phone,
-            birth_date: formData?.birth_date,
-        },
+        body: input,
         headers: {
             Authorization: `Bearer ${session_token}`,
         },
+        method: 'POST',
     });
 
     return { data: data, error: error };

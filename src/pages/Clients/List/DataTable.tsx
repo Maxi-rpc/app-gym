@@ -1,3 +1,5 @@
+import Badge from '../../../components/ui/badge/Badge';
+
 import { Lineicons } from '@lineiconshq/react-lineicons';
 import {
     Trash3Outlined,
@@ -120,9 +122,16 @@ export default function DataTable({
                                 {formatLocalDateTime(client.created_at)}
                             </td>
                             <td className="px-4 py-3 text-sm">
-                                <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                <Badge
+                                    color={
+                                        client.profile?.status?.id == 1
+                                            ? 'success'
+                                            : 'warning'
+                                    }
+                                    size="sm"
+                                >
                                     {client.profile?.status?.name}
-                                </span>
+                                </Badge>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {formatLocalDateTime(client.updated_at)}

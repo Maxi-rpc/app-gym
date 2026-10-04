@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
+import Select from '../../../../components/form/Select';
 import Button from '../../../../components/ui/button/Button';
 import Alert from '../../../../components/ui/alert/Alert';
 import { Feedback } from '../../../../components/ui/alert/types/AlertFeedback';
@@ -10,6 +11,8 @@ import IconSpinner from '../../../../components/ui/button/IconSpinner';
 import { Client } from '../../../../service/types/Client';
 import { clientService } from '../../../../service/client.service';
 import { profileService } from '../../../../service/profile.service';
+import { UserStatus } from '../../../../service/types/UserStatus';
+import { userStatusService } from '../../../../service/userstatus.service';
 
 type Props = {
     onSubmit?: () => void;
@@ -21,6 +24,8 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [listStatus, setListStatus] = useState<UserStatus[]>([]);
+
     const [formProfile, setFormProfile] = useState({
         id: defaultData?.user_id,
         email: defaultData?.profile?.email || '',
@@ -29,6 +34,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
         document: defaultData?.profile?.document || '',
         phone: defaultData?.profile?.phone || '',
         birth_date: defaultData?.profile?.birth_date,
+        status_id: defaultData?.profile?.status_id,
     });
 
     const [formData, setFormData] = useState({
@@ -163,68 +169,126 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
         }));
     };
 
+    const statusOptions = listStatus.map((status) => ({
+        value: String(status.id),
+        label: status.name,
+    }));
+
+    const handleStatusChange = (value: string) => {
+        setFormProfile((prev) => ({
+            ...prev,
+            status_id: Number(value),
+        }));
+    };
+
+    const getData = async () => {
+        try {
+            setFeedback(null);
+            setIsLoading(true);
+
+            const resp = await userStatusService.getAll();
+            if (resp.error) {
+                throw resp.error;
+            }
+
+            setListStatus(resp.data ?? []);
+        } catch (error) {
+            console.error('Error al obtener estados de usuario:', error);
+
+            setFeedback({
+                variant: 'error',
+                title: 'No se pudieron cargar los estados',
+                message:
+                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getData();
+    }, []);
+
     return (
         <form className="flex flex-col">
             <div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Email*</Label>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                             type="text"
                             value={formProfile.email}
                             name="email"
+                            id="email"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Nombre*</Label>
+                        <Label htmlFor="name">Nombre*</Label>
                         <Input
                             type="text"
                             value={formProfile.name}
                             name="name"
+                            id="name"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Apellido*</Label>
+                        <Label htmlFor="last_name">Apellido*</Label>
                         <Input
                             type="text"
                             value={formProfile.last_name}
                             name="last_name"
+                            id="last_name"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Documento</Label>
+                        <Label htmlFor="document">Documento</Label>
                         <Input
                             type="text"
                             value={formProfile.document}
                             name="document"
+                            id="document"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Teléfono</Label>
+                        <Label htmlFor="phone">Teléfono</Label>
                         <Input
                             type="text"
                             value={formProfile.phone}
                             name="phone"
+                            id="phone"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Fecha de Nacimiento</Label>
+                        <Label htmlFor="birth_date">Fecha de Nacimiento</Label>
                         <Input
                             type="date"
                             value={formProfile.birth_date}
                             name="birth_date"
+                            id="birth_date"
                             placeholder="YYYY-MM-DD"
                             onChange={handleProfileChange}
+                        />
+                    </div>
+
+                    <div className="col-span-2 md:col-span-1">
+                        <Label htmlFor="status_id">Estado</Label>
+                        <Select
+                            options={statusOptions}
+                            defaultValue={String(formProfile.status_id ?? '')}
+                            placeholder="Seleccionar Opción"
+                            onChange={handleStatusChange}
+                            className="dark:bg-dark-900"
                         />
                     </div>
 
@@ -235,41 +299,47 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Altura (cm)</Label>
+                        <Label htmlFor="height">Altura (cm)</Label>
                         <Input
                             type="number"
                             value={formData?.height}
                             name="height"
+                            id="height"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Peso (kg)</Label>
+                        <Label htmlFor="weight">Peso (kg)</Label>
                         <Input
                             type="number"
                             value={formData?.weight}
                             name="weight"
+                            id="weight"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Contacto de Emergencia</Label>
+                        <Label htmlFor="emergency_contact">
+                            Contacto de Emergencia
+                        </Label>
                         <Input
                             type="text"
                             value={formData?.emergency_contact}
                             name="emergency_contact"
+                            id="emergency_contact"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Notas Médicas</Label>
+                        <Label htmlFor="medical_notes">Notas Médicas</Label>
                         <Input
                             type="text"
                             value={formData?.medical_notes}
                             name="medical_notes"
+                            id="medical_notes"
                             onChange={handleChange}
                         />
                     </div>
