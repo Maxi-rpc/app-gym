@@ -134,7 +134,7 @@ async function update(input: UpdateClientInput) {
     return { data: data, error: error };
 }
 
-async function remove(formData: DeleteClientInput) {
+async function remove(input: DeleteClientInput) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -144,10 +144,8 @@ async function remove(formData: DeleteClientInput) {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('remove-user', {
-        body: {
-            id: formData.id,
-        },
+    const { data, error } = await supabase.functions.invoke('remove-client', {
+        body: input,
         headers: {
             Authorization: `Bearer ${session_token}`,
         },
