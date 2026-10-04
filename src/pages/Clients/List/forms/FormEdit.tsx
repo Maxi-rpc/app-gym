@@ -88,7 +88,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
             // Validación básica
             if (
-                !formProfile.email ||
+                !formProfile.document ||
                 !formProfile.name ||
                 !formProfile.last_name
             ) {
@@ -100,7 +100,10 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                 return;
             }
 
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formProfile.email)) {
+            if (
+                formProfile.email &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formProfile.email)
+            ) {
                 setFeedback({
                     variant: 'warning',
                     title: 'Verificar el campo email.',

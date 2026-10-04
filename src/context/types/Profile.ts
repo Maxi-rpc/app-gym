@@ -17,7 +17,7 @@ export interface UserRole {
 export interface Profile {
     id: string;
     created_at?: string;
-    email: string;
+    email?: string;
     name: string;
     last_name: string;
     document: string | null;

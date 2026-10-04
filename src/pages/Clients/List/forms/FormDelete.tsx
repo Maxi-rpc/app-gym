@@ -20,7 +20,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({ deletetext: '' });
 
-    const [validText] = useState(deleteText);
+    const [validText] = useState('eliminar');
 
     const handleClose = () => {
         onSubmit?.();
