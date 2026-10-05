@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+
 import { EyeCloseIcon, EyeIcon } from '../../icons';
+
 import Label from '../form/Label';
 import Input from '../form/input/InputField';
 import Checkbox from '../form/input/Checkbox';
+
 
 // const IconGoogle = () => {
 // 	return (
@@ -204,7 +207,7 @@ export default function SignUpForm() {
 
                         <div className="mt-5">
                             <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                                ¿Ya tienes una cuenta?{''}
+                                ¿Ya tienes una cuenta? {''}
                                 <Link
                                     to="/signin"
                                     className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
