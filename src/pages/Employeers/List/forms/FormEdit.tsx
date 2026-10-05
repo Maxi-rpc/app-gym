@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
+import Form from '../../../../components/form/Form';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
 import Button from '../../../../components/ui/button/Button';
@@ -161,65 +162,71 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     };
 
     return (
-        <form className="flex flex-col">
+        <Form onSubmit={handleSubmit} className="flex flex-col">
             <div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Email*</Label>
+                        <Label htmlFor="email">Email*</Label>
                         <Input
                             type="text"
                             value={formProfile.email}
                             name="email"
+                            id="email"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Nombre*</Label>
+                        <Label htmlFor="name">Nombre*</Label>
                         <Input
                             type="text"
                             value={formProfile.name}
                             name="name"
+                            id="name"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Apellido*</Label>
+                        <Label htmlFor="last_name">Apellido*</Label>
                         <Input
                             type="text"
                             value={formProfile.last_name}
                             name="last_name"
+                            id="last_name"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Documento</Label>
+                        <Label htmlFor="document">Documento</Label>
                         <Input
                             type="text"
                             value={formProfile.document}
                             name="document"
+                            id="document"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Teléfono</Label>
+                        <Label htmlFor="phone">Teléfono</Label>
                         <Input
                             type="text"
                             value={formProfile.phone}
                             name="phone"
+                            id="phone"
                             onChange={handleProfileChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Fecha de Nacimiento</Label>
+                        <Label htmlFor="birth_date">Fecha de Nacimiento</Label>
                         <Input
                             type="date"
                             value={formProfile.birth_date}
                             name="birth_date"
+                            id="birth_date"
                             placeholder="YYYY-MM-DD"
                             onChange={handleProfileChange}
                         />
@@ -232,41 +239,45 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Salario</Label>
+                        <Label htmlFor="salary">Salario</Label>
                         <Input
                             type="number"
                             value={formData?.salary}
                             name="salary"
+                            id="salary"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Fecha de Ingreso</Label>
+                        <Label htmlFor="hire_date">Fecha de Ingreso</Label>
                         <Input
                             type="date"
                             value={formData?.hire_date || ''}
                             name="hire_date"
+                            id="hire_date"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Especialidad</Label>
+                        <Label htmlFor="specialist">Especialidad</Label>
                         <Input
                             type="text"
                             value={formData?.specialist}
                             name="specialist"
+                            id="specialist"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Observación</Label>
+                        <Label htmlFor="observations">Observación</Label>
                         <Input
                             type="text"
                             value={formData?.observations}
                             name="observations"
+                            id="observations"
                             onChange={handleChange}
                         />
                     </div>
@@ -276,7 +287,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                 <Button size="sm" variant="outline" onClick={handleClose}>
                     Cerrar
                 </Button>
-                <Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+                <Button size="sm" type="submit" disabled={isLoading}>
                     {isLoading && <IconSpinner />}
                     Guardar
                 </Button>
@@ -292,6 +303,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                     </div>
                 )}
             </div>
-        </form>
+        </Form>
     );
 }
