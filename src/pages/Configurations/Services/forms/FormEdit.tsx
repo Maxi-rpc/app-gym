@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
+import Form from '../../../../components/form/Form';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
+import TextArea from '../../../../components/form/input/TextArea';
 import Button from '../../../../components/ui/button/Button';
 import Alert from '../../../../components/ui/alert/Alert';
 import { Feedback } from '../../../../components/ui/alert/types/AlertFeedback';
@@ -82,55 +84,66 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     };
 
     return (
-        <form className="flex flex-col">
+        <Form onSubmit={handleSubmit} className="flex flex-col">
             <div className="px-2 overflow-y-auto custom-scrollbar">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                     <div className="col-span-2 md:col-span-1">
-                        <Label>ID</Label>
+                        <Label htmlFor="id">ID</Label>
                         <Input
                             type="text"
                             value={formData?.id}
                             name="id"
+                            id="id"
                             disabled
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Nombre</Label>
+                        <Label htmlFor="name">Nombre*</Label>
                         <Input
                             type="text"
                             value={formData?.name}
                             name="name"
+                            id="name"
                             onChange={handleChange}
                         />
                     </div>
 
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Descripción</Label>
-                        <Input
-                            type="text"
-                            value={formData?.description}
+                    <div className="col-span-2">
+                        <Label htmlFor="description">Descripción</Label>
+                        <TextArea
+                            id="description"
                             name="description"
-                            onChange={handleChange}
+                            placeholder="Ingresar descripción"
+                            value={formData?.description}
+                            onChange={(value) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    description: value,
+                                }))
+                            }
+                            rows={3}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Precio</Label>
+                        <Label htmlFor="price">Precio*</Label>
                         <Input
                             type="number"
-                            value={formData?.price}
+                            value={formData.price}
                             name="price"
+                            id="price"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="col-span-2 md:col-span-1">
-                        <Label>Duración en Días</Label>
+                        <Label htmlFor="duration_days">Duración en días*</Label>
                         <Input
                             type="number"
-                            value={formData?.duration_days}
+                            value={formData.duration_days}
                             name="duration_days"
+                            id="duration_days"
                             onChange={handleChange}
                         />
                     </div>
@@ -140,7 +153,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                 <Button size="sm" variant="outline" onClick={handleClose}>
                     Cerrar
                 </Button>
-                <Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+                <Button size="sm" type="submit" disabled={isLoading}>
                     {isLoading && <IconSpinner />}
                     Guardar
                 </Button>
@@ -156,6 +169,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                     </div>
                 )}
             </div>
-        </form>
+        </Form>
     );
 }
