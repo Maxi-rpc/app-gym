@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { useModal } from '../../hooks/useModal';
 import { Modal } from '../ui/modal';
 import Button from '../ui/button/Button';
+import Form from '../form/Form';
 import Input from '../form/input/InputField';
 import TextArea from '../form/input/TextArea';
 import Label from '../form/Label';
@@ -17,20 +21,31 @@ import { employeeService } from '../../service/employee.service';
 import { UpdateEmployeeInput } from '../../service/types/Employee';
 import { useAuth } from '../../hooks/useAuth';
 
+const employeeSchema = z.object({
+    hire_date: z.string(),
+    specialist: z.string(),
+    observations: z.string(),
+});
+
+type EmployeeFormValues = z.infer<typeof employeeSchema>;
+
 export default function EmployeeCard() {
     const { profile } = useAuth();
     const [employee, setEmployee] = useState<UpdateEmployeeInput | null>(null);
     const { isOpen, openModal, closeModal } = useModal();
     const [feedback, setFeedback] = useState<Feedback>(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [formData, setFormData] = useState({
-        user_id: '',
-        salary: 0,
-        hire_date: null,
-        specialist: '',
-        employee_number: '',
-        observations: '',
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<EmployeeFormValues>({
+        resolver: zodResolver(employeeSchema),
+        defaultValues: {
+            hire_date: '',
+            specialist: '',
+            observations: '',
+        },
     });
 
     const handleCloseModal = () => {
@@ -38,12 +53,26 @@ export default function EmployeeCard() {
         closeModal();
     };
 
-    const handleSubmit = async () => {
+    const handleOpenModal = () => {
+        reset({
+            hire_date: employee?.hire_date ?? '',
+            specialist: employee?.specialist ?? '',
+            observations: employee?.observations ?? '',
+        });
+        setFeedback(null);
+        openModal();
+    };
+
+    const onSubmit = async (values: EmployeeFormValues) => {
         try {
             setFeedback(null);
-            setIsLoading(true);
-
-            const resp = await employeeService.update(formData);
+            const resp = await employeeService.update({
+                user_id: employee?.user_id ?? profile?.id,
+                salary: employee?.salary,
+                employee_number: employee?.employee_number,
+                ...values,
+                hire_date: values.hire_date || null,
+            });
             if (resp.data) {
                 if (resp?.data?.success) {
                     setFeedback({
@@ -63,7 +92,9 @@ export default function EmployeeCard() {
             if (resp.error) {
                 throw resp.error;
             }
-            await loadEmployee(formData.user_id);
+            if (profile?.id) {
+                await loadEmployee(profile.id);
+            }
         } catch (error) {
             console.error('Error al guardar datos:', error);
 
@@ -73,32 +104,18 @@ export default function EmployeeCard() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
-        } finally {
-            setIsLoading(false);
         }
-    };
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
     const loadEmployee = async (userId: string) => {
         try {
             const employeeData = await employeeService.getById(userId);
             setEmployee(employeeData);
-            setFormData((prev) => ({
-                ...prev,
-                user_id: userId,
-                salary: employeeData.salary ?? 0,
-                hire_date: employeeData.hire_date ?? null,
+            reset({
+                hire_date: employeeData.hire_date ?? '',
                 specialist: employeeData.specialist ?? '',
-                employee_number: employeeData.employee_number ?? '',
                 observations: employeeData.observations ?? '',
-            }));
+            });
         } catch (err) {
             console.error('Error cargando employee', err);
             setEmployee(null);
@@ -106,13 +123,10 @@ export default function EmployeeCard() {
     };
 
     useEffect(() => {
-        const getData = async () => {
-            if (profile?.id) {
-                await loadEmployee(profile?.id);
-            }
-        };
-        getData();
-    }, []);
+        if (profile?.id) {
+            void loadEmployee(profile.id);
+        }
+    }, [profile?.id]);
 
     return (
         <>
@@ -154,7 +168,7 @@ export default function EmployeeCard() {
                     </div>
 
                     <button
-                        onClick={openModal}
+                        onClick={handleOpenModal}
                         className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
                     >
                         <Lineicons icon={Pencil1Outlined} size={20} />
@@ -178,18 +192,35 @@ export default function EmployeeCard() {
                             actualizado.
                         </p>
                     </div>
-                    <form className="flex flex-col">
+                    <Form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="flex flex-col"
+                    >
                         <div className="px-2 overflow-y-auto custom-scrollbar md:h-auto">
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label htmlFor="hire_date">
                                         Fecha de Ingreso
                                     </Label>
-                                    <Input
-                                        type="date"
-                                        value={formData?.hire_date || ''}
+                                    <Controller
                                         name="hire_date"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="date"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="hire_date"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                error={Boolean(
+                                                    errors.hire_date,
+                                                )}
+                                                hint={
+                                                    errors.hire_date?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
 
@@ -197,11 +228,25 @@ export default function EmployeeCard() {
                                     <Label htmlFor="specialist">
                                         Especialidad
                                     </Label>
-                                    <Input
-                                        type="text"
-                                        value={formData?.specialist}
+                                    <Controller
                                         name="specialist"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="text"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="specialist"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                error={Boolean(
+                                                    errors.specialist,
+                                                )}
+                                                hint={
+                                                    errors.specialist?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
 
@@ -209,15 +254,25 @@ export default function EmployeeCard() {
                                     <Label htmlFor="observations">
                                         Observación
                                     </Label>
-                                    <TextArea
-                                        value={formData?.observations}
-                                        onChange={(value) =>
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                observations: value,
-                                            }))
-                                        }
-                                        rows={3}
+                                    <Controller
+                                        name="observations"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <TextArea
+                                                name={field.name}
+                                                id="observations"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                rows={3}
+                                                error={Boolean(
+                                                    errors.observations,
+                                                )}
+                                                hint={
+                                                    errors.observations
+                                                        ?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
                             </div>
@@ -232,10 +287,10 @@ export default function EmployeeCard() {
                             </Button>
                             <Button
                                 size="sm"
-                                onClick={handleSubmit}
-                                disabled={isLoading}
+                                type="submit"
+                                disabled={isSubmitting}
                             >
-                                {isLoading && <IconSpinner />}
+                                {isSubmitting && <IconSpinner />}
                                 Guadar
                             </Button>
                         </div>
@@ -250,7 +305,7 @@ export default function EmployeeCard() {
                                 </div>
                             )}
                         </div>
-                    </form>
+                    </Form>
                 </div>
             </Modal>
         </>
