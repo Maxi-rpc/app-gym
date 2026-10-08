@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { useModal } from '../../hooks/useModal';
 import { Modal } from '../ui/modal';
 import Button from '../ui/button/Button';
+import ButtonCustom from '../ui/button/ButtonCustom';
+import Form from '../form/Form';
 import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import Alert from '../../components/ui/alert/Alert';
@@ -14,38 +19,56 @@ import { EyeCloseIcon, EyeIcon } from '../../icons';
 import { useAuth } from '../../hooks/useAuth';
 import { userService } from '../../service/user.service';
 
+const userSecuritySchema = z.object({
+    password: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+});
+
+type UserSecurityFormValues = z.infer<typeof userSecuritySchema>;
+
 export default function UserSecurityCard() {
     const { profile } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [feedback, setFeedback] = useState<Feedback>(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [formData, setFormData] = useState({
-        id: profile?.id || '',
-        password: '',
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<UserSecurityFormValues>({
+        resolver: zodResolver(userSecuritySchema),
+        defaultValues: {
+            password: '',
+        },
     });
 
     const { isOpen, openModal, closeModal } = useModal();
 
     const handleCloseModal = () => {
         setFeedback(null);
+        reset({ password: '' });
+        setShowPassword(false);
         closeModal();
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    const handleOpenModal = () => {
+        setFeedback(null);
+        reset({ password: '' });
+        setShowPassword(false);
+        openModal();
     };
 
-    const handleSubmit = async () => {
+    const onSubmit = async ({ password }: UserSecurityFormValues) => {
         try {
             setFeedback(null);
-            setIsLoading(true);
-
-            const resp = await userService.update_password(formData);
+            const resp = await userService.update_password({
+                id: profile?.id ?? '',
+                password,
+            });
             if (resp.data) {
                 if (resp?.data?.success) {
                     setFeedback({
@@ -74,8 +97,6 @@ export default function UserSecurityCard() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
-        } finally {
-            setIsLoading(false);
         }
     };
     return (
@@ -91,17 +112,17 @@ export default function UserSecurityCard() {
                                 Cambiar la contraseña
                             </span>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                                Reciba notificaciones en tiempo real y alertas
-                                de equipo.
+                                Una vez realizado el cambio, debe cerrar sesion.
                             </p>
                         </div>
                         <div>
-                            <button
-                                onClick={openModal}
-                                className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+                            <ButtonCustom
+                                variant="outline"
+                                color="error"
+                                onClick={handleOpenModal}
                             >
                                 Cambiar la contraseña
-                            </button>
+                            </ButtonCustom>
                         </div>
                     </div>
                 </div>
@@ -122,14 +143,19 @@ export default function UserSecurityCard() {
                             actualizado.
                         </p>
                     </div>
-                    <form className="flex flex-col">
+                    <Form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="flex flex-col"
+                    >
                         <div className="px-2 overflow-y-auto custom-scrollbar">
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                 <div className="col-span-2">
-                                    <Label>Email</Label>
+                                    <Label htmlFor="email">Email</Label>
                                     <Input
                                         type="text"
                                         value={profile?.email}
+                                        name="email"
+                                        id="email"
                                         disabled
                                     />
                                 </div>
@@ -166,15 +192,29 @@ export default function UserSecurityCard() {
                                         </span>
                                     </Label>
                                     <div className="relative">
-                                        <Input
-                                            type={
-                                                showPassword
-                                                    ? 'text'
-                                                    : 'password'
-                                            }
+                                        <Controller
                                             name="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    type={
+                                                        showPassword
+                                                            ? 'text'
+                                                            : 'password'
+                                                    }
+                                                    name={field.name}
+                                                    id="password"
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                    error={Boolean(
+                                                        errors.password,
+                                                    )}
+                                                    hint={
+                                                        errors.password?.message
+                                                    }
+                                                />
+                                            )}
                                         />
                                         <span
                                             onClick={() =>
@@ -202,10 +242,10 @@ export default function UserSecurityCard() {
                             </Button>
                             <Button
                                 size="sm"
-                                onClick={handleSubmit}
-                                disabled={isLoading}
+                                type="submit"
+                                disabled={isSubmitting}
                             >
-                                {isLoading && <IconSpinner />}
+                                {isSubmitting && <IconSpinner />}
                                 Guardar
                             </Button>
                         </div>
@@ -218,7 +258,7 @@ export default function UserSecurityCard() {
                                 />
                             </div>
                         )}
-                    </form>
+                    </Form>
                 </div>
             </Modal>
         </>

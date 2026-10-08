@@ -1,7 +1,7 @@
 import { supabase } from '../utils/supabase';
 import { User } from './types/User';
 
-async function update_password(formData: User) {
+async function update_password(input: User) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -14,13 +14,11 @@ async function update_password(formData: User) {
     const { data, error } = await supabase.functions.invoke(
         'change-user-password',
         {
-            body: {
-                id: formData?.id,
-                password: formData?.password,
-            },
+            body: input,
             headers: {
                 Authorization: `Bearer ${session_token}`,
             },
+            method: 'POST',
         },
     );
 
