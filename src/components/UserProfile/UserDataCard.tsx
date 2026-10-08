@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 // import { publicAsset } from "../../utils/publicAsset";
 import { useModal } from '../../hooks/useModal';
 import { Modal } from '../ui/modal';
 import Button from '../ui/button/Button';
+import Form from '../form/Form';
 import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import Badge from '../ui/badge/Badge';
@@ -19,21 +23,49 @@ import { useAuth } from '../../hooks/useAuth';
 
 import { profileService } from '../../service/profile.service';
 
+const profileSchema = z.object({
+    name: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+    last_name: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+    document: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+    phone: z.string(),
+    birth_date: z.string(),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
 export default function UserDataCard() {
     const { isOpen, openModal, closeModal } = useModal();
     const { profile } = useAuth();
     const [feedback, setFeedback] = useState<Feedback>(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [formData, setFormData] = useState({
-        id: profile?.id,
-        email: profile?.email,
-        name: profile?.name,
-        last_name: profile?.last_name,
-        document: profile?.document,
-        phone: profile?.phone,
-        image: profile?.image,
-        birth_date: profile?.birth_date,
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<ProfileFormValues>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+            name: profile?.name ?? '',
+            last_name: profile?.last_name ?? '',
+            document: profile?.document ?? '',
+            phone: profile?.phone ?? '',
+            birth_date: profile?.birth_date ?? '',
+        },
     });
 
     const roleNames =
@@ -47,12 +79,27 @@ export default function UserDataCard() {
         closeModal();
     };
 
-    const handleSubmit = async () => {
+    const handleOpenModal = () => {
+        reset({
+            name: profile?.name ?? '',
+            last_name: profile?.last_name ?? '',
+            document: profile?.document ?? '',
+            phone: profile?.phone ?? '',
+            birth_date: profile?.birth_date ?? '',
+        });
+        setFeedback(null);
+        openModal();
+    };
+
+    const onSubmit = async (values: ProfileFormValues) => {
         try {
             setFeedback(null);
-            setIsLoading(true);
-
-            const resp = await profileService.update(formData);
+            const resp = await profileService.update({
+                id: profile?.id,
+                email: profile?.email,
+                image: profile?.image,
+                ...values,
+            });
             if (resp.data) {
                 if (resp?.data?.success) {
                     setFeedback({
@@ -81,17 +128,7 @@ export default function UserDataCard() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
-        } finally {
-            setIsLoading(false);
         }
-    };
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
     return (
@@ -177,7 +214,7 @@ export default function UserDataCard() {
                     </div>
                     <div>
                         <button
-                            onClick={openModal}
+                            onClick={handleOpenModal}
                             className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
                         >
                             <Lineicons icon={Pencil1Outlined} size={20} />
@@ -201,26 +238,53 @@ export default function UserDataCard() {
                             Actualiza tus datos para mantener tu perfil al día.
                         </p>
                     </div>
-                    <form className="flex flex-col">
+                    <Form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="flex flex-col"
+                    >
                         <div className="custom-scrollbar h-112.5 md:h-auto overflow-y-auto px-2 pb-3">
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label htmlFor="name">Nombre</Label>
-                                    <Input
-                                        type="text"
-                                        value={formData?.name}
+                                    <Controller
                                         name="name"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="text"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="name"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                error={Boolean(errors.name)}
+                                                hint={errors.name?.message}
+                                            />
+                                        )}
                                     />
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label htmlFor="last_name">Apellido</Label>
-                                    <Input
-                                        type="text"
-                                        value={formData?.last_name}
+                                    <Controller
                                         name="last_name"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="text"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="last_name"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                error={Boolean(
+                                                    errors.last_name,
+                                                )}
+                                                hint={
+                                                    errors.last_name?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
 
@@ -230,27 +294,50 @@ export default function UserDataCard() {
 											type="text"
 											value={formData?.email}
 											name="email"
+                                            id="email"
 											onChange={handleChange}
 										/>
 									</div> */}
 
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label htmlFor="document">Documento</Label>
-                                    <Input
-                                        type="text"
-                                        value={formData?.document || ''}
+                                    <Controller
                                         name="document"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="text"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="document"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                error={Boolean(
+                                                    errors.document,
+                                                )}
+                                                hint={
+                                                    errors.document?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label htmlFor="phone">Teléfono</Label>
-                                    <Input
-                                        type="text"
-                                        value={formData?.phone || ''}
+                                    <Controller
                                         name="phone"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="text"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="phone"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                            />
+                                        )}
                                     />
                                 </div>
 
@@ -258,12 +345,20 @@ export default function UserDataCard() {
                                     <Label htmlFor="birth_date">
                                         Fecha de Cumpleaños
                                     </Label>
-                                    <Input
-                                        type="date"
-                                        placeholder="AAAA-MM-DD"
-                                        value={formData?.birth_date}
+                                    <Controller
                                         name="birth_date"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="date"
+                                                placeholder="AAAA-MM-DD"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="birth_date"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                            />
+                                        )}
                                     />
                                 </div>
                             </div>
@@ -278,10 +373,10 @@ export default function UserDataCard() {
                             </Button>
                             <Button
                                 size="sm"
-                                onClick={handleSubmit}
-                                disabled={isLoading}
+                                type="submit"
+                                disabled={isSubmitting}
                             >
-                                {isLoading && <IconSpinner />}
+                                {isSubmitting && <IconSpinner />}
                                 Guardar
                             </Button>
                         </div>
@@ -296,7 +391,7 @@ export default function UserDataCard() {
                                 </div>
                             )}
                         </div>
-                    </form>
+                    </Form>
                 </div>
             </Modal>
         </>
