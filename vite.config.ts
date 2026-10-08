@@ -16,4 +16,18 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        rolldownOptions: {
+            onwarn(warning, warn) {
+                // Skip eval warnings from react-jvectormap
+                if (
+                    warning.code === 'EVAL' &&
+                    warning.id?.includes('@react-jvectormap')
+                ) {
+                    return;
+                }
+                warn(warning);
+            },
+        },
+    },
 });
