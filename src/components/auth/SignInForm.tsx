@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { EyeCloseIcon, EyeIcon, ChevronLeftIcon } from '../../icons';
 
@@ -13,7 +16,23 @@ import { publicAsset } from '../../utils/publicAsset';
 
 import { useAuth } from '../../hooks/useAuth';
 
-type SignInField = 'email' | 'password';
+const signInSchema = z.object({
+    email: z
+        .string()
+        .refine((value) => value.trim().length > 0, 'Este campo es obligatorio')
+        .refine(
+            (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            'Email inválido',
+        ),
+    password: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+});
+
+type SignInFormValues = z.infer<typeof signInSchema>;
 
 // const IconGoogle = () => {
 // 	return (
@@ -62,86 +81,31 @@ type SignInField = 'email' | 'password';
 export default function SignInForm() {
     const { login } = useAuth();
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
-
     const [showPassword, setShowPassword] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
     const [error, setError] = useState('');
-    const [inputError, setInputError] = useState({
-        email: {
-            error: false,
-            message: '',
+    const {
+        control,
+        handleSubmit,
+        formState: { errors: fieldErrors, isSubmitting },
+    } = useForm<SignInFormValues>({
+        resolver: zodResolver(signInSchema),
+        defaultValues: {
+            email: '',
+            password: '',
         },
-        password: {
-            error: false,
-            message: '',
-        },
+        mode: 'onBlur',
     });
 
-    const validateField = (name: SignInField, value: string) => {
-        if (!value.trim()) return 'Este campo es obligatorio';
-
-        if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-            return 'Email inválido';
-        }
-
-        return '';
-    };
-
-    const setFieldError = (name: SignInField, message: string) => {
-        setInputError((prev) => ({
-            ...prev,
-            [name]: { error: Boolean(message), message },
-        }));
-    };
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        const fieldName = name as SignInField;
-
-        setFormData((prev) => ({
-            ...prev,
-            [fieldName]: value,
-        }));
-
-        if (value) setFieldError(fieldName, '');
-    };
-
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        const fieldName = name as SignInField;
-        setFieldError(fieldName, validateField(fieldName, value));
-    };
-
-    const handleSubmit = async () => {
+    const onSubmit = async ({ email, password }: SignInFormValues) => {
         setError('');
-
-        const emailError = validateField('email', formData.email);
-        const passwordError = validateField('password', formData.password);
-
-        setFieldError('email', emailError);
-        setFieldError('password', passwordError);
-
-        if (emailError || passwordError) {
-            return;
-        }
-
-        const { email, password } = formData;
-
         try {
-            setIsLoading(true);
             await login(email, password);
             navigate('/');
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : 'Error al iniciar sesión',
             );
-        } finally {
-            setIsLoading(false);
         }
     };
     return (
@@ -201,7 +165,7 @@ export default function SignInForm() {
 								</span>
 							</div>
 						</div> */}
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
                             <div className="space-y-6">
                                 {error && (
                                     <div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
@@ -217,18 +181,28 @@ export default function SignInForm() {
                                             *
                                         </span>{' '}
                                     </Label>
-                                    <Input
-                                        placeholder="info@gmail.com"
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        disabled={isLoading}
-                                        autocomplete="email"
+                                    <Controller
                                         name="email"
-                                        id="email"
-                                        error={inputError.email.error}
-                                        hint={inputError.email.message}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                placeholder="info@gmail.com"
+                                                type="email"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                disabled={isSubmitting}
+                                                autocomplete="email"
+                                                name={field.name}
+                                                id="email"
+                                                error={Boolean(
+                                                    fieldErrors.email,
+                                                )}
+                                                hint={
+                                                    fieldErrors.email?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
                                 <div>
@@ -239,22 +213,33 @@ export default function SignInForm() {
                                         </span>{' '}
                                     </Label>
                                     <div className="relative">
-                                        <Input
-                                            type={
-                                                showPassword
-                                                    ? 'text'
-                                                    : 'password'
-                                            }
-                                            placeholder="Ingresar tu password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            disabled={isLoading}
-                                            autocomplete="current-password"
+                                        <Controller
                                             name="password"
-                                            id="password"
-                                            error={inputError.password.error}
-                                            hint={inputError.password.message}
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    type={
+                                                        showPassword
+                                                            ? 'text'
+                                                            : 'password'
+                                                    }
+                                                    placeholder="Ingresar tu password"
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                    disabled={isSubmitting}
+                                                    autocomplete="current-password"
+                                                    name={field.name}
+                                                    id="password"
+                                                    error={Boolean(
+                                                        fieldErrors.password,
+                                                    )}
+                                                    hint={
+                                                        fieldErrors.password
+                                                            ?.message
+                                                    }
+                                                />
+                                            )}
                                         />
                                         <span
                                             onClick={() =>
@@ -275,7 +260,7 @@ export default function SignInForm() {
                                         <Checkbox
                                             checked={isChecked}
                                             onChange={setIsChecked}
-                                            disabled={isLoading}
+                                            disabled={isSubmitting}
                                         />
                                         <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
                                             Mantenme conectado
@@ -293,9 +278,9 @@ export default function SignInForm() {
                                         className="w-full"
                                         size="sm"
                                         type="submit"
-                                        disabled={isLoading}
+                                        disabled={isSubmitting}
                                     >
-                                        {isLoading ? (
+                                        {isSubmitting ? (
                                             <IconSpinner />
                                         ) : (
                                             'Iniciar sesión'
