@@ -26,18 +26,11 @@ import {
 import { clientService } from '../../../service/client.service';
 
 import DataTable from './DataTable';
-import ModalEdit from './modals/ModalEdit';
 import ModalDelete from './modals/ModalDelete';
 
 export default function Clients() {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    const {
-        isOpen: isOpenEdit,
-        openModal: openModalEdit,
-        closeModal: closeModalEdit,
-    } = useModal();
 
     const {
         isOpen: isOpenDelete,
@@ -134,18 +127,8 @@ export default function Clients() {
         });
     };
 
-    const handleUpdate = () => {
-        closeModalEdit();
-        getData();
-    };
-
     const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
         setSearchText(e.target.value);
-    };
-
-    const handleEdit = (client: Client) => {
-        setSelectData(client);
-        openModalEdit();
     };
 
     const handleDeleteItem = () => {
@@ -160,6 +143,10 @@ export default function Clients() {
 
     const handleAdd = () => {
         navigate('/clients/add');
+    };
+
+    const handleEdit = (client: Client) => {
+        navigate(`/clients/edit/${client?.user_id}`);
     };
 
     const handleDetail = (client: Client) => {
@@ -265,14 +252,6 @@ export default function Clients() {
                     onDelet={handleDelete}
                 />
             </div>
-
-            {/* Modal Edit */}
-            <ModalEdit
-                isOpen={isOpenEdit}
-                onClose={closeModalEdit}
-                onSubmit={handleUpdate}
-                defaultData={selectData}
-            />
 
             {/* Modal Delete */}
             <ModalDelete

@@ -21,6 +21,7 @@ import Dashboards from './pages/Administration/Dashboard/Dashboard';
 // clients
 import Clients from './pages/Clients/List/Clients';
 import ClientsAdd from './pages/Clients/Add/ClientAdd';
+import ClientEdit from './pages/Clients/Edit/ClientEdit';
 import ClientDetails from './pages/Clients/Details/ClientDetails';
 
 // employee
@@ -134,6 +135,19 @@ export default function App() {
                                             ]}
                                         >
                                             <ClientsAdd />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <ClientEdit />
                                         </ProtectedRoute>
                                     }
                                 />
