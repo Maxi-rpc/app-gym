@@ -216,9 +216,7 @@ export default function EmployeeCard() {
                                                 error={Boolean(
                                                     errors.hire_date,
                                                 )}
-                                                hint={
-                                                    errors.hire_date?.message
-                                                }
+                                                hint={errors.hire_date?.message}
                                             />
                                         )}
                                     />
@@ -268,8 +266,7 @@ export default function EmployeeCard() {
                                                     errors.observations,
                                                 )}
                                                 hint={
-                                                    errors.observations
-                                                        ?.message
+                                                    errors.observations?.message
                                                 }
                                             />
                                         )}

@@ -21,8 +21,7 @@ const clientSchema = z.object({
         .string()
         .refine(
             (value) =>
-                value.length === 0 ||
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                value.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
             'Email inválido',
         ),
     name: z

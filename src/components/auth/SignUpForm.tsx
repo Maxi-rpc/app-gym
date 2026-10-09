@@ -7,7 +7,6 @@ import Label from '../form/Label';
 import Input from '../form/input/InputField';
 import Checkbox from '../form/input/Checkbox';
 
-
 // const IconGoogle = () => {
 // 	return (
 // 		<svg

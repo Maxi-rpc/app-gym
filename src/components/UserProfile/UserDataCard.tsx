@@ -280,9 +280,7 @@ export default function UserDataCard() {
                                                 error={Boolean(
                                                     errors.last_name,
                                                 )}
-                                                hint={
-                                                    errors.last_name?.message
-                                                }
+                                                hint={errors.last_name?.message}
                                             />
                                         )}
                                     />
@@ -312,12 +310,8 @@ export default function UserDataCard() {
                                                 id="document"
                                                 onChange={field.onChange}
                                                 onBlur={field.onBlur}
-                                                error={Boolean(
-                                                    errors.document,
-                                                )}
-                                                hint={
-                                                    errors.document?.message
-                                                }
+                                                error={Boolean(errors.document)}
+                                                hint={errors.document?.message}
                                             />
                                         )}
                                     />
