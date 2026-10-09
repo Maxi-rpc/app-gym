@@ -1,4 +1,4 @@
-import { SetStateAction, useState, useEffect } from 'react';
+import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
@@ -28,9 +28,25 @@ import { clientService } from '../../../service/client.service';
 import DataTable from './DataTable';
 import ModalDelete from './modals/ModalDelete';
 
+type GetDataOptions = {
+    page: number;
+    pageSize: ClientPageSize;
+    search: string;
+    sortBy: ClientSortKey;
+    sortDirection: 'asc' | 'desc';
+};
+
+const INITIAL_DATA_OPTIONS: GetDataOptions = {
+    page: 1,
+    pageSize: 10,
+    search: '',
+    sortBy: 'user_id',
+    sortDirection: 'asc',
+};
+
 export default function Clients() {
     const [feedback, setFeedback] = useState<Feedback>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const {
         isOpen: isOpenDelete,
@@ -41,77 +57,94 @@ export default function Clients() {
     const [searchText, setSearchText] = useState('');
     const [selectData, setSelectData] = useState<Client | null>(null);
     const [listData, setListData] = useState<Client[]>([]);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState<ClientPageSize>(10);
+    const [page, setPage] = useState(INITIAL_DATA_OPTIONS.page);
+    const [pageSize, setPageSize] = useState<ClientPageSize>(
+        INITIAL_DATA_OPTIONS.pageSize,
+    );
     const [total, setTotal] = useState(0);
     const [sortConfig, setSortConfig] = useState<{
         key: ClientSortKey;
         direction: 'asc' | 'desc';
-    }>({ key: 'user_id', direction: 'asc' });
+    }>({
+        key: INITIAL_DATA_OPTIONS.sortBy,
+        direction: INITIAL_DATA_OPTIONS.sortDirection,
+    });
     const navigate = useNavigate();
 
-    type GetDataOptions = {
-        page?: number;
-        pageSize?: ClientPageSize;
-        search?: string;
-        sortBy?: ClientSortKey;
-        sortDirection?: 'asc' | 'desc';
-    };
+    const getData = useCallback(async (options: GetDataOptions) => {
+        const resp = await clientService.getAll({
+            page: options.page,
+            pageSize: options.pageSize,
+            search: options.search.trim(),
+            sortBy: options.sortBy,
+            sortDirection: options.sortDirection,
+        });
 
-    const getData = async (options: GetDataOptions = {}) => {
-        const requestedPage = options.page ?? page;
-        const requestedPageSize = options.pageSize ?? pageSize;
-        const requestedSearch = options.search ?? searchText;
-        const requestedSortBy = options.sortBy ?? sortConfig.key;
-        const requestedSortDirection =
-            options.sortDirection ?? sortConfig.direction;
+        if (resp.error) {
+            throw resp.error;
+        }
 
-        try {
-            setFeedback(null);
-            setIsLoading(true);
+        return resp;
+    }, []);
 
-            const resp = await clientService.getAll({
-                page: requestedPage,
-                pageSize: requestedPageSize,
-                search: requestedSearch.trim(),
-                sortBy: requestedSortBy,
-                sortDirection: requestedSortDirection,
-            });
-
-            if (resp.error) {
-                throw resp.error;
-            }
-
+    const applyData = useCallback(
+        (resp: Awaited<ReturnType<typeof clientService.getAll>>) => {
             setListData(resp.data ?? []);
             setTotal(resp.pagination?.total ?? 0);
-        } catch (error) {
-            console.error('Error al obtener clientes:', error);
+        },
+        [],
+    );
 
-            setFeedback({
-                variant: 'error',
-                title: 'No se pudieron cargar los clientes',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        } finally {
-            setIsLoading(false);
-        }
+    const handleLoadError = useCallback((error: unknown) => {
+        console.error('Error al obtener clientes:', error);
+
+        setFeedback({
+            variant: 'error',
+            title: 'No se pudieron cargar los clientes',
+            message:
+                'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+        });
+    }, []);
+
+    const finishLoading = useCallback(() => {
+        setIsLoading(false);
+    }, []);
+
+    const loadData = (options: GetDataOptions) => {
+        setFeedback(null);
+        setIsLoading(true);
+        void getData(options)
+            .then(applyData)
+            .catch(handleLoadError)
+            .finally(finishLoading);
+    };
+
+    const currentDataOptions: GetDataOptions = {
+        page,
+        pageSize,
+        search: searchText,
+        sortBy: sortConfig.key,
+        sortDirection: sortConfig.direction,
     };
 
     const handleSearchSubmit = () => {
         setPage(1);
-        getData({ page: 1 });
+        loadData({ ...currentDataOptions, page: 1 });
     };
 
     const handlePageChange = (nextPage: number) => {
         setPage(nextPage);
-        getData({ page: nextPage });
+        loadData({ ...currentDataOptions, page: nextPage });
     };
 
     const handlePageSizeChange = (nextPageSize: ClientPageSize) => {
         setPageSize(nextPageSize);
         setPage(1);
-        getData({ page: 1, pageSize: nextPageSize });
+        loadData({
+            ...currentDataOptions,
+            page: 1,
+            pageSize: nextPageSize,
+        });
     };
 
     const handleSortChange = (nextSort: {
@@ -120,7 +153,8 @@ export default function Clients() {
     }) => {
         setSortConfig(nextSort);
         setPage(1);
-        getData({
+        loadData({
+            ...currentDataOptions,
             page: 1,
             sortBy: nextSort.key,
             sortDirection: nextSort.direction,
@@ -133,7 +167,7 @@ export default function Clients() {
 
     const handleDeleteItem = () => {
         closeModalDelete();
-        getData();
+        loadData(currentDataOptions);
     };
 
     const handleDelete = (client: Client) => {
@@ -154,8 +188,11 @@ export default function Clients() {
     };
 
     useEffect(() => {
-        getData();
-    }, []);
+        void getData(INITIAL_DATA_OPTIONS)
+            .then(applyData)
+            .catch(handleLoadError)
+            .finally(finishLoading);
+    }, [applyData, finishLoading, getData, handleLoadError]);
 
     return (
         <div>
@@ -209,7 +246,7 @@ export default function Clients() {
                     <Button
                         size="sm"
                         variant="outline"
-                        onClick={getData}
+                        onClick={() => loadData(currentDataOptions)}
                         disabled={isLoading}
                         startIcon={
                             <Lineicons
