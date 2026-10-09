@@ -141,7 +141,7 @@ export default function ClientAttemdamceCard({ id }: Props) {
                                 Buscar
                             </Button>
                         </Form>
-                        <div className="flex w-full">
+                        <div>
                             <AttendanceTable
                                 listData={listAttendances}
                                 page={page}
