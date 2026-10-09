@@ -315,7 +315,7 @@ export default function ClientEdit() {
                             )}
 
                             {isLoading ? (
-                                <div className="col-span-2 flex items-center gap-2">
+                                <div className="col-span-2 flex items-center gap-2 text-gray-800 dark:text-white/90">
                                     <IconSpinner />
                                     <span>Cargando datos del cliente...</span>
                                 </div>
