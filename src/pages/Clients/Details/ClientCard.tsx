@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 import { Client } from '../../../service/types/Client';
 
 import { formatLocalDateTime } from '../../../utils/date';
@@ -9,12 +7,6 @@ interface Props {
 }
 
 export default function ClientCard({ data }: Props) {
-    const [client, setClient] = useState<Client | null>(null);
-
-    useEffect(() => {
-        setClient(data);
-    }, [data]);
-
     return (
         <>
             <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -30,7 +22,7 @@ export default function ClientCard({ data }: Props) {
                                     Fecha de Ingreso
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {formatLocalDateTime(client?.created_at)}
+                                    {formatLocalDateTime(data?.created_at)}
                                 </p>
                             </div>
 
@@ -39,7 +31,7 @@ export default function ClientCard({ data }: Props) {
                                     Altura y Peso
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {client?.height} , {client?.weight}
+                                    {data?.height} , {data?.weight}
                                 </p>
                             </div>
 
@@ -48,7 +40,7 @@ export default function ClientCard({ data }: Props) {
                                     Contacto de Emergencia
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {client?.emergency_contact}
+                                    {data?.emergency_contact}
                                 </p>
                             </div>
 
@@ -57,7 +49,7 @@ export default function ClientCard({ data }: Props) {
                                     Notas Medicas
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {client?.medical_notes}
+                                    {data?.medical_notes}
                                 </p>
                             </div>
                         </div>
