@@ -5,6 +5,7 @@ import {
     RegisterAttendanceTerminalInput,
     UpdateAttendanceInput,
     DeleteAttendanceInput,
+    GetAttendancesByUserInput,
 } from './types/Attendance';
 
 const ARGENTINA_OFFSET = '-03:00';
@@ -26,7 +27,7 @@ function toUtcIso(dateTime: string): string {
     return date.toISOString();
 }
 
-async function getById(id: string) {
+async function getByUser(input: GetAttendancesByUserInput) {
     // 1) Obtener el token desde la sesión actual (si aplica)
     // Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
     const { data: sessionData, error: sessionError } =
@@ -41,14 +42,18 @@ async function getById(id: string) {
     const { data, error } = await supabase.functions.invoke(
         'get-attendance-by-id',
         {
-            body: { id },
+            body: input,
             headers: {
                 Authorization: `Bearer ${session_token}`,
             },
         },
     );
 
-    return { data: data?.attendances, error: error };
+    return {
+        data: data?.data?.attendances,
+        pagination: data?.data?.pagination,
+        error,
+    };
 }
 
 async function getAll(input: GetAttendancesInput = {}) {
@@ -207,7 +212,7 @@ async function remove(formData: DeleteAttendanceInput) {
 
 export const attendanceService = {
     getAll,
-    getById,
+    getByUser,
     register,
     registerTerminal,
     create, // to do

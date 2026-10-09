@@ -83,6 +83,17 @@ export interface GetAttendancesInput {
     sortDirection?: 'asc' | 'desc';
 }
 
+export type ClientAttendanceSortKey = 'check_in_at';
+
+export interface GetAttendancesByUserInput {
+    user_id: string;
+    page?: number;
+    pageSize?: AttendancePageSize;
+    search?: string;
+    sortBy?: ClientAttendanceSortKey;
+    sortDirection?: 'asc' | 'desc';
+}
+
 export interface AttendancersPagination {
     page: number;
     pageSize: AttendancePageSize;
