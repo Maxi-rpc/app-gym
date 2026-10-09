@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
 import PageMeta from '../../../components/common/PageMeta';
@@ -13,56 +16,75 @@ import IconSpinner from '../../../components/ui/button/IconSpinner';
 
 import { clientService } from '../../../service/client.service';
 
+const clientSchema = z.object({
+    email: z
+        .string()
+        .refine(
+            (value) =>
+                value.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            'Email inválido',
+        ),
+    name: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+    last_name: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+    document: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+    phone: z.string(),
+    birth_date: z.string(),
+    height: z.number().nullable(),
+    weight: z.number().nullable(),
+    emergency_contact: z.string(),
+    medical_notes: z.string(),
+});
+
+type ClientFormValues = z.infer<typeof clientSchema>;
+
 export default function ClientAdd() {
     const [feedback, setFeedback] = useState<Feedback>(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [formData, setFormData] = useState({
-        email: '',
-        name: '',
-        last_name: '',
-        document: '',
-        phone: '',
-        image: '',
-        birth_date: null,
-        height: 0, // client
-        weight: 0,
-        emergency_contact: '',
-        medical_notes: '',
+    const {
+        control,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<ClientFormValues>({
+        resolver: zodResolver(clientSchema),
+        defaultValues: {
+            email: '',
+            name: '',
+            last_name: '',
+            document: '',
+            phone: '',
+            birth_date: '',
+            height: null,
+            weight: null,
+            emergency_contact: '',
+            medical_notes: '',
+        },
     });
 
     const handleClose = () => {
         setFeedback(null);
     };
 
-    const handleSubmit = async () => {
+    const onSubmit = async (values: ClientFormValues) => {
         try {
             setFeedback(null);
-            setIsLoading(true);
-
-            // Validación básica
-            if (!formData.document || !formData.name || !formData.last_name) {
-                setFeedback({
-                    variant: 'info',
-                    title: 'Por favor completa todos los campos*',
-                    message: '',
-                });
-                return;
-            }
-
-            if (
-                formData.email &&
-                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-            ) {
-                setFeedback({
-                    variant: 'warning',
-                    title: 'Verificar el campo email.',
-                    message: 'Email inválido.',
-                });
-                return;
-            }
-
-            const resp = await clientService.create(formData);
+            const resp = await clientService.create({
+                ...values,
+                birth_date: values.birth_date || null,
+            });
             if (resp.error) {
                 throw resp.error;
             }
@@ -81,17 +103,7 @@ export default function ClientAdd() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
-        } finally {
-            setIsLoading(false);
         }
-    };
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
     return (
@@ -108,7 +120,7 @@ export default function ClientAdd() {
                     </h2>
                 </div>
                 <div className="border-gray-200 p-4 sm:p-8 dark:border-gray-800">
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {feedback && (
                                 <div className="col-span-2">
@@ -122,69 +134,118 @@ export default function ClientAdd() {
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="email">Email</Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.email}
+                                <Controller
                                     name="email"
-                                    id="email"
-                                    onChange={handleChange}
-                                    hint="Error"
-                                    error={false}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="email"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                            hint={errors.email?.message}
+                                            error={Boolean(errors.email)}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="name">Nombre*</Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.name}
+                                <Controller
                                     name="name"
-                                    id="name"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="name"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                            hint={errors.name?.message}
+                                            error={Boolean(errors.name)}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="last_name">Apellido*</Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.last_name}
+                                <Controller
                                     name="last_name"
-                                    id="last_name"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="last_name"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                            hint={errors.last_name?.message}
+                                            error={Boolean(errors.last_name)}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="document">Documento*</Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.document}
+                                <Controller
                                     name="document"
-                                    id="document"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="document"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                            hint={errors.document?.message}
+                                            error={Boolean(errors.document)}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="phone">Teléfono</Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.phone}
+                                <Controller
                                     name="phone"
-                                    id="phone"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="phone"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label>Fecha de Nacimiento</Label>
-                                <InputField
-                                    type="date"
-                                    value={formData?.birth_date || ''}
+                                <Controller
                                     name="birth_date"
-                                    placeholder="YYYY-MM-DD"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="date"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="birth_date"
+                                            placeholder="YYYY-MM-DD"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
                                 />
                             </div>
 
@@ -196,23 +257,55 @@ export default function ClientAdd() {
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="height">Altura (cm)</Label>
-                                <InputField
-                                    type="number"
-                                    value={formData.height}
+                                <Controller
                                     name="height"
-                                    id="height"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="number"
+                                            value={field.value ?? ''}
+                                            name={field.name}
+                                            id="height"
+                                            onChange={(event) =>
+                                                field.onChange(
+                                                    event.target.value === ''
+                                                        ? null
+                                                        : event.target
+                                                              .valueAsNumber,
+                                                )
+                                            }
+                                            onBlur={field.onBlur}
+                                            hint={errors.height?.message}
+                                            error={Boolean(errors.height)}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
                                 <Label htmlFor="weight">Peso (kg)</Label>
-                                <InputField
-                                    type="number"
-                                    value={formData.weight}
+                                <Controller
                                     name="weight"
-                                    id="weight"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="number"
+                                            value={field.value ?? ''}
+                                            name={field.name}
+                                            id="weight"
+                                            onChange={(event) =>
+                                                field.onChange(
+                                                    event.target.value === ''
+                                                        ? null
+                                                        : event.target
+                                                              .valueAsNumber,
+                                                )
+                                            }
+                                            onBlur={field.onBlur}
+                                            hint={errors.weight?.message}
+                                            error={Boolean(errors.weight)}
+                                        />
+                                    )}
                                 />
                             </div>
 
@@ -220,12 +313,19 @@ export default function ClientAdd() {
                                 <Label htmlFor="emergency_contact">
                                     Contacto de Emergencia
                                 </Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.emergency_contact}
+                                <Controller
                                     name="emergency_contact"
-                                    id="emergency_contact"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="emergency_contact"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
                                 />
                             </div>
 
@@ -233,12 +333,19 @@ export default function ClientAdd() {
                                 <Label htmlFor="medical_notes">
                                     Notas Médicas
                                 </Label>
-                                <InputField
-                                    type="text"
-                                    value={formData.medical_notes}
+                                <Controller
                                     name="medical_notes"
-                                    id="medical_notes"
-                                    onChange={handleChange}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputField
+                                            type="text"
+                                            value={field.value}
+                                            name={field.name}
+                                            id="medical_notes"
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
                                 />
                             </div>
 
@@ -254,9 +361,9 @@ export default function ClientAdd() {
                                     <Button
                                         size="sm"
                                         type="submit"
-                                        disabled={isLoading}
+                                        disabled={isSubmitting}
                                     >
-                                        {isLoading && <IconSpinner />}
+                                        {isSubmitting && <IconSpinner />}
                                         Guardar
                                     </Button>
                                 </div>

@@ -7,6 +7,7 @@ interface TextareaProps {
     rows?: number; // Number of rows
     value?: string; // Current value
     onChange?: (value: string) => void; // Change handler
+    onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
     className?: string; // Additional CSS classes
     disabled?: boolean; // Disabled state
     error?: boolean; // Error state
@@ -20,6 +21,7 @@ const TextArea: React.FC<TextareaProps> = ({
     rows = 3, // Default number of rows
     value = '', // Default value
     onChange, // Callback for changes
+    onBlur,
     className = '', // Additional custom styles
     disabled = false, // Disabled state
     error = false, // Error state
@@ -50,6 +52,7 @@ const TextArea: React.FC<TextareaProps> = ({
                 rows={rows}
                 value={value}
                 onChange={handleChange}
+                onBlur={onBlur}
                 disabled={disabled}
                 className={textareaClasses}
             />

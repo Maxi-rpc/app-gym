@@ -30,33 +30,48 @@ export default function ClientMembershipCard({ id }: Props) {
         setSearchText(e.target.value);
     };
 
-    const getData = async (id: string) => {
-        try {
-            setFeedback(null);
-
-            const resp = await membershipsService.getByClientId(id);
-            if (resp.error) throw resp.error;
-
-            setListMembership(resp?.data);
-            resp?.data.filter((item: Membership) => {
-                if (item?.membership_status?.name == 'Active') {
-                    setMemberships(item);
-                }
-            });
-        } catch (error) {
-            console.error('Error No se puede obtener datos', error);
-
-            setFeedback({
-                variant: 'error',
-                title: 'No se puede obtener datos',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        }
-    };
-
     useEffect(() => {
-        getData(id);
+        let isCurrent = true;
+
+        const getData = async () => {
+            setMemberships(null);
+            setListMembership([]);
+
+            try {
+                setFeedback(null);
+
+                const resp = await membershipsService.getByClientId(id);
+                if (resp.error) throw resp.error;
+
+                const data = resp.data ?? [];
+
+                if (!isCurrent) return;
+
+                setListMembership(data);
+                setMemberships(
+                    data.find(
+                        (item: Membership) =>
+                            item.membership_status?.name === 'Active',
+                    ) ?? null,
+                );
+            } catch (error) {
+                if (!isCurrent) return;
+
+                console.error('Error No se puede obtener datos', error);
+                setFeedback({
+                    variant: 'error',
+                    title: 'No se puede obtener datos',
+                    message:
+                        'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+                });
+            }
+        };
+
+        void getData();
+
+        return () => {
+            isCurrent = false;
+        };
     }, [id]);
 
     return (
@@ -150,12 +165,13 @@ export default function ClientMembershipCard({ id }: Props) {
 
                         <div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3 my-2">
                             <div className="space-y-6 flex-1">
-                                <Label htmlFor="inputTwo">
+                                <Label htmlFor="searchText">
                                     Buscar Membresía
                                 </Label>
                                 <Input
                                     type="text"
-                                    id="inputTwo"
+                                    id="searchText"
+                                    name="searchText"
                                     placeholder="Ingresar fecha, estado"
                                     value={searchText}
                                     onChange={handleSearch}
@@ -164,7 +180,7 @@ export default function ClientMembershipCard({ id }: Props) {
                         </div>
                         <div>
                             <MembershipsTable
-                                searchText=""
+                                searchText={searchText}
                                 listData={listMembership || []}
                             />
                         </div>

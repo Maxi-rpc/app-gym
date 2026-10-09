@@ -1,57 +1,37 @@
-import { useState, useEffect, SetStateAction } from 'react';
+import { useAttendancesByUser } from '../../../../hooks/useAttendancesByUser';
 
+import Form from '../../../../components/form/Form';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
+import Button from '../../../../components/ui/button/Button';
 import Badge from '../../../../components/ui/badge/Badge';
 import Alert from '../../../../components/ui/alert/Alert';
-import { Feedback } from '../../../../components/ui/alert/types/AlertFeedback';
 
 import { formatLocalDateTime } from '../../../../utils/date';
 
-import { Attendance } from '../../../../service/types/Attendance';
-import { attendanceService } from '../../../../service/attendance.service';
-
-import AttendanceTable from './AttendanceTable';
+import AttendanceTable from '../../../../components/tables/AttendanceHistoryTable';
 
 interface Props {
     id: string;
 }
 
 export default function CoachAttendanceCard({ id }: Props) {
-    const [feedback, setFeedback] = useState<Feedback>(null);
-
-    const [attendance, setAttendance] = useState<Attendance | null>(null);
-    const [listAttendances, setListAttendances] = useState<Attendance[] | null>(
-        null,
-    );
-    const [searchText, setSearchText] = useState('');
-
-    const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
-        setSearchText(e.target.value);
-    };
-
-    const getData = async (id: string) => {
-        try {
-            const resp = await attendanceService.getById(id);
-            if (resp.error) throw resp.error;
-
-            setListAttendances(resp.data);
-            setAttendance(resp.data[0]);
-        } catch (error) {
-            console.error('Error No se puede obtener datos', error);
-
-            setFeedback({
-                variant: 'error',
-                title: 'No se puede obtener datos',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        }
-    };
-
-    useEffect(() => {
-        getData(id);
-    }, [id]);
+    const {
+        feedback,
+        attendance,
+        listAttendances,
+        searchText,
+        isLoading,
+        page,
+        pageSize,
+        total,
+        sortConfig,
+        handleSearch,
+        handleSearchSubmit,
+        handlePageChange,
+        handlePageSizeChange,
+        handleSortChange,
+    } = useAttendancesByUser(id);
 
     return (
         <>
@@ -136,8 +116,11 @@ export default function CoachAttendanceCard({ id }: Props) {
                             <div className="col-span-2"></div>
                         </div>
 
-                        <div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3 my-2">
-                            <div className="space-y-6 flex-1">
+                        <Form
+                            onSubmit={handleSearchSubmit}
+                            className="my-2 mb-3 flex items-end justify-between gap-4 max-sm:px-4"
+                        >
+                            <div className="flex-1 space-y-6">
                                 <Label htmlFor="inputTwo">
                                     Buscar Asistencia
                                 </Label>
@@ -149,11 +132,26 @@ export default function CoachAttendanceCard({ id }: Props) {
                                     onChange={handleSearch}
                                 />
                             </div>
-                        </div>
+                            <Button
+                                type="submit"
+                                size="sm"
+                                disabled={isLoading}
+                            >
+                                Buscar
+                            </Button>
+                        </Form>
                         <div>
                             <AttendanceTable
-                                searchText={searchText}
-                                listData={listAttendances || []}
+                                listData={listAttendances}
+                                page={page}
+                                pageSize={pageSize}
+                                total={total}
+                                isLoading={isLoading}
+                                sortConfig={sortConfig}
+                                showCheckOut
+                                onPageChange={handlePageChange}
+                                onPageSizeChange={handlePageSizeChange}
+                                onSortChange={handleSortChange}
                             />
                         </div>
                     </div>
