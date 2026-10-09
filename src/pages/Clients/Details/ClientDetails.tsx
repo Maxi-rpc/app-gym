@@ -28,29 +28,42 @@ export default function ClientDetails() {
     const [data, setData] = useState<Client | null>(null);
     const [profile, setProfile] = useState<Profile | null>(null);
 
-    const getData = async (id: string) => {
-        try {
-            setFeedback(null);
-
-            const client = await clientService.getById(id);
-            setData(client);
-            setProfile(client?.profile);
-        } catch (error) {
-            console.error('Error al obtener datos', error);
-
-            setFeedback({
-                variant: 'error',
-                title: 'No se puede obtener datos',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        }
-    };
-
     useEffect(() => {
-        if (id) {
-            getData(id);
-        }
+        let isCurrent = true;
+
+        const getData = async () => {
+            if (!id) {
+                setData(null);
+                setProfile(null);
+                return;
+            }
+
+            try {
+                setFeedback(null);
+                const client = await clientService.getById(id);
+
+                if (!isCurrent) return;
+
+                setData(client);
+                setProfile(client?.profile ?? null);
+            } catch (error) {
+                if (!isCurrent) return;
+
+                console.error('Error al obtener datos', error);
+                setFeedback({
+                    variant: 'error',
+                    title: 'No se puede obtener datos',
+                    message:
+                        'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+                });
+            }
+        };
+
+        void getData();
+
+        return () => {
+            isCurrent = false;
+        };
     }, [id]);
 
     return (
