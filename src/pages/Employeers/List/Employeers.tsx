@@ -16,6 +16,7 @@ import { Lineicons } from '@lineiconshq/react-lineicons';
 import {
     PlusOutlined,
     RefreshCircle1ClockwiseOutlined,
+    XmarkOutlined,
 } from '@lineiconshq/free-icons';
 
 import {
@@ -143,6 +144,10 @@ export default function Employeers() {
         setSearchText(e.target.value);
     };
 
+    const handleClearSearch = () => {
+        setSearchText('');
+    };
+
     const handleEdit = (employee: Employee) => {
         setSelectData(employee);
         openModalEdit();
@@ -206,14 +211,32 @@ export default function Employeers() {
                 >
                     <div className="space-y-6 w-full">
                         <Label htmlFor="searchText">Buscar Profesor</Label>
-                        <Input
-                            type="text"
-                            id="searchText"
-                            name="searchText"
-                            placeholder="nombre o apellido"
-                            value={searchText}
-                            onChange={handleSearch}
-                        />
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                id="searchText"
+                                name="searchText"
+                                placeholder="nombre o apellido"
+                                value={searchText}
+                                onChange={handleSearch}
+                                className="pr-11"
+                            />
+                            {searchText && (
+                                <button
+                                    type="button"
+                                    onClick={handleClearSearch}
+                                    aria-label="Limpiar búsqueda"
+                                    title="Limpiar búsqueda"
+                                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                >
+                                    <Lineicons
+                                        icon={XmarkOutlined}
+                                        size={20}
+                                        color="grey"
+                                    />
+                                </button>
+                            )}
+                        </div>
                     </div>
                     <Button type="submit" size="sm" disabled={isLoading}>
                         Buscar
