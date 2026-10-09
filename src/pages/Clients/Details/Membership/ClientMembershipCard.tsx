@@ -165,12 +165,13 @@ export default function ClientMembershipCard({ id }: Props) {
 
                         <div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3 my-2">
                             <div className="space-y-6 flex-1">
-                                <Label htmlFor="inputTwo">
+                                <Label htmlFor="searchText">
                                     Buscar Membresía
                                 </Label>
                                 <Input
                                     type="text"
-                                    id="inputTwo"
+                                    id="searchText"
+                                    name="searchText"
                                     placeholder="Ingresar fecha, estado"
                                     value={searchText}
                                     onChange={handleSearch}
@@ -179,7 +180,7 @@ export default function ClientMembershipCard({ id }: Props) {
                         </div>
                         <div>
                             <MembershipsTable
-                                searchText=""
+                                searchText={searchText}
                                 listData={listMembership || []}
                             />
                         </div>
