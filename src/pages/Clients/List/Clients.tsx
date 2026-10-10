@@ -281,6 +281,7 @@ export default function Clients() {
                     >
                         Actualizar
                     </Button>
+
                     <Button
                         size="sm"
                         onClick={handleAdd}
