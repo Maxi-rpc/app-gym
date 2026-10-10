@@ -9,6 +9,7 @@ import PageMeta from '../../../components/common/PageMeta';
 import Form from '../../../components/form/Form';
 import Label from '../../../components/form/Label';
 import InputField from '../../../components/form/input/InputField';
+import TextArea from '../../../components/form/input/TextArea';
 import Button from '../../../components/ui/button/Button';
 import Alert from '../../../components/ui/alert/Alert';
 import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
@@ -329,7 +330,7 @@ export default function ClientAdd() {
                                 />
                             </div>
 
-                            <div className="col-span-2 md:col-span-1">
+                            <div className="col-span-2">
                                 <Label htmlFor="medical_notes">
                                     Notas Médicas
                                 </Label>
@@ -337,13 +338,17 @@ export default function ClientAdd() {
                                     name="medical_notes"
                                     control={control}
                                     render={({ field }) => (
-                                        <InputField
-                                            type="text"
-                                            value={field.value}
+                                        <TextArea
                                             name={field.name}
                                             id="medical_notes"
+                                            value={field.value}
                                             onChange={field.onChange}
                                             onBlur={field.onBlur}
+                                            rows={3}
+                                            error={Boolean(
+                                                errors.medical_notes,
+                                            )}
+                                            hint={errors.medical_notes?.message}
                                         />
                                     )}
                                 />

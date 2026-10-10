@@ -27,6 +27,7 @@ import ClientDetails from './pages/Clients/Details/ClientDetails';
 // employee
 import Coachs from './pages/Employeers/List/Employeers';
 import CoachsAdd from './pages/Employeers/Add/EmployeersAdd';
+import CoachEdit from './pages/Employeers/Edit/EmployeerEdit';
 import CoachDetails from './pages/Employeers/Details/CoachDetails';
 
 // assistance
@@ -191,6 +192,19 @@ export default function App() {
                                             ]}
                                         >
                                             <CoachsAdd />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <CoachEdit />
                                         </ProtectedRoute>
                                     }
                                 />
