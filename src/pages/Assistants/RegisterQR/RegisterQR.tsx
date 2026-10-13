@@ -27,7 +27,6 @@ import { attendanceService } from '../../../service/attendance.service';
 
 import ButtonQr from './ButtonQr';
 import DataTable from './DataTable';
-import ModalEdit from './modals/ModalEdit';
 import ModalDelete from './modals/ModalDelete';
 
 type GetDataOptions = {
