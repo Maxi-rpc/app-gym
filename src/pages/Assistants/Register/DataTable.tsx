@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import Badge from '../../../components/ui/badge/Badge';
+import Tooltip from '../../../components/ui/tooltip/Tooltip';
+
 import { Lineicons } from '@lineiconshq/react-lineicons';
 import { CheckOutlined } from '@lineiconshq/free-icons';
 
@@ -12,6 +15,24 @@ type SortConfig = {
     direction: 'asc' | 'desc';
 };
 
+function SortIcon({
+    column,
+    sortConfig,
+}: {
+    column: keyof Profile;
+    sortConfig: SortConfig;
+}) {
+    if (sortConfig.key !== column) {
+        return <span className="text-gray-400">↕</span>;
+    }
+
+    return sortConfig.direction === 'asc' ? (
+        <span className="text-blue-500">↑</span>
+    ) : (
+        <span className="text-blue-500">↓</span>
+    );
+}
+
 type Props = {
     listData: Profile[] | [];
     onEdit?: (client: Profile) => void;
@@ -23,7 +44,7 @@ export default function DataTable({ listData, onEdit }: Props) {
         direction: 'desc',
     });
 
-    const handleEdit = (client: Profile) => {
+    const handleCheck = (client: Profile) => {
         onEdit?.(client);
     };
 
@@ -54,17 +75,6 @@ export default function DataTable({ listData, onEdit }: Props) {
         }));
     };
 
-    const SortIcon = ({ column }: { column: keyof Profile }) => {
-        if (sortConfig.key !== column) {
-            return <span className="text-gray-400">↕</span>;
-        }
-        return sortConfig.direction === 'asc' ? (
-            <span className="text-blue-500">↑</span>
-        ) : (
-            <span className="text-blue-500">↓</span>
-        );
-    };
-
     return (
         <div className="overflow-x-auto">
             <table className="w-full table-auto">
@@ -75,7 +85,8 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 onClick={() => handleSort('id')}
                                 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
                             >
-                                User ID <SortIcon column="id" />
+                                User ID
+                                <SortIcon column="id" sortConfig={sortConfig} />
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -83,7 +94,11 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 onClick={() => handleSort('name')}
                                 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
                             >
-                                Nombre <SortIcon column="name" />
+                                Nombre
+                                <SortIcon
+                                    column="name"
+                                    sortConfig={sortConfig}
+                                />
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -91,7 +106,11 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 onClick={() => handleSort('last_name')}
                                 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
                             >
-                                Apellido <SortIcon column="last_name" />
+                                Apellido
+                                <SortIcon
+                                    column="last_name"
+                                    sortConfig={sortConfig}
+                                />
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -99,7 +118,11 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 onClick={() => handleSort('created_at')}
                                 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
                             >
-                                Fecha Creación <SortIcon column="created_at" />
+                                Fecha Creación
+                                <SortIcon
+                                    column="created_at"
+                                    sortConfig={sortConfig}
+                                />
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -107,7 +130,11 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 onClick={() => handleSort('status')}
                                 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
                             >
-                                Estado <SortIcon column="status" />
+                                Estado
+                                <SortIcon
+                                    column="status"
+                                    sortConfig={sortConfig}
+                                />
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -115,7 +142,11 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 onClick={() => handleSort('updated_at')}
                                 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
                             >
-                                Actualizado <SortIcon column="updated_at" />
+                                Actualizado
+                                <SortIcon
+                                    column="updated_at"
+                                    sortConfig={sortConfig}
+                                />
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -148,24 +179,33 @@ export default function DataTable({ listData, onEdit }: Props) {
                                 {formatLocalDateTime(client.created_at)}
                             </td>
                             <td className="px-4 py-3 text-sm">
-                                <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold dark:bg-green-900/30 dark:text-green-400">
+                                <Badge
+                                    color={
+                                        client?.status?.id == 1
+                                            ? 'success'
+                                            : 'warning'
+                                    }
+                                    size="sm"
+                                >
                                     {client?.status?.name}
-                                </span>
+                                </Badge>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {formatLocalDateTime(client.updated_at)}
                             </td>
                             <td className="px-4 py-3 text-sm">
                                 <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleEdit(client)}
-                                        className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={CheckOutlined}
-                                            size={20}
-                                        />
-                                    </button>
+                                    <Tooltip message="Check">
+                                        <button
+                                            onClick={() => handleCheck(client)}
+                                            className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                        >
+                                            <Lineicons
+                                                icon={CheckOutlined}
+                                                size={20}
+                                            />
+                                        </button>
+                                    </Tooltip>
                                 </div>
                             </td>
                         </tr>
