@@ -1,4 +1,6 @@
-import { SetStateAction, useState, useEffect } from 'react';
+import { SetStateAction, useCallback, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
 import PageMeta from '../../../components/common/PageMeta';
 
@@ -11,7 +13,10 @@ import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
 import { useModal } from '../../../hooks/useModal';
 
 import { Lineicons } from '@lineiconshq/react-lineicons';
-import { RefreshCircle1ClockwiseOutlined } from '@lineiconshq/free-icons';
+import {
+    RefreshCircle1ClockwiseOutlined,
+    XmarkOutlined,
+} from '@lineiconshq/free-icons';
 
 import {
     Attendance,
@@ -24,6 +29,22 @@ import ButtonQr from './ButtonQr';
 import DataTable from './DataTable';
 import ModalEdit from './modals/ModalEdit';
 import ModalDelete from './modals/ModalDelete';
+
+type GetDataOptions = {
+    page: number;
+    pageSize: AttendancePageSize;
+    search: string;
+    sortBy: AttendanceSortKey;
+    sortDirection: 'asc' | 'desc';
+};
+
+const INITIAL_DATA_OPTIONS: GetDataOptions = {
+    page: 1,
+    pageSize: 10,
+    search: '',
+    sortBy: 'check_in_at',
+    sortDirection: 'desc',
+};
 
 export default function Register() {
     const [feedback, setFeedback] = useState<Feedback>(null);
@@ -44,76 +65,94 @@ export default function Register() {
     const [searchText, setSearchText] = useState('');
     const [selectData, setSelectData] = useState<Attendance | null>(null);
     const [listData, setListData] = useState<Attendance[] | []>([]);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState<AttendancePageSize>(10);
+    const [page, setPage] = useState(INITIAL_DATA_OPTIONS.page);
+    const [pageSize, setPageSize] = useState<AttendancePageSize>(
+        INITIAL_DATA_OPTIONS.pageSize,
+    );
     const [total, setTotal] = useState(0);
     const [sortConfig, setSortConfig] = useState<{
         key: AttendanceSortKey;
         direction: 'asc' | 'desc';
-    }>({ key: 'check_in_at', direction: 'desc' });
+    }>({
+        key: INITIAL_DATA_OPTIONS.sortBy,
+        direction: INITIAL_DATA_OPTIONS.sortDirection,
+    });
+    const navigate = useNavigate();
 
-    type GetDataOptions = {
-        page?: number;
-        pageSize?: AttendancePageSize;
-        search?: string;
-        sortBy?: AttendanceSortKey;
-        sortDirection?: 'asc' | 'desc';
-    };
+    const getData = useCallback(async (options: GetDataOptions) => {
+        const resp = await attendanceService.getAll({
+            page: options.page,
+            pageSize: options.pageSize,
+            search: options.search.trim(),
+            sortBy: options.sortBy,
+            sortDirection: options.sortDirection,
+        });
 
-    const getData = async (options: GetDataOptions = {}) => {
-        const requestedPage = options.page ?? page;
-        const requestedPageSize = options.pageSize ?? pageSize;
-        const requestedSearch = options.search ?? searchText;
-        const requestedSortBy = options.sortBy ?? sortConfig.key;
-        const requestedSortDirection =
-            options.sortDirection ?? sortConfig.direction;
+        if (resp.error) {
+            throw resp.error;
+        }
 
-        try {
-            setFeedback(null);
-            setIsLoading(true);
+        return resp;
+    }, []);
 
-            const resp = await attendanceService.getAll({
-                page: requestedPage,
-                pageSize: requestedPageSize,
-                search: requestedSearch.trim(),
-                sortBy: requestedSortBy,
-                sortDirection: requestedSortDirection,
-            });
-
-            if (resp.error) {
-                throw resp.error;
-            }
-
+    const applyData = useCallback(
+        (resp: Awaited<ReturnType<typeof attendanceService.getAll>>) => {
             setListData(resp.data ?? []);
             setTotal(resp.pagination?.total ?? 0);
-        } catch (error) {
-            console.error('Error No se puede obtener datos', error);
+        },
+        [],
+    );
 
-            setFeedback({
-                variant: 'error',
-                title: 'No se puede obtener datos',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        } finally {
-            setIsLoading(false);
-        }
+    const handleLoadError = useCallback((error: unknown) => {
+        console.error('Error al obtener asistencias:', error);
+
+        setFeedback({
+            variant: 'error',
+            title: 'No se pudieron cargar los asistencias',
+            message:
+                'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+        });
+    }, []);
+
+    const finishLoading = useCallback(() => {
+        setIsLoading(false);
+    }, []);
+
+    const loadData = (options: GetDataOptions, clearFeedback = true) => {
+        if (clearFeedback) setFeedback(null);
+        setIsLoading(true);
+        void getData(options)
+            .then(applyData)
+            .catch(handleLoadError)
+            .finally(finishLoading);
+    };
+
+    const currentDataOptions: GetDataOptions = {
+        page,
+        pageSize,
+        search: searchText,
+        sortBy: sortConfig.key,
+        sortDirection: sortConfig.direction,
     };
 
     const handleSearchSubmit = () => {
         setPage(1);
-        getData({ page: 1 });
+        loadData({ ...currentDataOptions, page: 1 });
     };
 
     const handlePageChange = (nextPage: number) => {
         setPage(nextPage);
-        getData({ page: nextPage });
+        loadData({ ...currentDataOptions, page: nextPage });
     };
 
     const handlePageSizeChange = (nextPageSize: AttendancePageSize) => {
         setPageSize(nextPageSize);
         setPage(1);
-        getData({ page: 1, pageSize: nextPageSize });
+        loadData({
+            ...currentDataOptions,
+            page: 1,
+            pageSize: nextPageSize,
+        });
     };
 
     const handleSortChange = (nextSort: {
@@ -122,20 +161,20 @@ export default function Register() {
     }) => {
         setSortConfig(nextSort);
         setPage(1);
-        getData({
+        loadData({
+            ...currentDataOptions,
             page: 1,
             sortBy: nextSort.key,
             sortDirection: nextSort.direction,
         });
     };
 
-    const handleUpdate = () => {
-        closeModalEdit();
-        getData();
-    };
-
     const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
         setSearchText(e.target.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearchText('');
     };
 
     const handleSave = async (qrValue: string) => {
@@ -169,18 +208,13 @@ export default function Register() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
+            throw error;
         }
-        getData();
-    };
-
-    const handleEdit = (attendance: Attendance) => {
-        setSelectData(attendance);
-        openModalEdit();
     };
 
     const handleDeleteItem = () => {
         closeModalDelete();
-        getData();
+        loadData(currentDataOptions);
     };
 
     const handleDelete = (attendance: Attendance) => {
@@ -188,9 +222,16 @@ export default function Register() {
         openModalDelete();
     };
 
+    const handleEdit = (attendance: Attendance) => {
+        navigate(`/assistants/edit/${attendance?.id}`);
+    };
+
     useEffect(() => {
-        getData();
-    }, []);
+        void getData(INITIAL_DATA_OPTIONS)
+            .then(applyData)
+            .catch(handleLoadError)
+            .finally(finishLoading);
+    }, [applyData, finishLoading, getData, handleLoadError]);
 
     return (
         <div>
@@ -221,7 +262,10 @@ export default function Register() {
                 </div>
 
                 <div className="mx-auto w-full text-center mb-8">
-                    <ButtonQr onRegister={handleSave} onRegistered={getData} />
+                    <ButtonQr
+                        onRegister={handleSave}
+                        onRegistered={() => loadData(currentDataOptions, false)}
+                    />
                 </div>
 
                 {/* Search */}
@@ -231,14 +275,32 @@ export default function Register() {
                 >
                     <div className="space-y-6 w-full">
                         <Label htmlFor="searchText">Buscar Asistencia</Label>
-                        <Input
-                            type="text"
-                            id="searchText"
-                            name="searchText"
-                            placeholder="nombre o apellido"
-                            value={searchText}
-                            onChange={handleSearch}
-                        />
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                id="searchText"
+                                name="searchText"
+                                placeholder="nombre o apellido"
+                                value={searchText}
+                                onChange={handleSearch}
+                                className="pr-11"
+                            />
+                            {searchText && (
+                                <button
+                                    type="button"
+                                    onClick={handleClearSearch}
+                                    aria-label="Limpiar búsqueda"
+                                    title="Limpiar búsqueda"
+                                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                >
+                                    <Lineicons
+                                        icon={XmarkOutlined}
+                                        size={20}
+                                        color="grey"
+                                    />
+                                </button>
+                            )}
+                        </div>
                     </div>
                     <Button type="submit" size="sm" disabled={isLoading}>
                         Buscar
@@ -247,7 +309,7 @@ export default function Register() {
                     <Button
                         size="sm"
                         variant="outline"
-                        onClick={getData}
+                        onClick={() => loadData(currentDataOptions)}
                         disabled={isLoading}
                         startIcon={
                             <Lineicons
@@ -274,14 +336,6 @@ export default function Register() {
                     onSortChange={handleSortChange}
                     onEdit={handleEdit}
                     onDelet={handleDelete}
-                />
-
-                {/* Modal Edit */}
-                <ModalEdit
-                    isOpen={isOpenEdit}
-                    onClose={closeModalEdit}
-                    onSubmit={handleUpdate}
-                    defaultData={selectData}
                 />
 
                 {/* Modal Delete */}
