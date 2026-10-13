@@ -50,12 +50,6 @@ export default function Register() {
     const [isLoading, setIsLoading] = useState(false);
 
     const {
-        isOpen: isOpenEdit,
-        openModal: openModalEdit,
-        closeModal: closeModalEdit,
-    } = useModal();
-
-    const {
         isOpen: isOpenDelete,
         openModal: openModalDelete,
         closeModal: closeModalDelete,
