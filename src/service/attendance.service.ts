@@ -40,7 +40,7 @@ async function getByUser(input: GetAttendancesByUserInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-attendance-by-id',
+        'get-attendance-by-user-id',
         {
             body: input,
             headers: {
@@ -54,6 +54,32 @@ async function getByUser(input: GetAttendancesByUserInput) {
         pagination: data?.data?.pagination,
         error,
     };
+}
+
+async function getById(id: string) {
+    // 1) Obtener el token desde la sesión actual (si aplica)
+    // Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
+    const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+    if (!sessionData?.session) throw new Error('No hay sesión activa');
+
+    const session_token = sessionData.session.access_token;
+
+    // 2) Invocar la Edge Function
+    const { data, error } = await supabase.functions.invoke(
+        'get-attendance-by-id',
+        {
+            body: { id },
+            headers: {
+                Authorization: `Bearer ${session_token}`,
+            },
+        },
+    );
+
+    if (error) throw error;
+    return data?.attendances;
 }
 
 async function getAll(input: GetAttendancesInput = {}) {
@@ -213,6 +239,7 @@ async function remove(formData: DeleteAttendanceInput) {
 export const attendanceService = {
     getAll,
     getByUser,
+    getById,
     register,
     registerTerminal,
     create, // to do

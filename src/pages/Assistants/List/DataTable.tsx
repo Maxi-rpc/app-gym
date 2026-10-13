@@ -114,16 +114,18 @@ export default function DataTable({
                                 {item?.user?.last_name}
                             </td>
                             <td className="px-4 py-3 text-sm">
-                                <Badge
-                                    color={
-                                        item?.access_granted
-                                            ? 'success'
-                                            : 'warning'
-                                    }
-                                    size="sm"
-                                >
-                                    {item?.access_granted ? 'Si' : 'No'}
-                                </Badge>
+                                <Tooltip message={item?.access_reason}>
+                                    <Badge
+                                        color={
+                                            item?.access_granted
+                                                ? 'success'
+                                                : 'warning'
+                                        }
+                                        size="sm"
+                                    >
+                                        {item?.access_granted ? 'Si' : 'No'}
+                                    </Badge>
+                                </Tooltip>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 <Badge

@@ -33,6 +33,7 @@ import CoachDetails from './pages/Employeers/Details/CoachDetails';
 // assistance
 import AssistantsTerminal from './pages/Assistants/Terminal/Terminal';
 import Assistants from './pages/Assistants/List/List';
+import AssistantsEdit from './pages/Assistants/Edit/AssistantsEdit';
 import AssistantsRegisterQR from './pages/Assistants/RegisterQR/RegisterQR';
 import AssistantsRegister from './pages/Assistants/Register/Register';
 
@@ -230,6 +231,20 @@ export default function App() {
                                     element={
                                         <ProtectedRoute>
                                             <AssistantsTerminal />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="edit/:id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <AssistantsEdit />
                                         </ProtectedRoute>
                                     }
                                 />
