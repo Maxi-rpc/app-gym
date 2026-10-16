@@ -1,23 +1,68 @@
-import { SetStateAction, useState, useEffect } from 'react';
+import { SetStateAction, useCallback, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
 import PageMeta from '../../../components/common/PageMeta';
 
+import Form from '../../../components/form/Form';
 import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
-import { useModal } from '../../../hooks/useModal';
 import Alert from '../../../components/ui/alert/Alert';
 import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
+import { useModal } from '../../../hooks/useModal';
 
 import { Lineicons } from '@lineiconshq/react-lineicons';
-import { RefreshCircle1ClockwiseOutlined } from '@lineiconshq/free-icons';
+import {
+    PlusOutlined,
+    RefreshCircle1ClockwiseOutlined,
+    XmarkOutlined,
+} from '@lineiconshq/free-icons';
 
-import { Membership_payment } from '../../../service/types/Payments';
+import {
+    Membership_payment,
+    MembershipPaymentPageSize,
+    MembershipPaymentSortKey,
+} from '../../../service/types/Payments';
 import { paymentsService } from '../../../service/payments.service';
 
 import DataTable from './DataTable';
 import ModalEdit from './modals/ModalEdit';
 import ModalDelete from './modals/ModalDelete';
+
+type GetDataOptions = {
+    page: number;
+    pageSize: MembershipPaymentPageSize;
+    search: string;
+    sortBy: MembershipPaymentSortKey;
+    sortDirection: 'asc' | 'desc';
+    paymentDateFrom: string;
+    paymentDateBefore: string;
+};
+
+const getCurrentMonth = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+};
+
+const getPaymentDateRange = (month: string) => {
+    const [year, monthNumber] = month.split('-').map(Number);
+    const nextMonth = new Date(year, monthNumber, 1);
+
+    return {
+        paymentDateFrom: `${month}-01`,
+        paymentDateBefore: `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-01`,
+    };
+};
+
+const INITIAL_DATA_OPTIONS: GetDataOptions = {
+    page: 1,
+    pageSize: 10,
+    search: '',
+    sortBy: 'payment_date',
+    sortDirection: 'desc',
+    ...getPaymentDateRange(getCurrentMonth()),
+};
 
 export default function List() {
     const [feedback, setFeedback] = useState<Feedback>(null);
@@ -36,51 +81,146 @@ export default function List() {
     } = useModal();
 
     const [searchText, setSearchText] = useState('');
+    const [appliedSearchText, setAppliedSearchText] = useState('');
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
     const [selectData, setSelectData] = useState<Membership_payment | null>(
         null,
     );
     const [listData, setListData] = useState<Membership_payment[] | []>([]);
+    const [page, setPage] = useState(INITIAL_DATA_OPTIONS.page);
+    const [pageSize, setPageSize] = useState<MembershipPaymentPageSize>(
+        INITIAL_DATA_OPTIONS.pageSize,
+    );
+    const [total, setTotal] = useState(0);
+    const [sortConfig, setSortConfig] = useState<{
+        key: MembershipPaymentSortKey;
+        direction: 'asc' | 'desc';
+    }>({
+        key: INITIAL_DATA_OPTIONS.sortBy,
+        direction: INITIAL_DATA_OPTIONS.sortDirection,
+    });
+    const navigate = useNavigate();
 
-    const getData = async () => {
-        try {
-            setFeedback(null);
-            setIsLoading(true);
+    const getData = useCallback(async (options: GetDataOptions) => {
+        const resp = await paymentsService.getAll({
+            page: options.page,
+            pageSize: options.pageSize,
+            search: options.search.trim(),
+            sortBy: options.sortBy,
+            sortDirection: options.sortDirection,
+            paymentDateFrom: options.paymentDateFrom,
+            paymentDateBefore: options.paymentDateBefore,
+        });
 
-            const resp = await paymentsService.getAll();
-            if (resp.error) throw resp.error;
-
-            setListData(resp.data);
-        } catch (error) {
-            console.error('Error No se puede obtener datos', error);
-
-            setFeedback({
-                variant: 'error',
-                title: 'No se puede obtener datos',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        } finally {
-            setIsLoading(false);
+        if (resp.error) {
+            throw resp.error;
         }
+
+        return resp;
+    }, []);
+
+    const applyData = useCallback(
+        (resp: Awaited<ReturnType<typeof paymentsService.getAll>>) => {
+            setListData(resp.data ?? []);
+            setTotal(resp.pagination?.total ?? 0);
+        },
+        [],
+    );
+
+    const handleLoadError = useCallback((error: unknown) => {
+        console.error('Error al obtener pagos:', error);
+
+        setFeedback({
+            variant: 'error',
+            title: 'No se pudieron cargar los pagos',
+            message:
+                'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+        });
+    }, []);
+
+    const finishLoading = useCallback(() => {
+        setIsLoading(false);
+    }, []);
+
+    const loadData = (options: GetDataOptions) => {
+        setFeedback(null);
+        setIsLoading(true);
+        void getData(options)
+            .then(applyData)
+            .catch(handleLoadError)
+            .finally(finishLoading);
     };
 
-    const handleUpdate = () => {
-        closeModalEdit();
-        getData();
+    const currentDataOptions: GetDataOptions = {
+        page,
+        pageSize,
+        search: appliedSearchText,
+        sortBy: sortConfig.key,
+        sortDirection: sortConfig.direction,
+        ...getPaymentDateRange(selectedMonth),
+    };
+
+    const handleSearchSubmit = () => {
+        setAppliedSearchText(searchText);
+        setPage(1);
+        loadData({ ...currentDataOptions, page: 1, search: searchText });
+    };
+
+    const handlePageChange = (nextPage: number) => {
+        setPage(nextPage);
+        loadData({ ...currentDataOptions, page: nextPage });
+    };
+
+    const handlePageSizeChange = (nextPageSize: MembershipPaymentPageSize) => {
+        setPageSize(nextPageSize);
+        setPage(1);
+        loadData({
+            ...currentDataOptions,
+            page: 1,
+            pageSize: nextPageSize,
+        });
+    };
+
+    const handleSortChange = (nextSort: {
+        key: MembershipPaymentSortKey;
+        direction: 'asc' | 'desc';
+    }) => {
+        setSortConfig(nextSort);
+        setPage(1);
+        loadData({
+            ...currentDataOptions,
+            page: 1,
+            sortBy: nextSort.key,
+            sortDirection: nextSort.direction,
+        });
     };
 
     const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
         setSearchText(e.target.value);
     };
 
-    const handleEdit = (client: Membership_payment) => {
-        setSelectData(client);
-        openModalEdit();
+    const handleClearSearch = () => {
+        setSearchText('');
+        setAppliedSearchText('');
+        setPage(1);
+        loadData({ ...currentDataOptions, page: 1, search: '' });
+    };
+
+    const handleMonthChange = (month: string) => {
+        if (!month) return;
+
+        setSelectedMonth(month);
+        setPage(1);
+        loadData({
+            ...currentDataOptions,
+            page: 1,
+            ...getPaymentDateRange(month),
+        });
     };
 
     const handleDeleteItem = () => {
         closeModalDelete();
-        getData();
+        loadData(currentDataOptions);
     };
 
     const handleDelete = (client: Membership_payment) => {
@@ -88,9 +228,26 @@ export default function List() {
         openModalDelete();
     };
 
+    const handleAdd = () => {
+        navigate('/payments/register');
+    };
+
+    const handleUpdate = () => {
+        closeModalEdit();
+        loadData(currentDataOptions);
+    };
+
+    const handleEdit = (client: Membership_payment) => {
+        setSelectData(client);
+        openModalEdit();
+    };
+
     useEffect(() => {
-        getData();
-    }, []);
+        void getData(INITIAL_DATA_OPTIONS)
+            .then(applyData)
+            .catch(handleLoadError)
+            .finally(finishLoading);
+    }, [applyData, finishLoading, getData, handleLoadError]);
 
     return (
         <div>
@@ -106,7 +263,8 @@ export default function List() {
                     </h3>
 
                     <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-                        Se muestran los pagos registrados hasta la fecha actual.
+                        Se muestran los pagos realizados durante el mes
+                        seleccionado.
                     </p>
 
                     {feedback && (
@@ -121,22 +279,60 @@ export default function List() {
                 </div>
 
                 {/* Search */}
-                <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3">
-                    <div className="space-y-6 w-full">
-                        <Label htmlFor="inputTwo">Buscar Pago</Label>
+                <Form
+                    onSubmit={handleSearchSubmit}
+                    className="flex flex-col md:flex-row justify-between md:items-end gap-4 max-sm:px-4 mb-3"
+                >
+                    <div className="space-y-2 w-full">
+                        <Label htmlFor="searchText">Buscar cliente</Label>
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                id="searchText"
+                                name="searchText"
+                                placeholder="nombre o apellido"
+                                value={searchText}
+                                onChange={handleSearch}
+                                className="pr-11"
+                            />
+                            {searchText && (
+                                <button
+                                    type="button"
+                                    onClick={handleClearSearch}
+                                    aria-label="Limpiar búsqueda"
+                                    title="Limpiar búsqueda"
+                                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                >
+                                    <Lineicons
+                                        icon={XmarkOutlined}
+                                        size={20}
+                                        color="grey"
+                                    />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="space-y-2 w-full">
+                        <Label htmlFor="paymentMonth">Mes del pago</Label>
                         <Input
-                            type="text"
-                            id="inputTwo"
-                            placeholder="nombre o appelido"
-                            value={searchText}
-                            onChange={handleSearch}
+                            type="month"
+                            id="paymentMonth"
+                            name="paymentMonth"
+                            value={selectedMonth}
+                            onChange={(event) =>
+                                handleMonthChange(event.target.value)
+                            }
+                            disabled={isLoading}
                         />
                     </div>
+                    <Button type="submit" size="sm" disabled={isLoading}>
+                        Buscar
+                    </Button>
 
                     <Button
                         size="sm"
                         variant="outline"
-                        onClick={getData}
+                        onClick={() => loadData(currentDataOptions)}
                         disabled={isLoading}
                         startIcon={
                             <Lineicons
@@ -148,12 +344,33 @@ export default function List() {
                     >
                         Actualizar
                     </Button>
-                </div>
+
+                    <Button
+                        size="sm"
+                        onClick={handleAdd}
+                        startIcon={
+                            <Lineicons
+                                icon={PlusOutlined}
+                                size={20}
+                                color="white"
+                            />
+                        }
+                    >
+                        Agregar
+                    </Button>
+                </Form>
 
                 {/* Data Table */}
                 <DataTable
                     listData={listData}
-                    searchText={searchText}
+                    page={page}
+                    pageSize={pageSize}
+                    total={total}
+                    isLoading={isLoading}
+                    sortConfig={sortConfig}
+                    onPageChange={handlePageChange}
+                    onPageSizeChange={handlePageSizeChange}
+                    onSortChange={handleSortChange}
                     onEdit={handleEdit}
                     onDelet={handleDelete}
                 />

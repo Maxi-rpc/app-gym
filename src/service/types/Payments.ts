@@ -87,3 +87,25 @@ export interface UpdateMembershipPaymentsInput {
 export interface DeleteMembershipPaymentInput {
     id: string;
 }
+
+export type MembershipPaymentPageSize = 5 | 10 | 15 | 20;
+
+export type MembershipPaymentSortKey =
+    'id' | 'name' | 'last_name' | 'payment_date' | 'status' | 'updated_at';
+
+export interface GetMembershipPaymentsInput {
+    page?: number;
+    pageSize?: MembershipPaymentPageSize;
+    search?: string;
+    sortBy?: MembershipPaymentSortKey;
+    sortDirection?: 'asc' | 'desc';
+    paymentDateFrom?: string;
+    paymentDateBefore?: string;
+}
+
+export interface MembershipPaymentPagination {
+    page: number;
+    pageSize: MembershipPaymentPageSize;
+    total: number;
+    totalPages: number;
+}

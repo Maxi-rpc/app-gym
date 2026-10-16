@@ -3,6 +3,7 @@ import {
     CreateMembershipPaymentInput,
     UpdateMembershipPaymentsInput,
     DeleteMembershipPaymentInput,
+    GetMembershipPaymentsInput,
 } from './types/Payments';
 
 async function getByClient(id: string) {
@@ -30,7 +31,7 @@ async function getByClient(id: string) {
     return { data: data?.membership_payments, error: error };
 }
 
-async function getAll() {
+async function getAll(input: GetMembershipPaymentsInput = {}) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -43,14 +44,19 @@ async function getAll() {
     const { data, error } = await supabase.functions.invoke(
         'get-membership-payments-all',
         {
+            body: input,
             headers: {
                 Authorization: `Bearer ${session_token}`,
             },
-            method: 'GET',
+            method: 'POST',
         },
     );
 
-    return { data: data?.membership_payments, error: error };
+    return {
+        data: data?.data?.membership_payments,
+        pagination: data?.data?.pagination,
+        error: error,
+    };
 }
 
 async function create(formData: CreateMembershipPaymentInput) {
