@@ -60,14 +60,14 @@ export interface CreateMembershipPaymentInput {
     service_id: number;
     start_date: string;
     end_date: string;
-    observations: string;
+    observations?: string;
     original_amount: number;
     discount: number;
     amount_paid: number;
     payment_method_id: number;
     billing_period: string;
     status_id: number;
-    receipt_number: string;
+    receipt_number?: string;
 }
 
 export interface UpdateMembershipPaymentsInput {
