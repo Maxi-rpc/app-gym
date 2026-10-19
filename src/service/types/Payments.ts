@@ -58,30 +58,17 @@ export interface Membership_payment {
 export interface CreateMembershipPaymentInput {
     client_id: string;
     service_id: number;
-    start_date: string;
-    end_date: string;
     observations?: string;
-    original_amount: number;
-    discount: number;
+    discount_percentage: number;
     amount_paid: number;
     payment_method_id: number;
-    billing_period: string;
-    status_id: number;
     receipt_number?: string;
 }
 
 export interface UpdateMembershipPaymentsInput {
     id: string;
-    original_amount: number | 0;
-    discount: number | 0;
-    amount_paid: number | 0;
-    payment_method_id: number | 0;
-    payment_date: string | null;
-    billing_period: string | null;
-    next_due_date: string | null;
-    status_id: number | 0;
-    receipt_number: string;
-    observations: string;
+    payment_date: string;
+    update_period_dates: boolean;
 }
 
 export interface DeleteMembershipPaymentInput {

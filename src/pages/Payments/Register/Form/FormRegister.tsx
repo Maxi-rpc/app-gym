@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
@@ -15,11 +15,15 @@ import IconSpinner from '../../../../components/ui/button/IconSpinner';
 import { Profile } from '../../../../context/types/Profile';
 import { paymentsService } from '../../../../service/payments.service';
 import { paymentMethodsService } from '../../../../service/paymentMethods.service';
-import { paymentStatusService } from '../../../../service/paymentStatus.service';
 import { serviceService } from '../../../../service/service.service';
 import { PaymentMethods } from '../../../../service/types/PaymentMethods';
-import { PaymentStatus } from '../../../../service/types/PaymentsStatus';
 import { Service } from '../../../../service/types/Service';
+
+const discountOptions = [
+    { value: '0', label: '0%' },
+    { value: '10', label: '10%' },
+    { value: '20', label: '20%' },
+];
 
 interface Props {
     data: Profile | null;
@@ -28,48 +32,28 @@ interface Props {
 const paymentSchema = z.object({
     client_id: z.string().min(1, 'No se seleccionó un cliente'),
     service_id: z.number().int().positive('Seleccioná un servicio'),
-    start_date: z.string(),
-    end_date: z.string(),
-    observations: z.string(),
-    original_amount: z
-        .string()
-        .trim()
-        .min(1, 'Este campo es obligatorio')
-        .refine(
-            (value) => /^\d+(\.\d+)?$/.test(value),
-            'Ingresá un monto válido',
-        )
-        .transform(Number)
-        .refine(Number.isFinite, 'Ingresá un monto válido')
-        .refine((value) => value >= 0, 'El monto no puede ser negativo'),
-    discount: z
-        .string()
-        .trim()
-        .refine(
-            (value) => value === '' || /^\d+(\.\d+)?$/.test(value),
-            'Ingresá un monto válido',
-        )
-        .transform((value) => (value === '' ? 0 : Number(value)))
-        .refine(Number.isFinite, 'Ingresá un monto válido')
-        .refine((value) => value >= 0, 'El monto no puede ser negativo'),
+    discount_percentage: z
+        .enum(['0', '10', '20'], {
+            error: 'Seleccioná un descuento válido',
+        })
+        .transform(Number),
     amount_paid: z
         .string()
         .trim()
         .min(1, 'Este campo es obligatorio')
         .refine(
-            (value) => /^\d+(\.\d+)?$/.test(value),
+            (value) => /^\d+(\.\d{1,2})?$/.test(value),
             'Ingresá un monto válido',
         )
         .transform(Number)
         .refine(Number.isFinite, 'Ingresá un monto válido')
-        .refine((value) => value >= 0, 'El monto no puede ser negativo'),
+        .refine((value) => value > 0, 'El importe debe ser mayor que cero'),
     payment_method_id: z
         .number()
         .int()
         .positive('Seleccioná un método de pago'),
-    billing_period: z.string().min(1, 'Este campo es obligatorio'),
-    status_id: z.number().int().positive('Seleccioná un estado'),
     receipt_number: z.string(),
+    observations: z.string(),
 });
 
 type PaymentFormValues = z.input<typeof paymentSchema>;
@@ -78,16 +62,11 @@ type PaymentSubmitValues = z.output<typeof paymentSchema>;
 const defaultValues: PaymentFormValues = {
     client_id: '',
     service_id: 0,
-    start_date: '',
-    end_date: '',
-    observations: '',
-    original_amount: '',
-    discount: '0',
+    discount_percentage: '0',
     amount_paid: '',
     payment_method_id: 0,
-    billing_period: '',
-    status_id: 0,
     receipt_number: '',
+    observations: '',
 };
 
 interface SelectOption {
@@ -95,10 +74,15 @@ interface SelectOption {
     label: string;
 }
 
+const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+    }).format(amount);
+
 export default function FormRegister({ data }: Props) {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [paymentMethods, setPaymentMethods] = useState<SelectOption[]>([]);
-    const [paymentStatuses, setPaymentStatuses] = useState<SelectOption[]>([]);
     const [services, setServices] = useState<Service[]>([]);
     const [isLoadingOptions, setIsLoadingOptions] = useState(true);
     const [hasOptionsError, setHasOptionsError] = useState(false);
@@ -106,7 +90,6 @@ export default function FormRegister({ data }: Props) {
         control,
         handleSubmit,
         reset,
-        setValue,
         formState: { errors, isSubmitting },
     } = useForm<PaymentFormValues, unknown, PaymentSubmitValues>({
         resolver: zodResolver(paymentSchema),
@@ -115,6 +98,24 @@ export default function FormRegister({ data }: Props) {
             client_id: data?.id ?? '',
         },
     });
+
+    const selectedServiceId = useWatch({ control, name: 'service_id' });
+    const discountPercentage = Number(
+        useWatch({ control, name: 'discount_percentage' }) ?? 0,
+    );
+
+    const selectedService = useMemo(
+        () =>
+            services.find(
+                (service) => Number(service.id) === selectedServiceId,
+            ),
+        [selectedServiceId, services],
+    );
+
+    const originalAmount = selectedService?.price ?? 0;
+    const discountAmount =
+        originalAmount * (Math.max(0, discountPercentage) / 100);
+    const totalAmount = originalAmount - discountAmount;
 
     useEffect(() => {
         reset({
@@ -128,18 +129,13 @@ export default function FormRegister({ data }: Props) {
 
         const loadPaymentOptions = async () => {
             try {
-                const [methodsResponse, statusesResponse, servicesResponse] =
-                    await Promise.all([
-                        paymentMethodsService.getAll(),
-                        paymentStatusService.getAll(),
-                        serviceService.getAll(),
-                    ]);
+                const [methodsResponse, servicesResponse] = await Promise.all([
+                    paymentMethodsService.getAll(),
+                    serviceService.getAll(),
+                ]);
 
                 if (methodsResponse.error) {
                     throw methodsResponse.error;
-                }
-                if (statusesResponse.error) {
-                    throw statusesResponse.error;
                 }
                 if (servicesResponse.error) {
                     throw servicesResponse.error;
@@ -151,32 +147,21 @@ export default function FormRegister({ data }: Props) {
                         label: method.name,
                     }),
                 );
-                const statuses = (statusesResponse.data ?? []).map(
-                    (status: PaymentStatus) => ({
-                        value: String(status.id),
-                        label: status.name,
-                    }),
-                );
                 const activeServices: Service[] = (
                     servicesResponse.data ?? []
                 ).filter((service: Service) => service.active);
 
                 if (isMounted) {
                     setPaymentMethods(methods);
-                    setPaymentStatuses(statuses);
                     setServices(activeServices);
 
-                    if (
-                        methods.length === 0 ||
-                        statuses.length === 0 ||
-                        activeServices.length === 0
-                    ) {
+                    if (methods.length === 0 || activeServices.length === 0) {
                         setHasOptionsError(true);
                         setFeedback({
                             variant: 'error',
                             title: 'Faltan opciones para registrar el pago',
                             message:
-                                'Verificá que haya al menos un servicio activo, un método y un estado de pago configurados.',
+                                'Verificá que haya al menos un servicio activo y un método de pago configurados.',
                         });
                     }
                 }
@@ -223,7 +208,7 @@ export default function FormRegister({ data }: Props) {
             setFeedback({
                 variant: 'success',
                 title: 'Pago registrado.',
-                message: resp?.data?.message,
+                message: resp.data?.message ?? 'Registrado correctamente.',
             });
         } catch (error) {
             console.error('Error al registrar pago:', error);
@@ -232,7 +217,7 @@ export default function FormRegister({ data }: Props) {
                 variant: 'error',
                 title: 'No se puede registrar pago',
                 message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+                    'Verificá los datos e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
         }
     };
@@ -244,7 +229,9 @@ export default function FormRegister({ data }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                         <div className="col-span-2">
                             <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-                                Completar los campos para registrar el pago.
+                                Registrá el importe recibido. El estado del
+                                período se determinará automáticamente según el
+                                total abonado.
                             </p>
                         </div>
 
@@ -271,29 +258,9 @@ export default function FormRegister({ data }: Props) {
                                                 ? String(field.value)
                                                 : ''
                                         }
-                                        onChange={(value) => {
-                                            const serviceId = Number(value);
-                                            field.onChange(serviceId);
-
-                                            const selectedService =
-                                                services.find(
-                                                    (service) =>
-                                                        Number(service.id) ===
-                                                        serviceId,
-                                                );
-                                            if (selectedService) {
-                                                setValue(
-                                                    'original_amount',
-                                                    String(
-                                                        selectedService.price,
-                                                    ),
-                                                    {
-                                                        shouldDirty: true,
-                                                        shouldValidate: true,
-                                                    },
-                                                );
-                                            }
-                                        }}
+                                        onChange={(value) =>
+                                            field.onChange(Number(value))
+                                        }
                                         onBlur={field.onBlur}
                                         disabled={
                                             isLoadingOptions || hasOptionsError
@@ -307,49 +274,77 @@ export default function FormRegister({ data }: Props) {
                         </div>
 
                         <div className="col-span-2 md:col-span-1">
-                            <Label htmlFor="original_amount">
-                                Monto original*
+                            <Label htmlFor="discount_percentage">
+                                Descuento
                             </Label>
                             <Controller
-                                name="original_amount"
+                                name="discount_percentage"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input
-                                        type="number"
-                                        id="original_amount"
+                                    <Select
+                                        id="discount_percentage"
                                         name={field.name}
+                                        options={discountOptions}
                                         value={field.value}
                                         onChange={field.onChange}
                                         onBlur={field.onBlur}
-                                        error={Boolean(errors.original_amount)}
-                                        hint={errors.original_amount?.message}
+                                        disabled={
+                                            isLoadingOptions || hasOptionsError
+                                        }
+                                        error={Boolean(
+                                            errors.discount_percentage,
+                                        )}
+                                        hint={
+                                            errors.discount_percentage?.message
+                                        }
+                                        className="dark:bg-dark-900"
                                     />
                                 )}
                             />
                         </div>
 
-                        <div className="col-span-2 md:col-span-1">
-                            <Label htmlFor="discount">Descuento</Label>
-                            <Controller
-                                name="discount"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        type="number"
-                                        id="discount"
-                                        name={field.name}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        onBlur={field.onBlur}
-                                        error={Boolean(errors.discount)}
-                                        hint={errors.discount?.message}
-                                    />
-                                )}
-                            />
+                        <div className="col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-white/3">
+                            <h3 className="text-sm font-semibold text-gray-800 dark:text-white/90">
+                                Resumen del cobro
+                            </h3>
+                            <dl className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                                <div>
+                                    <dt className="text-gray-500 dark:text-gray-400">
+                                        Subtotal
+                                    </dt>
+                                    <dd className="mt-1 font-medium text-gray-800 dark:text-white/90">
+                                        {selectedService
+                                            ? formatCurrency(originalAmount)
+                                            : '—'}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt className="text-gray-500 dark:text-gray-400">
+                                        Descuento
+                                    </dt>
+                                    <dd className="mt-1 font-medium text-gray-800 dark:text-white/90">
+                                        {selectedService
+                                            ? `-${formatCurrency(discountAmount)}`
+                                            : '—'}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt className="text-gray-500 dark:text-gray-400">
+                                        Total a cobrar
+                                    </dt>
+                                    <dd className="mt-1 font-semibold text-gray-800 dark:text-white">
+                                        {selectedService
+                                            ? formatCurrency(totalAmount)
+                                            : '—'}
+                                    </dd>
+                                </div>
+                            </dl>
                         </div>
 
                         <div className="col-span-2 md:col-span-1">
-                            <Label htmlFor="amount_paid">Total*</Label>
+                            <Label htmlFor="amount_paid">
+                                Importe recibido*
+                            </Label>
                             <Controller
                                 name="amount_paid"
                                 control={control}
@@ -361,8 +356,21 @@ export default function FormRegister({ data }: Props) {
                                         value={field.value}
                                         onChange={field.onChange}
                                         onBlur={field.onBlur}
+                                        min="0.01"
+                                        max={
+                                            selectedService
+                                                ? String(totalAmount)
+                                                : undefined
+                                        }
+                                        step={0.01}
+                                        disabled={!selectedService}
                                         error={Boolean(errors.amount_paid)}
-                                        hint={errors.amount_paid?.message}
+                                        hint={
+                                            errors.amount_paid?.message ??
+                                            (selectedService
+                                                ? `Para cancelar el período ingresá ${formatCurrency(totalAmount)}.`
+                                                : 'Seleccioná un servicio para calcular el total.')
+                                        }
                                     />
                                 )}
                             />
@@ -370,7 +378,7 @@ export default function FormRegister({ data }: Props) {
 
                         <div className="col-span-2 md:col-span-1">
                             <Label htmlFor="payment_method_id">
-                                Método de Pago*
+                                Método de pago*
                             </Label>
                             <Controller
                                 name="payment_method_id"
@@ -407,61 +415,6 @@ export default function FormRegister({ data }: Props) {
                             />
                         </div>
 
-                        <div className="col-span-2 md:col-span-1">
-                            <Label htmlFor="billing_period">Período*</Label>
-                            <Controller
-                                name="billing_period"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        type="date"
-                                        id="billing_period"
-                                        name={field.name}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        onBlur={field.onBlur}
-                                        error={Boolean(errors.billing_period)}
-                                        hint={errors.billing_period?.message}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="col-span-2 md:col-span-1">
-                            <Label htmlFor="status_id">Estado del Pago*</Label>
-                            <Controller
-                                name="status_id"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select
-                                        id="status_id"
-                                        name={field.name}
-                                        options={paymentStatuses}
-                                        placeholder={
-                                            isLoadingOptions
-                                                ? 'Cargando...'
-                                                : 'Seleccionar'
-                                        }
-                                        value={
-                                            field.value
-                                                ? String(field.value)
-                                                : ''
-                                        }
-                                        onChange={(value) =>
-                                            field.onChange(Number(value))
-                                        }
-                                        onBlur={field.onBlur}
-                                        disabled={
-                                            isLoadingOptions || hasOptionsError
-                                        }
-                                        error={Boolean(errors.status_id)}
-                                        hint={errors.status_id?.message}
-                                        className="dark:bg-dark-900"
-                                    />
-                                )}
-                            />
-                        </div>
-
                         <div className="col-span-2">
                             <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
                                 Campos opcionales.
@@ -470,14 +423,14 @@ export default function FormRegister({ data }: Props) {
 
                         <div className="col-span-2 md:col-span-1">
                             <Label htmlFor="receipt_number">
-                                Número de Recibo
+                                Número de recibo
                             </Label>
                             <Controller
                                 name="receipt_number"
                                 control={control}
                                 render={({ field }) => (
                                     <Input
-                                        type="number"
+                                        type="text"
                                         id="receipt_number"
                                         name={field.name}
                                         value={field.value}
@@ -507,8 +460,14 @@ export default function FormRegister({ data }: Props) {
                         </div>
                     </div>
                 </div>
+
                 <div className="flex items-center gap-3 px-2 mt-6 justify-end">
-                    <Button size="sm" variant="outline" onClick={handleClose}>
+                    <Button
+                        size="sm"
+                        type="button"
+                        variant="outline"
+                        onClick={handleClose}
+                    >
                         Cerrar
                     </Button>
                     <Button
@@ -519,9 +478,10 @@ export default function FormRegister({ data }: Props) {
                         }
                     >
                         {isSubmitting && <IconSpinner />}
-                        Guardar
+                        Guardar pago
                     </Button>
                 </div>
+
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-2 mt-3">
                     {feedback && (
                         <div className="col-span-2 text-start">
