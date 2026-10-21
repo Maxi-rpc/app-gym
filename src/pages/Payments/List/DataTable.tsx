@@ -1,43 +1,52 @@
-import { useState } from 'react';
+import Badge from '../../../components/ui/badge/Badge';
+import Tooltip from '../../../components/ui/tooltip/Tooltip';
+
 import { Lineicons } from '@lineiconshq/react-lineicons';
 import { Trash3Outlined, Pencil1Outlined } from '@lineiconshq/free-icons';
 
-import { Membership_payment } from '../../../service/types/Payments';
+import {
+    Membership_payment,
+    MembershipPaymentPageSize,
+    MembershipPaymentSortKey,
+} from '../../../service/types/Payments';
 
 import { formatLocalDateTime } from '../../../utils/date';
 
-type SortKey =
-    | 'id'
-    | 'createdAt'
-    | 'name'
-    | 'lastName'
-    | 'status'
-    | 'nextDueDate'
-    | 'registeredBy'
-    | 'updatedAt';
-
 type SortConfig = {
-    key: SortKey;
+    key: MembershipPaymentSortKey;
     direction: 'asc' | 'desc';
 };
 
 type Props = {
     listData: Membership_payment[] | [];
-    searchText: string;
+    page: number;
+    pageSize: MembershipPaymentPageSize;
+    total: number;
+    isLoading?: boolean;
+    sortConfig: SortConfig;
+    onPageChange: (page: number) => void;
+    onPageSizeChange: (pageSize: MembershipPaymentPageSize) => void;
+    onSortChange: (sortConfig: SortConfig) => void;
     onEdit?: (client: Membership_payment) => void;
     onDelet?: (client: Membership_payment) => void;
 };
 
 export default function DataTable({
     listData,
-    searchText,
+    page,
+    pageSize,
+    total,
+    isLoading = false,
+    sortConfig,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
     onEdit,
     onDelet,
 }: Props) {
-    const [sortConfig, setSortConfig] = useState<SortConfig>({
-        key: 'createdAt',
-        direction: 'desc',
-    });
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
+    const to = Math.min(page * pageSize, total);
 
     const handleEdit = (client: Membership_payment) => {
         onEdit?.(client);
@@ -47,71 +56,17 @@ export default function DataTable({
         onDelet?.(client);
     };
 
-    const filterData = (listData: Membership_payment[]) => {
-        if (!searchText.trim()) {
-            return listData;
-        }
-
-        const searchLower = searchText.toLowerCase();
-
-        return listData.filter((client) => {
-            const nameMatch = client.membership?.client?.profile?.name
-                ?.toLowerCase()
-                .includes(searchLower);
-            const lastnameMatch = client.membership?.client?.profile?.last_name
-                ?.toLowerCase()
-                .includes(searchLower);
-
-            return nameMatch || lastnameMatch;
+    const handleSort = (key: MembershipPaymentSortKey) => {
+        onSortChange({
+            key,
+            direction:
+                sortConfig.key === key && sortConfig.direction === 'asc'
+                    ? 'desc'
+                    : 'asc',
         });
     };
 
-    const getSortValue = (
-        payment: Membership_payment,
-        key: SortKey,
-    ): string | number => {
-        switch (key) {
-            case 'id':
-                return payment.id;
-            case 'name':
-                return payment.membership?.client?.profile?.name ?? '';
-            case 'lastName':
-                return payment.membership?.client?.profile?.last_name ?? '';
-            case 'createdAt':
-                return new Date(payment.created_at).getTime() || 0;
-            case 'status':
-                return payment.payment_status?.name ?? '';
-            case 'nextDueDate':
-                return new Date(payment.next_due_date).getTime() || 0;
-            case 'registeredBy':
-                return `${payment.employee?.profile?.name ?? ''} ${payment.employee?.profile?.last_name ?? ''}`.trim();
-            case 'updatedAt':
-                return new Date(payment.updated_at).getTime() || 0;
-        }
-    };
-
-    const sortedData = [...listData].sort((a, b) => {
-        const aValue = getSortValue(a, sortConfig.key);
-        const bValue = getSortValue(b, sortConfig.key);
-        const comparison =
-            typeof aValue === 'string' && typeof bValue === 'string'
-                ? aValue.localeCompare(bValue, undefined, {
-                      sensitivity: 'base',
-                  })
-                : Number(aValue) - Number(bValue);
-
-        return sortConfig.direction === 'asc' ? comparison : -comparison;
-    });
-
-    const handleSort = (key: SortKey) => {
-        setSortConfig((prev) => ({
-            key,
-            direction:
-                prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
-        }));
-    };
-
-    const SortIcon = ({ column }: { column: SortKey }) => {
+    const renderSortIcon = (column: MembershipPaymentSortKey) => {
         if (sortConfig.key !== column) {
             return <span className="text-gray-400">↕</span>;
         }
@@ -127,69 +82,64 @@ export default function DataTable({
             <table className="w-full table-auto">
                 <thead>
                     <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                        {/* <th className="px-4 py-3 text-left">
-							<button
-								onClick={() => handleSort("id")}
-								className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-							>
-								ID <SortIcon column="id" />
-							</button>
-						</th> */}
                         <th className="px-4 py-3 text-left">
                             <button
-                                onClick={() => handleSort('createdAt')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                                type="button"
+                                onClick={() => handleSort('payment_date')}
+                                disabled={isLoading}
+                                className="flex items-center gap-2 font-semibold text-gray-700 transition-colors hover:text-brand-500 disabled:opacity-50 dark:text-gray-300"
                             >
-                                Fecha Creación <SortIcon column="createdAt" />
+                                Fecha de pago {renderSortIcon('payment_date')}
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
                             <button
+                                type="button"
                                 onClick={() => handleSort('name')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                                disabled={isLoading}
+                                className="flex items-center gap-2 font-semibold text-gray-700 transition-colors hover:text-brand-500 disabled:opacity-50 dark:text-gray-300"
                             >
-                                Nombre <SortIcon column="name" />
+                                Nombre {renderSortIcon('name')}
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
                             <button
-                                onClick={() => handleSort('lastName')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                                type="button"
+                                onClick={() => handleSort('last_name')}
+                                disabled={isLoading}
+                                className="flex items-center gap-2 font-semibold text-gray-700 transition-colors hover:text-brand-500 disabled:opacity-50 dark:text-gray-300"
                             >
-                                Apellido <SortIcon column="lastName" />
+                                Apellido {renderSortIcon('last_name')}
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
                             <button
+                                type="button"
                                 onClick={() => handleSort('status')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                                disabled={isLoading}
+                                className="flex items-center gap-2 font-semibold text-gray-700 transition-colors hover:text-brand-500 disabled:opacity-50 dark:text-gray-300"
                             >
-                                Estado <SortIcon column="status" />
+                                Estado {renderSortIcon('status')}
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
-                            <button
-                                onClick={() => handleSort('nextDueDate')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-                            >
-                                Próximo Pago <SortIcon column="nextDueDate" />
-                            </button>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                Próximo Pago
+                            </span>
+                        </th>
+                        <th className="px-4 py-3 text-left">
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                Registrado Por
+                            </span>
                         </th>
                         <th className="px-4 py-3 text-left">
                             <button
-                                onClick={() => handleSort('registeredBy')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                                type="button"
+                                onClick={() => handleSort('updated_at')}
+                                disabled={isLoading}
+                                className="flex items-center gap-2 font-semibold text-gray-700 transition-colors hover:text-brand-500 disabled:opacity-50 dark:text-gray-300"
                             >
-                                Registrado Por{' '}
-                                <SortIcon column="registeredBy" />
-                            </button>
-                        </th>
-                        <th className="px-4 py-3 text-left">
-                            <button
-                                onClick={() => handleSort('updatedAt')}
-                                className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
-                            >
-                                Actualizado <SortIcon column="updatedAt" />
+                                Actualizado {renderSortIcon('updated_at')}
                             </button>
                         </th>
                         <th className="px-4 py-3 text-left">
@@ -200,7 +150,7 @@ export default function DataTable({
                     </tr>
                 </thead>
                 <tbody>
-                    {filterData(sortedData).map((client, index) => (
+                    {listData.map((client, index) => (
                         <tr
                             key={client.id}
                             className={`border-b border-gray-200 dark:border-gray-700 ${
@@ -209,11 +159,8 @@ export default function DataTable({
                                     : 'bg-gray-50 dark:bg-white/5'
                             } hover:bg-gray-100 dark:hover:bg-white/8 transition-colors`}
                         >
-                            {/* <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-								{client.id}
-							</td> */}
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                {formatLocalDateTime(client.created_at)}
+                                {formatLocalDateTime(client.payment_date)}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {client?.membership?.client?.profile?.name}
@@ -222,7 +169,16 @@ export default function DataTable({
                                 {client?.membership?.client?.profile?.last_name}
                             </td>
                             <td className="px-4 py-3 text-sm">
-                                {client?.payment_status?.name}
+                                <Badge
+                                    color={
+                                        client?.payment_status?.id == 1
+                                            ? 'success'
+                                            : 'warning'
+                                    }
+                                    size="sm"
+                                >
+                                    {client?.payment_status?.name}
+                                </Badge>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {client?.next_due_date}
@@ -236,31 +192,93 @@ export default function DataTable({
                             </td>
                             <td className="px-4 py-3 text-sm">
                                 <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleEdit(client)}
-                                        className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={Pencil1Outlined}
-                                            size={20}
-                                        />
-                                    </button>
+                                    <Tooltip message="Editar">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleEdit(client)}
+                                            disabled={isLoading}
+                                            className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                        >
+                                            <Lineicons
+                                                icon={Pencil1Outlined}
+                                                size={20}
+                                            />
+                                        </button>
+                                    </Tooltip>
 
-                                    <button
-                                        onClick={() => handleDelete(client)}
-                                        className="flex items-center justify-center text-error-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-error-700 dark:border-gray-800 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={Trash3Outlined}
-                                            size={20}
-                                        />
-                                    </button>
+                                    <Tooltip message="Eliminar">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(client)}
+                                            disabled={isLoading}
+                                            className="flex items-center justify-center text-error-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-error-700 dark:border-gray-800 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                        >
+                                            <Lineicons
+                                                icon={Trash3Outlined}
+                                                size={20}
+                                            />
+                                        </button>
+                                    </Tooltip>
                                 </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <div className="mt-4 flex flex-col gap-4 text-sm text-gray-600 dark:text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                    <label htmlFor="payments-page-size">Mostrar</label>
+                    <select
+                        id="payments-page-size"
+                        value={pageSize}
+                        disabled={isLoading}
+                        onChange={(event) =>
+                            onPageSizeChange(
+                                Number(
+                                    event.target.value,
+                                ) as MembershipPaymentPageSize,
+                            )
+                        }
+                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-700 outline-none focus:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                    >
+                        {([5, 10, 15, 20] as MembershipPaymentPageSize[]).map(
+                            (size) => (
+                                <option key={size} value={size}>
+                                    {size}
+                                </option>
+                            ),
+                        )}
+                    </select>
+                    <span>por página</span>
+                </div>
+                <div className="flex items-center gap-3 sm:justify-end">
+                    <span>
+                        Mostrando {from}-{to} de {total}
+                    </span>
+                    <button
+                        type="button"
+                        disabled={isLoading || page <= 1}
+                        onClick={() => onPageChange(page - 1)}
+                        className="rounded-lg border border-gray-300 px-3 py-2 font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
+                    >
+                        Anterior
+                    </button>
+                    <span>
+                        {page} / {totalPages}
+                    </span>
+                    <button
+                        type="button"
+                        disabled={
+                            isLoading || page >= totalPages || total === 0
+                        }
+                        onClick={() => onPageChange(page + 1)}
+                        className="rounded-lg border border-gray-300 px-3 py-2 font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
+                    >
+                        Siguiente
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

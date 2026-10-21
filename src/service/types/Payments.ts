@@ -14,6 +14,10 @@ export interface Membership {
     end_date: string;
     start_date: string;
     next_due_date: string;
+    service?: {
+        id: number;
+        name: string;
+    };
 }
 
 export interface Employee {
@@ -31,6 +35,19 @@ export interface Payment_status {
     id: number;
     name: string;
     description: string;
+    code?: string;
+}
+
+export interface Membership_billing_period {
+    id: string;
+    period_start_date: string;
+    period_end_date: string;
+    original_amount: number;
+    discount_percentage: number;
+    total_amount: number;
+    payment_status_id: number;
+    payment_status: Payment_status;
+    membership: Membership;
 }
 
 export interface Membership_payment {
@@ -53,37 +70,48 @@ export interface Membership_payment {
     employee: Employee;
     payment_method: Payment_method;
     payment_status: Payment_status;
+    membership_billing_period?: Membership_billing_period;
 }
 
 export interface CreateMembershipPaymentInput {
     client_id: string;
     service_id: number;
-    start_date: string;
-    end_date: string;
-    observations: string;
-    original_amount: number;
-    discount: number;
+    observations?: string;
+    discount_percentage: number;
     amount_paid: number;
     payment_method_id: number;
-    billing_period: string;
-    status_id: number;
-    receipt_number: string;
+    receipt_number?: string;
+    billing_period_id?: string;
 }
 
 export interface UpdateMembershipPaymentsInput {
     id: string;
-    original_amount: number | 0;
-    discount: number | 0;
-    amount_paid: number | 0;
-    payment_method_id: number | 0;
-    payment_date: string | null;
-    billing_period: string | null;
-    next_due_date: string | null;
-    status_id: number | 0;
-    receipt_number: string;
-    observations: string;
+    payment_date: string;
+    update_period_dates: boolean;
 }
 
 export interface DeleteMembershipPaymentInput {
     id: string;
+}
+
+export type MembershipPaymentPageSize = 5 | 10 | 15 | 20;
+
+export type MembershipPaymentSortKey =
+    'id' | 'name' | 'last_name' | 'payment_date' | 'status' | 'updated_at';
+
+export interface GetMembershipPaymentsInput {
+    page?: number;
+    pageSize?: MembershipPaymentPageSize;
+    search?: string;
+    sortBy?: MembershipPaymentSortKey;
+    sortDirection?: 'asc' | 'desc';
+    paymentDateFrom?: string;
+    paymentDateBefore?: string;
+}
+
+export interface MembershipPaymentPagination {
+    page: number;
+    pageSize: MembershipPaymentPageSize;
+    total: number;
+    totalPages: number;
 }

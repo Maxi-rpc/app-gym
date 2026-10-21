@@ -243,15 +243,8 @@ export default function FormSaleManual() {
 							name=""
 							onChange={handleChange}
 						/>
-					</div>
-					<div>
-						<Label>Cliente (Opcional)</Label>
-						<InputField
-							placeholder="Nombre del cliente"
-							name=""
-							onChange={handleChange}
-						/>
-					</div> */}
+                    </div>
+                    */}
                     <div>
                         <Label>Cliente (Opcional)</Label>
                         <InputField
