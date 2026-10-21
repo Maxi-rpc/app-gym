@@ -17,6 +17,10 @@ import { paymentsService } from '../../../../service/payments.service';
 import { paymentMethodsService } from '../../../../service/paymentMethods.service';
 import { serviceService } from '../../../../service/service.service';
 import { PaymentMethods } from '../../../../service/types/PaymentMethods';
+import {
+    Membership_billing_period,
+    Membership_payment,
+} from '../../../../service/types/Payments';
 import { Service } from '../../../../service/types/Service';
 
 const discountOptions = [
@@ -74,6 +78,12 @@ interface SelectOption {
     label: string;
 }
 
+interface PendingPeriod {
+    period: Membership_billing_period;
+    amountPaid: number;
+    balance: number;
+}
+
 const formatCurrency = (amount: number) =>
     new Intl.NumberFormat('es-AR', {
         style: 'currency',
@@ -85,7 +95,11 @@ export default function FormRegister({ data }: Props) {
     const [paymentMethods, setPaymentMethods] = useState<SelectOption[]>([]);
     const [services, setServices] = useState<Service[]>([]);
     const [isLoadingOptions, setIsLoadingOptions] = useState(true);
+    const [isLoadingPendingPeriod, setIsLoadingPendingPeriod] = useState(false);
     const [hasOptionsError, setHasOptionsError] = useState(false);
+    const [pendingPeriod, setPendingPeriod] = useState<PendingPeriod | null>(
+        null,
+    );
     const {
         control,
         handleSubmit,
@@ -117,12 +131,75 @@ export default function FormRegister({ data }: Props) {
         originalAmount * (Math.max(0, discountPercentage) / 100);
     const totalAmount = originalAmount - discountAmount;
 
+    const amountLimit = pendingPeriod?.balance ?? totalAmount;
+    const isCompletingPendingPeriod = pendingPeriod !== null;
+
+    const loadPendingPeriod = async (clientId: string) => {
+        if (!clientId) {
+            setPendingPeriod(null);
+            return;
+        }
+
+        setIsLoadingPendingPeriod(true);
+
+        try {
+            const resp = await paymentsService.getByClient(clientId);
+
+            if (resp.error) throw resp.error;
+
+            const payments = (resp.data ?? []) as Membership_payment[];
+            const periods = new Map<string, PendingPeriod>();
+
+            for (const payment of payments) {
+                const period = payment.membership_billing_period;
+
+                if (period?.payment_status?.code !== 'PARTIAL') continue;
+
+                const current = periods.get(period.id);
+                const amountPaid =
+                    (current?.amountPaid ?? 0) + Number(payment.amount_paid);
+
+                periods.set(period.id, {
+                    period,
+                    amountPaid,
+                    balance: period.total_amount - amountPaid,
+                });
+            }
+
+            setPendingPeriod(periods.values().next().value ?? null);
+        } catch (error) {
+            console.error('Error al obtener el período pendiente:', error);
+            setPendingPeriod(null);
+            setFeedback({
+                variant: 'error',
+                title: 'No se pudo consultar la deuda pendiente',
+                message: 'Podés reintentar antes de registrar un nuevo pago.',
+            });
+        } finally {
+            setIsLoadingPendingPeriod(false);
+        }
+    };
+
     useEffect(() => {
         reset({
             ...defaultValues,
             client_id: data?.id ?? '',
         });
+        void Promise.resolve().then(() => loadPendingPeriod(data?.id ?? ''));
     }, [data?.id, reset]);
+
+    useEffect(() => {
+        if (!pendingPeriod) return;
+
+        reset({
+            ...defaultValues,
+            client_id: data?.id ?? '',
+            service_id: pendingPeriod.period.membership.service?.id ?? 0,
+            discount_percentage: String(
+                pendingPeriod.period.discount_percentage,
+            ) as PaymentFormValues['discount_percentage'],
+        });
+    }, [data?.id, pendingPeriod, reset]);
 
     useEffect(() => {
         let isMounted = true;
@@ -199,7 +276,22 @@ export default function FormRegister({ data }: Props) {
         try {
             setFeedback(null);
 
-            const resp = await paymentsService.create(values);
+            if (
+                isCompletingPendingPeriod &&
+                values.amount_paid > pendingPeriod.balance
+            ) {
+                setFeedback({
+                    variant: 'error',
+                    title: 'El importe supera el saldo pendiente',
+                    message: `El máximo que podés registrar es ${formatCurrency(pendingPeriod.balance)}.`,
+                });
+                return;
+            }
+
+            const resp = await paymentsService.create({
+                ...values,
+                billing_period_id: pendingPeriod?.period.id,
+            });
 
             if (resp.error) {
                 throw resp.error;
@@ -210,6 +302,9 @@ export default function FormRegister({ data }: Props) {
                 title: 'Pago registrado.',
                 message: resp.data?.message ?? 'Registrado correctamente.',
             });
+
+            reset({ ...defaultValues, client_id: data?.id ?? '' });
+            await loadPendingPeriod(data?.id ?? '');
         } catch (error) {
             console.error('Error al registrar pago:', error);
 
@@ -229,11 +324,65 @@ export default function FormRegister({ data }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                         <div className="col-span-2">
                             <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-                                Registrá el importe recibido. El estado del
-                                período se determinará automáticamente según el
-                                total abonado.
+                                {isCompletingPendingPeriod
+                                    ? 'Registrá un nuevo abono para completar la deuda del período vigente.'
+                                    : 'Registrá el importe recibido. El estado del período se determinará automáticamente según el total abonado.'}
                             </p>
                         </div>
+
+                        {isLoadingPendingPeriod && (
+                            <div className="col-span-2 text-sm text-gray-500 dark:text-gray-400">
+                                Consultando períodos pendientes...
+                            </div>
+                        )}
+
+                        {isCompletingPendingPeriod && (
+                            <div className="col-span-2 rounded-xl border border-warning-200 bg-warning-50 p-4 text-sm text-warning-700 dark:border-warning-500/30 dark:bg-warning-500/10 dark:text-warning-200">
+                                <p className="font-semibold">
+                                    Membresía activa con pago parcial
+                                </p>
+                                <dl className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-4">
+                                    <div>
+                                        <dt className="opacity-80">Servicio</dt>
+                                        <dd className="font-medium">
+                                            {pendingPeriod.period.membership
+                                                .service?.name ?? '—'}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt className="opacity-80">Total</dt>
+                                        <dd className="font-medium">
+                                            {formatCurrency(
+                                                pendingPeriod.period
+                                                    .total_amount,
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt className="opacity-80">Abonado</dt>
+                                        <dd className="font-medium">
+                                            {formatCurrency(
+                                                pendingPeriod.amountPaid,
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt className="opacity-80">
+                                            Saldo pendiente
+                                        </dt>
+                                        <dd className="font-semibold">
+                                            {formatCurrency(
+                                                pendingPeriod.balance,
+                                            )}
+                                        </dd>
+                                    </div>
+                                </dl>
+                                <p className="mt-3">
+                                    El cliente puede acceder mientras completa
+                                    el pago.
+                                </p>
+                            </div>
+                        )}
 
                         <div className="col-span-2 md:col-span-1">
                             <Label htmlFor="service_id">Servicio*</Label>
@@ -263,7 +412,9 @@ export default function FormRegister({ data }: Props) {
                                         }
                                         onBlur={field.onBlur}
                                         disabled={
-                                            isLoadingOptions || hasOptionsError
+                                            isLoadingOptions ||
+                                            hasOptionsError ||
+                                            isCompletingPendingPeriod
                                         }
                                         error={Boolean(errors.service_id)}
                                         hint={errors.service_id?.message}
@@ -289,7 +440,9 @@ export default function FormRegister({ data }: Props) {
                                         onChange={field.onChange}
                                         onBlur={field.onBlur}
                                         disabled={
-                                            isLoadingOptions || hasOptionsError
+                                            isLoadingOptions ||
+                                            hasOptionsError ||
+                                            isCompletingPendingPeriod
                                         }
                                         error={Boolean(
                                             errors.discount_percentage,
@@ -313,9 +466,14 @@ export default function FormRegister({ data }: Props) {
                                         Subtotal
                                     </dt>
                                     <dd className="mt-1 font-medium text-gray-800 dark:text-white/90">
-                                        {selectedService
-                                            ? formatCurrency(originalAmount)
-                                            : '—'}
+                                        {isCompletingPendingPeriod
+                                            ? formatCurrency(
+                                                  pendingPeriod.period
+                                                      .original_amount,
+                                              )
+                                            : selectedService
+                                              ? formatCurrency(originalAmount)
+                                              : '—'}
                                     </dd>
                                 </div>
                                 <div>
@@ -323,9 +481,16 @@ export default function FormRegister({ data }: Props) {
                                         Descuento
                                     </dt>
                                     <dd className="mt-1 font-medium text-gray-800 dark:text-white/90">
-                                        {selectedService
-                                            ? `-${formatCurrency(discountAmount)}`
-                                            : '—'}
+                                        {isCompletingPendingPeriod
+                                            ? `-${formatCurrency(
+                                                  pendingPeriod.period
+                                                      .original_amount -
+                                                      pendingPeriod.period
+                                                          .total_amount,
+                                              )}`
+                                            : selectedService
+                                              ? `-${formatCurrency(discountAmount)}`
+                                              : '—'}
                                     </dd>
                                 </div>
                                 <div>
@@ -333,9 +498,13 @@ export default function FormRegister({ data }: Props) {
                                         Total a cobrar
                                     </dt>
                                     <dd className="mt-1 font-semibold text-gray-800 dark:text-white">
-                                        {selectedService
-                                            ? formatCurrency(totalAmount)
-                                            : '—'}
+                                        {isCompletingPendingPeriod
+                                            ? formatCurrency(
+                                                  pendingPeriod.balance,
+                                              )
+                                            : selectedService
+                                              ? formatCurrency(totalAmount)
+                                              : '—'}
                                     </dd>
                                 </div>
                             </dl>
@@ -358,18 +527,24 @@ export default function FormRegister({ data }: Props) {
                                         onBlur={field.onBlur}
                                         min="0.01"
                                         max={
-                                            selectedService
-                                                ? String(totalAmount)
+                                            amountLimit > 0
+                                                ? String(amountLimit)
                                                 : undefined
                                         }
                                         step={0.01}
-                                        disabled={!selectedService}
+                                        disabled={
+                                            (!selectedService &&
+                                                !isCompletingPendingPeriod) ||
+                                            isLoadingPendingPeriod
+                                        }
                                         error={Boolean(errors.amount_paid)}
                                         hint={
                                             errors.amount_paid?.message ??
-                                            (selectedService
-                                                ? `Para cancelar el período ingresá ${formatCurrency(totalAmount)}.`
-                                                : 'Seleccioná un servicio para calcular el total.')
+                                            (isCompletingPendingPeriod
+                                                ? `El máximo a registrar es ${formatCurrency(pendingPeriod.balance)}.`
+                                                : selectedService
+                                                  ? `Para cancelar el período ingresá ${formatCurrency(totalAmount)}.`
+                                                  : 'Seleccioná un servicio para calcular el total.')
                                         }
                                     />
                                 )}
@@ -474,7 +649,10 @@ export default function FormRegister({ data }: Props) {
                         size="sm"
                         type="submit"
                         disabled={
-                            isSubmitting || isLoadingOptions || hasOptionsError
+                            isSubmitting ||
+                            isLoadingOptions ||
+                            isLoadingPendingPeriod ||
+                            hasOptionsError
                         }
                     >
                         {isSubmitting && <IconSpinner />}

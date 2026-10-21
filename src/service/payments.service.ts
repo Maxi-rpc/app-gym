@@ -75,6 +75,7 @@ async function create(formData: CreateMembershipPaymentInput) {
             body: {
                 client_id: formData.client_id,
                 service_id: formData.service_id,
+                billing_period_id: formData.billing_period_id,
                 discount_percentage: formData.discount_percentage,
                 amount_paid: formData.amount_paid,
                 payment_method_id: formData.payment_method_id,

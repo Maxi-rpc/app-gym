@@ -25,8 +25,17 @@ La interfaz es una aplicación de página única (SPA). La navegación se config
 - `src/hooks/`: hooks reutilizables.
 - `src/service/`: acceso a operaciones y servicios del dominio.
 - `src/utils/`: utilidades y configuración compartida, incluido el cliente de Supabase.
+- `back/schemas/supabaseSchemas.sql`: esquema de las tablas de Supabase; consúltalo como referencia de la estructura del backend, sus columnas, claves y relaciones.
+- `back/functions/`: código fuente de las Supabase Edge Functions.
+- `back/rpc/`: definiciones SQL de las funciones RPC de Supabase.
 - `public/`: recursos estáticos.
 - `.github/workflows/`: automatizaciones de GitHub Actions.
+
+## Backend y Supabase
+
+- Los esquemas de las tablas del backend gestionado con Supabase se encuentran en `back/schemas/supabaseSchemas.sql`.
+- Las Edge Functions se versionan en `back/functions/` y las funciones RPC SQL en `back/rpc/`.
+- Antes de implementar o modificar operaciones que dependan de Supabase, revisa este archivo para mantener la aplicación alineada con la estructura y relaciones de la base de datos.
 
 ## Preparación y comandos
 

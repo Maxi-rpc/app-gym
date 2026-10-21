@@ -14,6 +14,10 @@ export interface Membership {
     end_date: string;
     start_date: string;
     next_due_date: string;
+    service?: {
+        id: number;
+        name: string;
+    };
 }
 
 export interface Employee {
@@ -31,6 +35,19 @@ export interface Payment_status {
     id: number;
     name: string;
     description: string;
+    code?: string;
+}
+
+export interface Membership_billing_period {
+    id: string;
+    period_start_date: string;
+    period_end_date: string;
+    original_amount: number;
+    discount_percentage: number;
+    total_amount: number;
+    payment_status_id: number;
+    payment_status: Payment_status;
+    membership: Membership;
 }
 
 export interface Membership_payment {
@@ -53,6 +70,7 @@ export interface Membership_payment {
     employee: Employee;
     payment_method: Payment_method;
     payment_status: Payment_status;
+    membership_billing_period?: Membership_billing_period;
 }
 
 export interface CreateMembershipPaymentInput {
@@ -63,6 +81,7 @@ export interface CreateMembershipPaymentInput {
     amount_paid: number;
     payment_method_id: number;
     receipt_number?: string;
+    billing_period_id?: string;
 }
 
 export interface UpdateMembershipPaymentsInput {
