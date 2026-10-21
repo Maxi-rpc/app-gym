@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 // import { publicAsset } from "../../utils/publicAsset";
 import Badge from '../../../components/ui/badge/Badge';
 import QRCard from '../../../components/ui/qr/QRCard';
@@ -11,17 +9,11 @@ interface Props {
 }
 
 export default function UserDataCard({ data }: Props) {
-    const [profile, setProfile] = useState<Profile | null>(null);
-
     const roleNames =
-        profile?.user_roles
+        data?.user_roles
             ?.map((ur) => ur.role?.name)
             .filter(Boolean)
             .join(', ') ?? '';
-
-    useEffect(() => {
-        setProfile(data);
-    }, [data]);
 
     return (
         <>
@@ -30,7 +22,7 @@ export default function UserDataCard({ data }: Props) {
                     <div className="flex-1">
                         <div className="mb-6 flex flex-col gap-5 sm:flex-row xl:items-center xl:justify-between">
                             <div className="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-center">
-                                <QRCard value={profile?.qr_token} />
+                                <QRCard value={data?.qr_token} />
                                 {/* <div className="border-gray-20 overflow-hidden rounded-full border dark:border-gray-800">
 									<img
 										className="size-20"
@@ -39,14 +31,14 @@ export default function UserDataCard({ data }: Props) {
 									/>
 								</div> */}
                                 <div className="mr-3 overflow-hidden rounded-full h-20 w-20 bg-brand-400 inline-flex items-center justify-center text-5xl font-medium text-white">
-                                    {profile?.name[0]}
+                                    {data?.name?.[0] ?? ''}
                                 </div>
 
                                 <div className="text-left">
                                     <h4 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">
-                                        {profile?.name} {profile?.last_name}{' '}
+                                        {data?.name} {data?.last_name}{' '}
                                         <Badge color="success">
-                                            {profile?.status?.name}
+                                            {data?.status?.name}
                                         </Badge>
                                     </h4>
                                     <div className="flex items-center gap-1 sm:gap-3">
@@ -64,7 +56,7 @@ export default function UserDataCard({ data }: Props) {
                                     Nombre
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {profile?.name}
+                                    {data?.name}
                                 </p>
                             </div>
                             <div className="w-full">
@@ -72,7 +64,7 @@ export default function UserDataCard({ data }: Props) {
                                     Apellido
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {profile?.last_name}
+                                    {data?.last_name}
                                 </p>
                             </div>
                             <div className="w-full">
@@ -80,7 +72,7 @@ export default function UserDataCard({ data }: Props) {
                                     Email
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {profile?.email}
+                                    {data?.email}
                                 </p>
                             </div>
                             <div className="hidden xl:block"></div>
@@ -89,7 +81,7 @@ export default function UserDataCard({ data }: Props) {
                                     Cumpleaños
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {profile?.birth_date}
+                                    {data?.birth_date}
                                 </p>
                             </div>
                             <div>
@@ -97,7 +89,7 @@ export default function UserDataCard({ data }: Props) {
                                     Teléfono
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {profile?.phone}
+                                    {data?.phone}
                                 </p>
                             </div>
                             <div>

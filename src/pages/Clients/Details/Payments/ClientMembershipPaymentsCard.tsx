@@ -2,6 +2,7 @@ import { useState, useEffect, SetStateAction } from 'react';
 
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
+import Badge from '../../../../components/ui/badge/Badge';
 import Alert from '../../../../components/ui/alert/Alert';
 import { Feedback } from '../../../../components/ui/alert/types/AlertFeedback';
 
@@ -27,29 +28,43 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
         setSearchText(e.target.value);
     };
 
-    const getData = async (id: string) => {
-        try {
-            setFeedback(null);
-
-            const resp = await paymentsService.getByClient(id);
-            if (resp.error) throw resp.error;
-
-            setListPayments(resp.data);
-            setPayment(resp.data[0]);
-        } catch (error) {
-            console.error('Error No se puede obtener datos', error);
-
-            setFeedback({
-                variant: 'error',
-                title: 'No se puede obtener datos',
-                message:
-                    'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
-            });
-        }
-    };
-
     useEffect(() => {
-        getData(id);
+        let isCurrent = true;
+
+        const getData = async () => {
+            setPayment(null);
+            setListPayments([]);
+
+            try {
+                setFeedback(null);
+
+                const resp = await paymentsService.getByClient(id);
+                if (resp.error) throw resp.error;
+
+                const data = resp.data ?? [];
+
+                if (!isCurrent) return;
+
+                setListPayments(data);
+                setPayment(data[0] ?? null);
+            } catch (error) {
+                if (!isCurrent) return;
+
+                console.error('Error No se puede obtener datos', error);
+                setFeedback({
+                    variant: 'error',
+                    title: 'No se puede obtener datos',
+                    message:
+                        'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
+                });
+            }
+        };
+
+        void getData();
+
+        return () => {
+            isCurrent = false;
+        };
     }, [id]);
 
     return (
@@ -113,7 +128,15 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
                                     Estado
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {payment?.status?.name}
+                                    <Badge
+                                        color={
+                                            payment?.status.id == 1
+                                                ? 'success'
+                                                : 'warning'
+                                        }
+                                    >
+                                        {payment?.status?.name}
+                                    </Badge>
                                 </p>
                             </div>
                             <div className="col-span-2"></div>
@@ -121,10 +144,11 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
 
                         <div className="flex justify-between items-end gap-4 max-sm:px-4 mb-3 my-2">
                             <div className="space-y-6 flex-1">
-                                <Label htmlFor="inputTwo">Buscar Pago</Label>
+                                <Label htmlFor="searchText">Buscar Pago</Label>
                                 <Input
                                     type="text"
-                                    id="inputTwo"
+                                    name="searchText"
+                                    id="searchText"
                                     placeholder="Ingresar fecha, estado"
                                     value={searchText}
                                     onChange={handleSearch}
@@ -133,7 +157,7 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
                         </div>
                         <div>
                             <MembershipsPaymentsTable
-                                searchText=""
+                                searchText={searchText}
                                 listData={listPayments || []}
                             />
                         </div>

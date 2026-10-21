@@ -21,16 +21,19 @@ import Dashboards from './pages/Administration/Dashboard/Dashboard';
 // clients
 import Clients from './pages/Clients/List/Clients';
 import ClientsAdd from './pages/Clients/Add/ClientAdd';
+import ClientEdit from './pages/Clients/Edit/ClientEdit';
 import ClientDetails from './pages/Clients/Details/ClientDetails';
 
 // employee
-import Coachs from "./pages/Employeers/List/Employeers";
-import CoachsAdd from "./pages/Employeers/Add/EmployeersAdd";
-import CoachDetails from "./pages/Employeers/Details/CoachDetails";
+import Coachs from './pages/Employeers/List/Employeers';
+import CoachsAdd from './pages/Employeers/Add/EmployeersAdd';
+import CoachEdit from './pages/Employeers/Edit/EmployeerEdit';
+import CoachDetails from './pages/Employeers/Details/CoachDetails';
 
 // assistance
 import AssistantsTerminal from './pages/Assistants/Terminal/Terminal';
 import Assistants from './pages/Assistants/List/List';
+import AssistantsEdit from './pages/Assistants/Edit/AssistantsEdit';
 import AssistantsRegisterQR from './pages/Assistants/RegisterQR/RegisterQR';
 import AssistantsRegister from './pages/Assistants/Register/Register';
 
@@ -138,6 +141,19 @@ export default function App() {
                                     }
                                 />
                                 <Route
+                                    path="edit/:id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <ClientEdit />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
                                     path=":id"
                                     element={
                                         <ProtectedRoute
@@ -152,33 +168,61 @@ export default function App() {
                                 />
                             </Route>
 
-							{/* Coach Page */}
-							<Route path="/coachs">
-								<Route
-									path=""
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<Coachs />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="add"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<CoachsAdd />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path=":id"
-									element={
-										<ProtectedRoute requiredRoles={["Admin", "Profesor"]}>
-											<CoachDetails />
-										</ProtectedRoute>
-									}
-								/>
-							</Route>
+                            {/* Coach Page */}
+                            <Route path="/coachs">
+                                <Route
+                                    path=""
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <Coachs />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="add"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <CoachsAdd />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <CoachEdit />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path=":id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <CoachDetails />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                            </Route>
 
                             {/* Assistant Page */}
                             <Route path="/assistants">
@@ -187,6 +231,20 @@ export default function App() {
                                     element={
                                         <ProtectedRoute>
                                             <AssistantsTerminal />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="edit/:id"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <AssistantsEdit />
                                         </ProtectedRoute>
                                     }
                                 />

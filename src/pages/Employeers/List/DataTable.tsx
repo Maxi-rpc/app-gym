@@ -1,3 +1,6 @@
+import Badge from '../../../components/ui/badge/Badge';
+import Tooltip from '../../../components/ui/tooltip/Tooltip';
+
 import { Lineicons } from '@lineiconshq/react-lineicons';
 import {
     Trash3Outlined,
@@ -120,45 +123,60 @@ export default function DataTable({
                                 {formatLocalDateTime(employee.created_at)}
                             </td>
                             <td className="px-4 py-3 text-sm">
-                                <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                <Badge
+                                    color={
+                                        employee.profile?.status?.id == 1
+                                            ? 'success'
+                                            : 'warning'
+                                    }
+                                    size="sm"
+                                >
                                     {employee.profile?.status?.name}
-                                </span>
+                                </Badge>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {formatLocalDateTime(employee.updated_at)}
                             </td>
                             <td className="px-4 py-3 text-sm">
                                 <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => onView?.(employee)}
-                                        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={Search1Outlined}
-                                            size={20}
-                                        />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => onEdit?.(employee)}
-                                        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={Pencil1Outlined}
-                                            size={20}
-                                        />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => onDelet?.(employee)}
-                                        className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-error-500 transition-colors hover:bg-gray-100 hover:text-error-700 dark:border-gray-800 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={Trash3Outlined}
-                                            size={20}
-                                        />
-                                    </button>
+                                    <Tooltip message="Detalle">
+                                        <button
+                                            type="button"
+                                            onClick={() => onView?.(employee)}
+                                            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                        >
+                                            <Lineicons
+                                                icon={Search1Outlined}
+                                                size={20}
+                                            />
+                                        </button>
+                                    </Tooltip>
+
+                                    <Tooltip message="Editar">
+                                        <button
+                                            type="button"
+                                            onClick={() => onEdit?.(employee)}
+                                            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                        >
+                                            <Lineicons
+                                                icon={Pencil1Outlined}
+                                                size={20}
+                                            />
+                                        </button>
+                                    </Tooltip>
+
+                                    <Tooltip message="Eliminar">
+                                        <button
+                                            type="button"
+                                            onClick={() => onDelet?.(employee)}
+                                            className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-error-500 transition-colors hover:bg-gray-100 hover:text-error-700 dark:border-gray-800 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                        >
+                                            <Lineicons
+                                                icon={Trash3Outlined}
+                                                size={20}
+                                            />
+                                        </button>
+                                    </Tooltip>
                                 </div>
                             </td>
                         </tr>

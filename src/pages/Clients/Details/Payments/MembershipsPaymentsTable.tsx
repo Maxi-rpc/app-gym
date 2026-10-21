@@ -108,13 +108,13 @@ export default function PaymentsTable({ listData, searchText }: Props) {
     };
 
     const columns: { key: SortKey; label: string }[] = [
+        { key: 'createdAt', label: 'Creada' },
         { key: 'id', label: 'ID' },
         { key: 'service', label: 'Servicio' },
         { key: 'startDate', label: 'Fecha de inicio' },
         { key: 'nextDueDate', label: 'Próximo vencimiento' },
         { key: 'paymentMethod', label: 'Método de Pago' },
         { key: 'amountPaid', label: 'Monto' },
-        { key: 'createdAt', label: 'Creada' },
         { key: 'observations', label: 'Observaciones' },
     ];
 
@@ -151,6 +151,9 @@ export default function PaymentsTable({ listData, searchText }: Props) {
                             key={payment.id}
                         >
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                {formatLocalDateTime(payment.created_at)}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {payment.id}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
@@ -167,9 +170,6 @@ export default function PaymentsTable({ listData, searchText }: Props) {
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {payment?.amount_paid}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                {formatLocalDateTime(payment.created_at)}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {payment.observations}

@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { useModal } from '../../hooks/useModal';
 import { Modal } from '../ui/modal';
 import Button from '../ui/button/Button';
+import Form from '../form/Form';
 import Input from '../form/input/InputField';
 import TextArea from '../form/input/TextArea';
 import Label from '../form/Label';
@@ -17,19 +21,33 @@ import { clientService } from '../../service/client.service';
 import { UpdateClientInput } from '../../service/types/Client';
 import { useAuth } from '../../hooks/useAuth';
 
+const clientSchema = z.object({
+    height: z.number().nullable(),
+    weight: z.number().nullable(),
+    emergency_contact: z.string(),
+    medical_notes: z.string(),
+});
+
+type ClientFormValues = z.infer<typeof clientSchema>;
+
 export default function ClientCard() {
     const { profile } = useAuth();
     const [client, setClient] = useState<UpdateClientInput | null>(null);
     const { isOpen, openModal, closeModal } = useModal();
     const [feedback, setFeedback] = useState<Feedback>(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [formData, setFormData] = useState({
-        user_id: '',
-        height: 0,
-        weight: 0,
-        emergency_contact: '',
-        medical_notes: '',
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<ClientFormValues>({
+        resolver: zodResolver(clientSchema),
+        defaultValues: {
+            height: null,
+            weight: null,
+            emergency_contact: '',
+            medical_notes: '',
+        },
     });
 
     const handleCloseModal = () => {
@@ -37,12 +55,24 @@ export default function ClientCard() {
         closeModal();
     };
 
-    const handleSubmit = async () => {
+    const handleOpenModal = () => {
+        reset({
+            height: client?.height ?? null,
+            weight: client?.weight ?? null,
+            emergency_contact: client?.emergency_contact ?? '',
+            medical_notes: client?.medical_notes ?? '',
+        });
+        setFeedback(null);
+        openModal();
+    };
+
+    const onSubmit = async (values: ClientFormValues) => {
         try {
             setFeedback(null);
-            setIsLoading(true);
-
-            const resp = await clientService.update(formData);
+            const resp = await clientService.update({
+                user_id: client?.user_id ?? profile?.id,
+                ...values,
+            });
             if (resp.data) {
                 if (resp?.data?.success) {
                     setFeedback({
@@ -63,7 +93,9 @@ export default function ClientCard() {
                 throw resp.error;
             }
 
-            await loadClient(formData.user_id);
+            if (profile?.id) {
+                await loadClient(profile.id);
+            }
         } catch (error) {
             console.error('Error al guardar datos:', error);
 
@@ -73,31 +105,19 @@ export default function ClientCard() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
-        } finally {
-            setIsLoading(false);
         }
-    };
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
     const loadClient = async (userId: string) => {
         try {
             const clientData = await clientService.getById(userId);
             setClient(clientData);
-            setFormData((prev) => ({
-                ...prev,
-                user_id: userId,
-                height: clientData?.height ?? 0,
-                weight: clientData?.weight ?? 0,
+            reset({
+                height: clientData?.height ?? null,
+                weight: clientData?.weight ?? null,
                 emergency_contact: clientData?.emergency_contact ?? '',
                 medical_notes: clientData?.medical_notes ?? '',
-            }));
+            });
         } catch (err) {
             console.error('Error cargando client', err);
 
@@ -106,13 +126,10 @@ export default function ClientCard() {
     };
 
     useEffect(() => {
-        const getData = async () => {
-            if (profile?.id) {
-                await loadClient(profile?.id);
-            }
-        };
-        getData();
-    }, []);
+        if (profile?.id) {
+            void loadClient(profile.id);
+        }
+    }, [profile?.id]);
 
     return (
         <>
@@ -163,7 +180,7 @@ export default function ClientCard() {
                     </div>
 
                     <button
-                        onClick={openModal}
+                        onClick={handleOpenModal}
                         className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
                     >
                         <Lineicons icon={Pencil1Outlined} size={20} />
@@ -187,26 +204,65 @@ export default function ClientCard() {
                             actualizado.
                         </p>
                     </div>
-                    <form className="flex flex-col">
+                    <Form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="flex flex-col"
+                    >
                         <div className="px-2 overflow-y-auto custom-scrollbar">
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label htmlFor="height">Altura (cm)</Label>
-                                    <Input
-                                        type="number"
-                                        value={formData?.height}
+                                    <Controller
                                         name="height"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="number"
+                                                value={field.value ?? ''}
+                                                name={field.name}
+                                                id="height"
+                                                onChange={(event) =>
+                                                    field.onChange(
+                                                        event.target.value ===
+                                                            ''
+                                                            ? null
+                                                            : event.target
+                                                                  .valueAsNumber,
+                                                    )
+                                                }
+                                                onBlur={field.onBlur}
+                                                error={Boolean(errors.height)}
+                                                hint={errors.height?.message}
+                                            />
+                                        )}
                                     />
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label htmlFor="height">Peso (kg)</Label>
-                                    <Input
-                                        type="number"
-                                        value={formData?.weight}
-                                        name="height"
-                                        onChange={handleChange}
+                                    <Label htmlFor="weight">Peso (kg)</Label>
+                                    <Controller
+                                        name="weight"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="number"
+                                                value={field.value ?? ''}
+                                                name={field.name}
+                                                id="weight"
+                                                onChange={(event) =>
+                                                    field.onChange(
+                                                        event.target.value ===
+                                                            ''
+                                                            ? null
+                                                            : event.target
+                                                                  .valueAsNumber,
+                                                    )
+                                                }
+                                                onBlur={field.onBlur}
+                                                error={Boolean(errors.weight)}
+                                                hint={errors.weight?.message}
+                                            />
+                                        )}
                                     />
                                 </div>
 
@@ -214,11 +270,26 @@ export default function ClientCard() {
                                     <Label htmlFor="emergency_contact">
                                         Contacto de Emergencia
                                     </Label>
-                                    <Input
-                                        type="text"
-                                        value={formData?.emergency_contact}
+                                    <Controller
                                         name="emergency_contact"
-                                        onChange={handleChange}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                type="text"
+                                                value={field.value}
+                                                name={field.name}
+                                                id="emergency_contact"
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                error={Boolean(
+                                                    errors.emergency_contact,
+                                                )}
+                                                hint={
+                                                    errors.emergency_contact
+                                                        ?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
 
@@ -226,15 +297,25 @@ export default function ClientCard() {
                                     <Label htmlFor="medical_notes">
                                         Notas Médicas
                                     </Label>
-                                    <TextArea
-                                        value={formData?.medical_notes}
-                                        onChange={(value) =>
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                medical_notes: value,
-                                            }))
-                                        }
-                                        rows={3}
+                                    <Controller
+                                        name="medical_notes"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <TextArea
+                                                name={field.name}
+                                                id="medical_notes"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                rows={3}
+                                                error={Boolean(
+                                                    errors.medical_notes,
+                                                )}
+                                                hint={
+                                                    errors.medical_notes
+                                                        ?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
                             </div>
@@ -249,10 +330,10 @@ export default function ClientCard() {
                             </Button>
                             <Button
                                 size="sm"
-                                onClick={handleSubmit}
-                                disabled={isLoading}
+                                type="submit"
+                                disabled={isSubmitting}
                             >
-                                {isLoading && <IconSpinner />}
+                                {isSubmitting && <IconSpinner />}
                                 Guardar
                             </Button>
                         </div>
@@ -267,7 +348,7 @@ export default function ClientCard() {
                                 </div>
                             )}
                         </div>
-                    </form>
+                    </Form>
                 </div>
             </Modal>
         </>

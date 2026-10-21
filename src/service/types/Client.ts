@@ -22,10 +22,10 @@ export interface CreateClientInput {
     phone?: string | null;
     image?: string | null;
     birth_date?: string | null;
-    height: number | null;
-    weight: number | null;
-    emergency_contact: string | null;
-    medical_notes: string | null;
+    height?: number | null;
+    weight?: number | null;
+    emergency_contact?: string | null;
+    medical_notes?: string | null;
 }
 
 export interface UpdateClientInput {

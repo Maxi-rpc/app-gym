@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { EyeCloseIcon, EyeIcon, ChevronLeftIcon } from '../../icons';
 
@@ -8,8 +11,28 @@ import Label from '../form/Label';
 import Input from '../form/input/InputField';
 import Checkbox from '../form/input/Checkbox';
 import Button from '../ui/button/Button';
+import IconSpinner from '../ui/button/IconSpinner';
+import { publicAsset } from '../../utils/publicAsset';
 
 import { useAuth } from '../../hooks/useAuth';
+
+const signInSchema = z.object({
+    email: z
+        .string()
+        .refine((value) => value.trim().length > 0, 'Este campo es obligatorio')
+        .refine(
+            (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            'Email inválido',
+        ),
+    password: z
+        .string()
+        .refine(
+            (value) => value.trim().length > 0,
+            'Este campo es obligatorio',
+        ),
+});
+
+type SignInFormValues = z.infer<typeof signInSchema>;
 
 // const IconGoogle = () => {
 // 	return (
@@ -56,28 +79,26 @@ import { useAuth } from '../../hooks/useAuth';
 // };
 
 export default function SignInForm() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login, isLoading } = useAuth();
-    const navigate = useNavigate();
+    const {
+        control,
+        handleSubmit,
+        formState: { errors: fieldErrors, isSubmitting },
+    } = useForm<SignInFormValues>({
+        resolver: zodResolver(signInSchema),
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+        mode: 'onBlur',
+    });
 
-    const handleSubmit = async () => {
+    const onSubmit = async ({ email, password }: SignInFormValues) => {
         setError('');
-
-        // Validación básica
-        if (!email || !password) {
-            setError('Por favor completa todos los campos*');
-            return;
-        }
-
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setError('Email inválido');
-            return;
-        }
-
         try {
             await login(email, password);
             navigate('/');
@@ -100,6 +121,15 @@ export default function SignInForm() {
             </div>
             <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
                 <div>
+                    <div className="flex justify-center w-full mb-5 sm:mb-8">
+                        <img
+                            className="w-60"
+                            alt="logo"
+                            src={publicAsset(
+                                'images/logo/logo_2_sin_fondo.png',
+                            )}
+                        />
+                    </div>
                     <div className="mb-5 sm:mb-8">
                         <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
                             Iniciar sesión
@@ -135,7 +165,7 @@ export default function SignInForm() {
 								</span>
 							</div>
 						</div> */}
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
                             <div className="space-y-6">
                                 {error && (
                                     <div className="p-4 rounded-lg bg-error-50 dark:bg-error-500/10 border border-error-200 dark:border-error-500/20">
@@ -151,17 +181,28 @@ export default function SignInForm() {
                                             *
                                         </span>{' '}
                                     </Label>
-                                    <Input
-                                        placeholder="info@gmail.com"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) =>
-                                            setEmail(e.target.value)
-                                        }
-                                        disabled={isLoading}
-                                        autocomplete={email}
+                                    <Controller
                                         name="email"
-                                        id="email"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                placeholder="info@gmail.com"
+                                                type="email"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                                disabled={isSubmitting}
+                                                autocomplete="email"
+                                                name={field.name}
+                                                id="email"
+                                                error={Boolean(
+                                                    fieldErrors.email,
+                                                )}
+                                                hint={
+                                                    fieldErrors.email?.message
+                                                }
+                                            />
+                                        )}
                                     />
                                 </div>
                                 <div>
@@ -172,21 +213,33 @@ export default function SignInForm() {
                                         </span>{' '}
                                     </Label>
                                     <div className="relative">
-                                        <Input
-                                            type={
-                                                showPassword
-                                                    ? 'text'
-                                                    : 'password'
-                                            }
-                                            placeholder="Ingresar tu password"
-                                            value={password}
-                                            onChange={(e) =>
-                                                setPassword(e.target.value)
-                                            }
-                                            disabled={isLoading}
-                                            autocomplete="current-password"
+                                        <Controller
                                             name="password"
-                                            id="password"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    type={
+                                                        showPassword
+                                                            ? 'text'
+                                                            : 'password'
+                                                    }
+                                                    placeholder="Ingresar tu password"
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                    disabled={isSubmitting}
+                                                    autocomplete="current-password"
+                                                    name={field.name}
+                                                    id="password"
+                                                    error={Boolean(
+                                                        fieldErrors.password,
+                                                    )}
+                                                    hint={
+                                                        fieldErrors.password
+                                                            ?.message
+                                                    }
+                                                />
+                                            )}
                                         />
                                         <span
                                             onClick={() =>
@@ -207,7 +260,7 @@ export default function SignInForm() {
                                         <Checkbox
                                             checked={isChecked}
                                             onChange={setIsChecked}
-                                            disabled={isLoading}
+                                            disabled={isSubmitting}
                                         />
                                         <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
                                             Mantenme conectado
@@ -225,11 +278,13 @@ export default function SignInForm() {
                                         className="w-full"
                                         size="sm"
                                         type="submit"
-                                        disabled={isLoading}
+                                        disabled={isSubmitting}
                                     >
-                                        {isLoading
-                                            ? 'Iniciando sesión...'
-                                            : 'Iniciar sesión'}
+                                        {isSubmitting ? (
+                                            <IconSpinner />
+                                        ) : (
+                                            'Iniciar sesión'
+                                        )}
                                     </Button>
                                 </div>
                             </div>
@@ -238,12 +293,12 @@ export default function SignInForm() {
                         <div className="mt-5">
                             <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                                 ¿No tienes una cuenta? {''}
-                                <Link
+                                {/* <Link
                                     to="/signup"
                                     className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                                 >
                                     Inscribirse
-                                </Link>
+                                </Link> */}
                             </p>
                         </div>
                     </div>

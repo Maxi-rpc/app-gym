@@ -1,5 +1,5 @@
 export interface UserStatus {
-    id: string;
+    id: number;
     created_at: string;
     name: string;
     description: string;
@@ -12,7 +12,7 @@ export interface CreateUserStatusInput {
 }
 
 export interface UpdateUserStatusInput {
-    id: string;
+    id: number;
     name: string;
     description: string;
 }

@@ -110,13 +110,13 @@ export default function MembershipsTable({ listData, searchText }: Props) {
     };
 
     const columns: { key: SortKey; label: string }[] = [
+        { key: 'createdAt', label: 'Creada' },
         { key: 'id', label: 'ID' },
         { key: 'service', label: 'Servicio' },
         { key: 'startDate', label: 'Fecha de inicio' },
         { key: 'endDate', label: 'Fecha de fin' },
         { key: 'nextDueDate', label: 'Próximo vencimiento' },
         { key: 'state', label: 'Estado' },
-        { key: 'createdAt', label: 'Creada' },
         { key: 'observations', label: 'Observaciones' },
     ];
 
@@ -153,6 +153,9 @@ export default function MembershipsTable({ listData, searchText }: Props) {
                             key={membership.id}
                         >
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                {formatLocalDateTime(membership.created_at)}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {membership.id}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
@@ -177,9 +180,6 @@ export default function MembershipsTable({ listData, searchText }: Props) {
                                 >
                                     {membership?.membership_status?.name}
                                 </Badge>
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                {formatLocalDateTime(membership.created_at)}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {membership.observations}

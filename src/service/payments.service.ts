@@ -3,6 +3,7 @@ import {
     CreateMembershipPaymentInput,
     UpdateMembershipPaymentsInput,
     DeleteMembershipPaymentInput,
+    GetMembershipPaymentsInput,
 } from './types/Payments';
 
 async function getByClient(id: string) {
@@ -30,7 +31,7 @@ async function getByClient(id: string) {
     return { data: data?.membership_payments, error: error };
 }
 
-async function getAll() {
+async function getAll(input: GetMembershipPaymentsInput = {}) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -43,14 +44,19 @@ async function getAll() {
     const { data, error } = await supabase.functions.invoke(
         'get-membership-payments-all',
         {
+            body: input,
             headers: {
                 Authorization: `Bearer ${session_token}`,
             },
-            method: 'GET',
+            method: 'POST',
         },
     );
 
-    return { data: data?.membership_payments, error: error };
+    return {
+        data: data?.data?.membership_payments,
+        pagination: data?.data?.pagination,
+        error: error,
+    };
 }
 
 async function create(formData: CreateMembershipPaymentInput) {
@@ -67,18 +73,14 @@ async function create(formData: CreateMembershipPaymentInput) {
         'register-membership-payment',
         {
             body: {
-                client_id: formData?.client_id,
-                service_id: formData?.service_id,
-                start_date: formData?.start_date || null,
-                end_date: formData?.end_date || null,
-                observations: formData?.observations,
-                original_amount: formData?.original_amount, // payment
-                discount: formData?.discount,
-                amount_paid: formData?.amount_paid,
-                payment_method_id: formData?.payment_method_id, // payment method
-                billing_period: formData?.billing_period || null,
-                status_id: formData?.status_id, // payment status
-                receipt_number: formData?.receipt_number,
+                client_id: formData.client_id,
+                service_id: formData.service_id,
+                billing_period_id: formData.billing_period_id,
+                discount_percentage: formData.discount_percentage,
+                amount_paid: formData.amount_paid,
+                payment_method_id: formData.payment_method_id,
+                receipt_number: formData.receipt_number,
+                observations: formData.observations,
             },
             headers: {
                 Authorization: `Bearer ${session_token}`,
@@ -103,17 +105,9 @@ async function update(formData: UpdateMembershipPaymentsInput) {
         'update-membership-payment',
         {
             body: {
-                id: formData?.id,
-                original_amount: formData?.original_amount || 0, // payment
-                discount: formData?.discount || 0,
-                amount_paid: formData?.amount_paid || 0,
-                payment_method_id: formData?.payment_method_id, // payment method
-                payment_date: formData?.payment_date,
-                billing_period: formData?.billing_period || null,
-                next_due_date: formData?.next_due_date || null,
-                status_id: formData?.status_id, // payment status
-                receipt_number: formData?.receipt_number || '',
-                observations: formData?.observations,
+                id: formData.id,
+                payment_date: formData.payment_date,
+                update_period_dates: formData.update_period_dates,
             },
             headers: {
                 Authorization: `Bearer ${session_token}`,

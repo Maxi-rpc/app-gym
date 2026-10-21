@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
-import Select from '../../../../components/form/Select';
 import Button from '../../../../components/ui/button/Button';
 import Alert from '../../../../components/ui/alert/Alert';
 import { Feedback } from '../../../../components/ui/alert/types/AlertFeedback';
@@ -17,35 +16,39 @@ type Props = {
     defaultData: Membership_payment | null;
 };
 
-const optionsPaymentsMethods = [
-    { value: '1', label: 'Efectivo' },
-    { value: '2', label: 'Transferencia' },
-];
+const ARGENTINA_TIME_ZONE = 'America/Argentina/Buenos_Aires';
 
-const optionsPaymentsStatus = [
-    { value: '1', label: 'Pagado' },
-    { value: '2', label: 'Pendiente' },
-    { value: '3', label: 'Cancelado' },
-    { value: '4', label: 'Reembolsado' },
-];
+function getPaymentDateForInput(value?: string | null): string {
+    if (!value) return '';
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return value;
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return '';
+
+    const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: ARGENTINA_TIME_ZONE,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).formatToParts(date);
+    const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+        parts.find((part) => part.type === type)?.value ?? '';
+
+    return `${getPart('year')}-${getPart('month')}-${getPart('day')}`;
+}
 
 export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [isLoading, setIsLoading] = useState(false);
-    console.log(defaultData);
 
     const [formData, setFormData] = useState({
         id: defaultData?.id || '',
-        original_amount: defaultData?.original_amount || 0,
-        discount: defaultData?.discount || 0,
-        amount_paid: defaultData?.amount_paid || 0,
-        payment_method_id: defaultData?.payment_method_id || 0,
-        payment_date: defaultData?.payment_date || null,
-        billing_period: defaultData?.billing_period || '',
-        next_due_date: defaultData?.next_due_date || null,
-        status_id: defaultData?.status_id || 0, // payment status
-        receipt_number: defaultData?.receipt_number || '',
-        observations: defaultData?.observations || '',
+        payment_date: getPaymentDateForInput(defaultData?.payment_date),
+        update_period_dates: true,
     });
 
     const handleClose = () => {
@@ -67,15 +70,15 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
             setFeedback({
                 variant: 'success',
-                title: 'Pago registrado.',
+                title: 'Pago actualizado.',
                 message: resp?.data?.message,
             });
         } catch (error) {
-            console.error('Error al registrar pago:', error);
+            console.error('Error al actualizar pago:', error);
 
             setFeedback({
                 variant: 'error',
-                title: 'No se puede registrar pago',
+                title: 'No se puede actualizar el pago',
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
@@ -92,108 +95,52 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
         }));
     };
 
-    const handleSelectChangePaymentMethod = (value: string) => {
+    const handleUpdatePeriodDatesChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         setFormData((prev) => ({
             ...prev,
-            payment_method_id: Number(value),
-        }));
-    };
-
-    const handleSelectChangePaymentStatus = (value: string) => {
-        setFormData((prev) => ({
-            ...prev,
-            status_id: Number(value),
+            update_period_dates: event.target.checked,
         }));
     };
 
     return (
         <form className="flex flex-col">
             <div className="custom-scrollbar h-112.5 overflow-y-auto px-2 pb-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Monto original*</Label>
-                        <Input
-                            type="number"
-                            value={formData.original_amount}
-                            name="original_amount"
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Descuento</Label>
-                        <Input
-                            type="number"
-                            value={formData.discount}
-                            name="discount"
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Total*</Label>
-                        <Input
-                            type="number"
-                            value={formData.amount_paid}
-                            name="amount_paid"
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Período*</Label>
+                <div className="grid grid-cols-1 gap-y-5">
+                    <div>
+                        <Label>Fecha de pago*</Label>
                         <Input
                             type="date"
-                            value={formData.billing_period}
-                            name="billing_period"
+                            value={formData.payment_date}
+                            name="payment_date"
                             onChange={handleChange}
                         />
                     </div>
 
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Método de Pago*</Label>
-                        <Select
-                            options={optionsPaymentsMethods}
-                            placeholder="Seleccionar"
-                            onChange={handleSelectChangePaymentMethod}
-                            className="dark:bg-dark-900"
+                    <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                        <input
+                            type="checkbox"
+                            checked={formData.update_period_dates}
+                            onChange={handleUpdatePeriodDatesChange}
+                            className="mt-1 h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
                         />
-                    </div>
+                        <span>
+                            <span className="block text-sm font-medium text-gray-800 dark:text-white/90">
+                                Recalcular período y próximo vencimiento
+                            </span>
+                            <span className="mt-1 block text-sm text-gray-500 dark:text-gray-400">
+                                Usalo al corregir el pago inicial del período.
+                                Desactivalo si solo corregís la fecha de un
+                                abono parcial posterior.
+                            </span>
+                        </span>
+                    </label>
 
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Estado del Pago*</Label>
-                        <Select
-                            options={optionsPaymentsStatus}
-                            placeholder="Seleccionar"
-                            onChange={handleSelectChangePaymentStatus}
-                            className="dark:bg-dark-900"
-                        />
-                    </div>
-
-                    <div className="col-span-2">
-                        <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-                            Campos opcionales.
-                        </p>
-                    </div>
-
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Número de Recibo</Label>
-                        <Input
-                            type="number"
-                            value={formData.receipt_number}
-                            name="receipt_number"
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="col-span-2 md:col-span-1">
-                        <Label>Observación</Label>
-                        <Input
-                            type="text"
-                            value={formData.observations}
-                            name="observations"
-                            onChange={handleChange}
-                        />
+                    <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-600 dark:bg-white/5 dark:text-gray-300">
+                        El monto, descuento, método de pago, recibo y
+                        observaciones no se editan desde esta pantalla para
+                        conservar el historial contable.
                     </div>
                 </div>
             </div>

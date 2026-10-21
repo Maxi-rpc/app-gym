@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
+import Form from '../../../../components/form/Form';
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
 import Button from '../../../../components/ui/button/Button';
@@ -15,12 +16,12 @@ type Props = {
     deleteText: string | undefined;
 };
 
-export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
+export default function FormDelete({ onSubmit, onClose, deleteText }: Props) {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({ deletetext: '' });
 
-    const [validText] = useState(deleteText);
+    const [validText] = useState('eliminar');
 
     const handleClose = () => {
         onSubmit?.();
@@ -74,25 +75,24 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
     };
 
     const validateDelete = () => {
-        console.log('validateDelete', validText, formData?.deletetext);
         const isValid =
             validText?.toLocaleLowerCase() ===
-            formData?.deletetext?.toLocaleLowerCase();
+            formData?.deletetext?.trim().toLocaleLowerCase();
         return isValid;
     };
 
     return (
-        <form className="flex flex-col">
+        <Form onSubmit={handleSubmit} className="flex flex-col">
             <div className="px-2 overflow-y-auto custom-scrollbar">
                 <div className="py-2">
                     <Alert
                         variant="warning"
                         title="Advertencia"
-                        message="Se va a eliminar el registro de forma definitiva."
+                        message="Se va a eliminar el registro de forma lógica. Estado Inactive"
                     />
                 </div>
                 <div>
-                    <Label>
+                    <Label htmlFor="deletetext">
                         Ingresar el texto:{' '}
                         <span className="font-bold italic">{validText}</span>
                     </Label>
@@ -100,6 +100,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                         type="text"
                         value={formData.deletetext}
                         name="deletetext"
+                        id="deletetext"
                         onChange={handleChange}
                     />
                 </div>
@@ -108,7 +109,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                 <Button size="sm" variant="outline" onClick={handleClose}>
                     Cerrar
                 </Button>
-                <Button size="sm" onClick={handleSubmit} disabled={isLoading}>
+                <Button size="sm" type="submit" disabled={isLoading}>
                     {isLoading && <IconSpinner />}
                     Eliminar
                 </Button>
@@ -122,6 +123,6 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                     />
                 </div>
             )}
-        </form>
+        </Form>
     );
 }

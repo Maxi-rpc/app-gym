@@ -61,7 +61,7 @@ async function update(formData: UpdateUserStatusInput) {
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke('user-status', {
         body: {
-            id: formData.id || '',
+            id: formData.id,
             name: formData.name || '',
             description: formData.description || '',
         },
