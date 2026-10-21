@@ -129,6 +129,11 @@ export default function ClientMembershipCard({ id }: Props) {
                                     >
                                         {memberships?.membership_status?.name}
                                     </Badge>
+                                    -{' '}
+                                    {
+                                        memberships?.membership_status
+                                            ?.description
+                                    }
                                 </p>
                             </div>
 

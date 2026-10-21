@@ -15,7 +15,7 @@ export interface Payment_method {
 }
 
 export interface Payment_status {
-    id: string;
+    id: number;
     name: string;
 }
 

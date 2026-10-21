@@ -2,6 +2,7 @@ import { useState, useEffect, SetStateAction } from 'react';
 
 import Label from '../../../../components/form/Label';
 import Input from '../../../../components/form/input/InputField';
+import Badge from '../../../../components/ui/badge/Badge';
 import Alert from '../../../../components/ui/alert/Alert';
 import { Feedback } from '../../../../components/ui/alert/types/AlertFeedback';
 
@@ -127,7 +128,15 @@ export default function ClientMembershipPaymentsCard({ id }: Props) {
                                     Estado
                                 </p>
                                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                    {payment?.status?.name}
+                                    <Badge
+                                        color={
+                                            payment?.status.id == 1
+                                                ? 'success'
+                                                : 'warning'
+                                        }
+                                    >
+                                        {payment?.status?.name}
+                                    </Badge>
                                 </p>
                             </div>
                             <div className="col-span-2"></div>
