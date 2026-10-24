@@ -24,8 +24,7 @@ dist-ssr
 *.sw?
 .env
 
-# agents
-.agents
+# Los perfiles y plantillas de coordinación de agentes se versionan en .agents/.
 
 
 back

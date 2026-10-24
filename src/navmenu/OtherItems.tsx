@@ -59,6 +59,12 @@ const otherItems: NavItem[] = [
                 requiredRoles: ['Admin', 'Profesor'],
                 pro: false,
             },
+            {
+                name: 'Imágenes',
+                path: '/configurations/images',
+                requiredRoles: ['Admin', 'Profesor'],
+                pro: false,
+            },
         ],
     },
 ];

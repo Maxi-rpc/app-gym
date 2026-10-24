@@ -73,3 +73,38 @@ npm run format:check
 - Conserva el tipado de TypeScript y valida entradas y estados de carga/error siguiendo los patrones del proyecto.
 - Si cambias una funcionalidad, revisa sus páginas, componentes y servicios relacionados para mantener el comportamiento consistente.
 - Actualiza documentación cuando el cambio altere instrucciones, comandos o comportamiento relevante.
+
+## Coordinación de agentes
+
+El trabajo puede organizarse con un agente **orquestador** y los subagentes
+especialistas **frontend**, **backend** y **QA**. Los perfiles reutilizables y
+la plantilla de delegación están en [`.agents/`](.agents/). El estado
+compartido de las tareas se conserva en [`MEMORY.md`](MEMORY.md).
+
+- El orquestador analiza el pedido, identifica dependencias, delega tareas sin
+  solapamiento y consolida el resultado.
+- El especialista backend es responsable de Supabase, TypeScript de Edge
+  Functions, SQL, RPC, relaciones, RLS y contratos de datos. Debe revisar el
+  esquema antes de cambiar operaciones y coordinar contratos con frontend.
+- Cada subagente debe recibir un objetivo, el alcance de archivos permitido,
+  criterios de aceptación y las verificaciones esperadas.
+- No asignes cambios concurrentes sobre un mismo archivo. Si una tarea requiere
+  coordinación entre roles, el orquestador debe establecer el orden de trabajo.
+- Antes de cualquier cambio que use Supabase, consulta
+  `back/schemas/supabaseSchemas.sql`. Si el cambio excede el alcance de
+  frontend, el orquestador debe tratarlo como una dependencia explícita.
+- Todo subagente entrega un resumen de archivos modificados, decisiones,
+  verificaciones ejecutadas y riesgos o trabajo pendiente.
+- QA valida el comportamiento solicitado y las regresiones cercanas. Como el
+  proyecto aún no tiene script de pruebas automatizadas, debe informar los
+  casos manuales ejecutados y nunca afirmar que se corrieron tests inexistentes.
+- El orquestador ejecuta o confirma al final `npm run build`, `npm run lint` y
+  `npm run format:check`, e informa con precisión cualquier fallo.
+- Al comenzar una tarea, el orquestador debe leer `MEMORY.md`. Al finalizar un
+  hito o una tarea, debe actualizarlo con un resumen verificable.
+- Para evitar conflictos de escritura, el orquestador es el único rol que
+  modifica `MEMORY.md`. Los subagentes reportan sus avances, decisiones,
+  verificaciones y bloqueos para que el orquestador los consolide.
+- `MEMORY.md` no debe contener secretos, valores de `.env`, tokens, datos
+  personales ni transcripciones extensas. Git y los issues/PRs siguen siendo la
+  fuente de verdad para el historial detallado.

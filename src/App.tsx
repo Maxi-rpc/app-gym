@@ -56,6 +56,7 @@ import ConfigPaymentMethods from './pages/Configurations/PaymentMethods/PaymentM
 import ConfigServices from './pages/Configurations/Services/Services';
 import ConfigProductCategories from './pages/Configurations/ProductCategories/ProductCategories';
 import ConfigProductStatus from './pages/Configurations/ProductStatus/ProductStatus';
+import ConfigImages from './pages/Configurations/Images/Images';
 
 export default function App() {
     return (
@@ -479,6 +480,19 @@ export default function App() {
                                             ]}
                                         >
                                             <ConfigProductStatus />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="images"
+                                    element={
+                                        <ProtectedRoute
+                                            requiredRoles={[
+                                                'Admin',
+                                                'Profesor',
+                                            ]}
+                                        >
+                                            <ConfigImages />
                                         </ProtectedRoute>
                                     }
                                 />
