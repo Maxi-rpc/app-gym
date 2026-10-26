@@ -4,12 +4,13 @@ import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '../utils/supabase';
 import { profileService } from '../service/profile.service.ts';
 
-import { Profile } from './types/Profile.ts';
+import { GymMembership, Profile } from './types/Profile.ts';
 
 export interface AuthContextType {
     session: Session | null;
     authUser: SupabaseUser | null;
     profile: Profile | null;
+    membership: GymMembership | null;
 
     isLoading: boolean;
     isAuthenticated: boolean;
@@ -31,21 +32,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [session, setSession] = useState<Session | null>(null);
     const [authUser, setAuthUser] = useState<SupabaseUser | null>(null);
     const [profile, setProfile] = useState<Profile | null>(null);
+    const [membership, setMembership] = useState<GymMembership | null>(null);
 
     const [isLoading, setIsLoading] = useState(true);
 
     /**
      * Carga el perfil desde tu tabla profiles
      */
-    const loadProfile = async (userId: string) => {
+    const loadProfile = async () => {
         try {
-            const profileData = await profileService.getById(userId);
+            const profileData = await profileService.getCurrent();
 
-            setProfile(profileData);
+            setProfile(profileData.profile);
+            setMembership(profileData.membership);
         } catch (err) {
             console.error('Error cargando profile', err);
 
             setProfile(null);
+            setMembership(null);
         }
     };
 
@@ -77,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshProfile = async () => {
         if (!authUser) return;
 
-        await loadProfile(authUser.id);
+        await loadProfile();
     };
 
     /**
@@ -99,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setAuthUser(session?.user ?? null);
 
             if (session?.user) {
-                await loadProfile(session.user.id);
+                await loadProfile();
             }
 
             if (mounted) {
@@ -112,14 +116,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            setIsLoading(true);
             setSession(session);
             setAuthUser(session?.user ?? null);
 
             if (session?.user) {
-                await loadProfile(session.user.id);
+                await loadProfile();
             } else {
                 setProfile(null);
+                setMembership(null);
             }
+
+            if (mounted) setIsLoading(false);
         });
 
         return () => {
@@ -130,15 +138,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const hasRole = (role: string): boolean => {
         return Boolean(
-            profile?.user_roles?.some((ur) => ur.role && ur.role.name === role),
+            membership?.roles.some(
+                (membershipRole) => membershipRole.name === role,
+            ),
         );
     };
 
     const hasAnyRole = (roles: string[]): boolean => {
-        if (!profile?.user_roles) return false;
+        if (!membership?.roles) return false;
 
-        return roles.some((r) =>
-            profile.user_roles?.some((ur) => ur.role && ur.role.name === r),
+        return roles.some((role) =>
+            membership.roles.some(
+                (membershipRole) => membershipRole.name === role,
+            ),
         );
     };
 
@@ -148,6 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 session,
                 authUser,
                 profile,
+                membership,
 
                 isLoading,
 

@@ -13,7 +13,11 @@ export function ProtectedRoute({
     requiredRoles,
     fallbackPath = '/signin',
 }: ProtectedRouteProps) {
-    const { isAuthenticated, hasAnyRole } = useAuth();
+    const { isAuthenticated, isLoading, hasAnyRole } = useAuth();
+
+    if (isLoading) {
+        return null;
+    }
 
     // Si no está autenticado, redirigir a signin
     if (!isAuthenticated) {

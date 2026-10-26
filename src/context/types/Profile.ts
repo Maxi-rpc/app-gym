@@ -7,11 +7,29 @@ export interface Status {
 export interface Role {
     id: number;
     name: string;
-    description: string;
+    description: string | null;
 }
 
 export interface UserRole {
     role: Role;
+}
+
+export interface Gym {
+    id: string;
+    name: string;
+    slug: string;
+}
+
+export interface GymMembership {
+    id: string;
+    gym_id: string;
+    gym: Gym;
+    roles: Role[];
+}
+
+export interface CurrentProfileResponse {
+    profile: Profile;
+    membership: GymMembership | null;
 }
 
 export interface Profile {

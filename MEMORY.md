@@ -34,10 +34,22 @@ reemplaza el historial de Git, issues, pull requests ni documentación técnica.
   ajenos al cambio; `npm run format:check` falla por formato en 93 archivos
   existentes. Las comprobaciones focalizadas de los archivos de Imágenes
   pasaron.
+- **2026-10-26 — Primera fase de login multi-gym:** se reemplazó la fuente de
+  autorización del contexto de sesión por `gym_memberships` y
+  `gym_membership_roles`; `get-profile-by-id-2` autentica por JWT, resuelve
+  `profiles.auth_user_id` y devuelve perfil, gimnasio y roles. El tenant
+  actual se fija del lado backend con `CURRENT_GYM_SLUG` (configurar
+  `degany-gym` para este despliegue), por lo que memberships activas de otros
+  gyms no se mezclan. Se extrajeron helpers de respuesta y membership/roles.
+  El DDL de referencia eliminó la unicidad individual de
+  `gym_memberships.profile_id`, manteniendo la pareja única `(gym_id,
+  profile_id)`. La función antigua y los consumidores legacy de `user_roles`
+  fuera del login aún coexisten.
 
 ## Tarea activa
 
-Ninguna.
+- Resolver el estado/pantalla para usuarios sin acceso al gym configurado;
+  luego desplegar y validar la primera fase de login.
 
 ## Decisiones vigentes
 
@@ -46,14 +58,25 @@ Ninguna.
   `back/schemas/supabaseSchemas.sql` antes de implementarse.
 - QA documenta pruebas manuales mientras no exista un script de pruebas
   automatizadas.
+- Un perfil puede pertenecer a varios gimnasios. En el despliegue actual, el
+  backend fija el tenant por `CURRENT_GYM_SLUG=degany-gym`; una futura app
+  multi-tenant compartida requerirá un mapeo de subdominio confiable o un
+  selector/persistencia explícita del gym activo.
 
 ## Próximos pasos
 
-1. Aplicar el DDL de `public.images`, definir la FK de `gym_id` cuando exista
+1. Implementar una salida controlada para usuarios sin membership activa en el
+   gym configurado, o con ese gym inactivo/inexistente.
+2. Aplicar en Supabase remoto `ALTER TABLE public.gym_memberships DROP
+   CONSTRAINT IF EXISTS gym_memberships_profile_id_key;`, revisar RLS para el
+   perfil actual, memberships, gyms y roles, y desplegar `get-profile-by-id-2`
+   con sus helpers. `back/` está ignorado por Git, por lo que estos archivos no
+   quedan versionados sin cambiar esa regla o agregarlos forzadamente.
+3. Aplicar el DDL de `public.images`, definir la FK de `gym_id` cuando exista
    la entidad de gimnasios y desplegar la Edge Function `images`; validar en
    integración el contrato:
    GET `{ data: Image[] }`, POST/PUT multipart (`name`, `source` opcional,
    `file` opcional; PUT con `id`) y DELETE `{ id }`.
-2. Considerar validar las URL de imagen que fallen antes de guardarlas y
+4. Considerar validar las URL de imagen que fallen antes de guardarlas y
    liberar las previsualizaciones locales al reemplazarlas.
-3. Abordar la línea base de lint y formato en una tarea separada.
+5. Abordar la línea base de lint y formato en una tarea separada.

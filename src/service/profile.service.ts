@@ -1,7 +1,10 @@
 import { supabase } from '../utils/supabase';
-import { UpdateProfilInput } from '../context/types/Profile';
+import {
+    CurrentProfileResponse,
+    UpdateProfilInput,
+} from '../context/types/Profile';
 
-async function getById(id: string) {
+async function getCurrent(): Promise<CurrentProfileResponse> {
     // 1) Obtener el token desde la sesión actual (si aplica)
     // Si "session_token" ya lo tienes, puedes usarlo directo en vez de esto.
     const { data: sessionData, error: sessionError } =
@@ -14,9 +17,8 @@ async function getById(id: string) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-profile-by-id',
+        'get-profile-by-id-2',
         {
-            body: { id },
             headers: {
                 Authorization: `Bearer ${session_token}`,
             },
@@ -24,7 +26,15 @@ async function getById(id: string) {
     );
 
     if (error) throw error;
-    return data?.profile;
+
+    if (!data?.profile) {
+        throw new Error('La respuesta no contiene un perfil');
+    }
+
+    return {
+        profile: data.profile,
+        membership: data.membership ?? null,
+    };
 }
 
 async function update(input: UpdateProfilInput) {
@@ -49,6 +59,6 @@ async function update(input: UpdateProfilInput) {
 }
 
 export const profileService = {
-    getById,
+    getCurrent,
     update,
 };

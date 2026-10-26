@@ -1,9 +1,7 @@
 import { useAuth } from '../../hooks/useAuth';
 
 export function UserInfo() {
-    const { profile, isAuthenticated, logout } = useAuth();
-
-    console.log(profile);
+    const { profile, membership, isAuthenticated, logout } = useAuth();
 
     if (!isAuthenticated || !profile) {
         return null;
@@ -21,7 +19,7 @@ export function UserInfo() {
             </div>
             <div className="flex gap-2">
                 <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
-                    {profile?.user_roles?.join(', ')}
+                    {membership?.roles.map((role) => role.name).join(', ')}
                 </span>
             </div>
             <button

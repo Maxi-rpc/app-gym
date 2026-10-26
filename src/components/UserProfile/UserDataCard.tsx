@@ -50,7 +50,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export default function UserDataCard() {
     const { isOpen, openModal, closeModal } = useModal();
-    const { profile } = useAuth();
+    const { profile, membership } = useAuth();
     const [feedback, setFeedback] = useState<Feedback>(null);
     const {
         control,
@@ -69,10 +69,7 @@ export default function UserDataCard() {
     });
 
     const roleNames =
-        profile?.user_roles
-            ?.map((ur) => ur.role?.name)
-            .filter(Boolean)
-            .join(', ') ?? '';
+        membership?.roles.map((role) => role.name).join(', ') ?? '';
 
     const handleCloseModal = () => {
         setFeedback(null);
