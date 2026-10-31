@@ -43,8 +43,23 @@ reemplaza el historial de Git, issues, pull requests ni documentación técnica.
   gyms no se mezclan. Se extrajeron helpers de respuesta y membership/roles.
   El DDL de referencia eliminó la unicidad individual de
   `gym_memberships.profile_id`, manteniendo la pareja única `(gym_id,
-  profile_id)`. La función antigua y los consumidores legacy de `user_roles`
+profile_id)`. La función antigua y los consumidores legacy de `user_roles`
   fuera del login aún coexisten.
+- **2026-10-31 — Clientes multi-gym:** se crearon las Edge Functions v2
+  `get-client-all-2`, `get-client-by-id-2`,
+  `get-client-by-custom-search-2`, `create-client-2`, `update-client-2`,
+  `update-client-profile-2` y `remove-client-2`, compartiendo la autorización por membership del gym
+  confiable `degani-gym`. La SPA de Clientes ya las invoca. El alcance de un
+  cliente se determina por `gym_memberships` y `gym_membership_roles` con rol
+  Cliente (id 4), sin duplicar `gym_id` en `client_profile`; el alta crea ambas
+  relaciones y la baja desactiva solo la membership del gym actual.
+- **2026-10-31 — Corrección de listado de Clientes v2:** los embeds de
+  `gym_memberships` en listado y búsqueda declaran explícitamente la FK
+  `gym_memberships_profile_id_fkey`, necesaria porque la tabla también apunta
+  a `profiles` mediante `created_by` y `updated_by`. `get-client-all-2` acepta
+  nuevamente el orden por `user_id` expuesto por la SPA. Prettier, ESLint
+  focalizado y build pasaron; queda desplegar estas dos funciones antes de la
+  prueba remota.
 
 ## Tarea activa
 
@@ -68,7 +83,7 @@ reemplaza el historial de Git, issues, pull requests ni documentación técnica.
 1. Implementar una salida controlada para usuarios sin membership activa en el
    gym configurado, o con ese gym inactivo/inexistente.
 2. Aplicar en Supabase remoto `ALTER TABLE public.gym_memberships DROP
-   CONSTRAINT IF EXISTS gym_memberships_profile_id_key;`, revisar RLS para el
+CONSTRAINT IF EXISTS gym_memberships_profile_id_key;`, revisar RLS para el
    perfil actual, memberships, gyms y roles, y desplegar `get-profile-by-id-2`
    con sus helpers. `back/` está ignorado por Git, por lo que estos archivos no
    quedan versionados sin cambiar esa regla o agregarlos forzadamente.
@@ -80,3 +95,8 @@ reemplaza el historial de Git, issues, pull requests ni documentación técnica.
 4. Considerar validar las URL de imagen que fallen antes de guardarlas y
    liberar las previsualizaciones locales al reemplazarlas.
 5. Abordar la línea base de lint y formato en una tarea separada.
+6. Desplegar las ocho funciones v2 de Clientes (incluido
+   `_shared/gym-context.ts`) antes de publicar la SPA. Auditar y versionar la
+   función desplegada `get-memberships-client-by-id`, que no existe en
+   `back/functions`; las pestañas de membresías, pagos y asistencia todavía
+   requieren su propio aislamiento por `gym_id`.

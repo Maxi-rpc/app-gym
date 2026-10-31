@@ -19,7 +19,6 @@ import IconSpinner from '../../../components/ui/button/IconSpinner';
 import { Client } from '../../../service/types/Client';
 import { UserStatus } from '../../../service/types/UserStatus';
 import { clientService } from '../../../service/client.service';
-import { profileService } from '../../../service/profile.service';
 import { userStatusService } from '../../../service/userstatus.service';
 
 const clientSchema = z.object({
@@ -118,7 +117,7 @@ export default function ClientEdit() {
                     emergency_contact: values.emergency_contact,
                     medical_notes: values.medical_notes,
                 }),
-                profileService.update({
+                clientService.updateProfile({
                     id: data.profile.id,
                     email: values.email.trim(),
                     name: values.name.trim(),

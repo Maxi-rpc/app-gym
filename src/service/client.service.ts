@@ -5,6 +5,7 @@ import {
     DeleteClientInput,
     GetClientsInput,
 } from './types/Client';
+import { UpdateProfilInput } from '../context/types/Profile';
 
 async function getById(id: string) {
     // 1) Obtener el token desde la sesión actual (si aplica)
@@ -19,7 +20,7 @@ async function getById(id: string) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-client-by-id',
+        'get-client-by-id-2',
         {
             body: { id },
             headers: {
@@ -44,7 +45,7 @@ async function getByCustomId(search: string) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-client-by-custom-search',
+        'get-client-by-custom-search-2',
         {
             body: { search: search },
             headers: {
@@ -66,13 +67,16 @@ async function getAll(input: GetClientsInput = {}) {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('get-client-all', {
-        body: input,
-        headers: {
-            Authorization: `Bearer ${session_token}`,
+    const { data, error } = await supabase.functions.invoke(
+        'get-client-all-2',
+        {
+            body: input,
+            headers: {
+                Authorization: `Bearer ${session_token}`,
+            },
+            method: 'POST',
         },
-        method: 'POST',
-    });
+    );
 
     return {
         data: data?.data?.clients,
@@ -91,7 +95,7 @@ async function create(formData: CreateClientInput) {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('create-client', {
+    const { data, error } = await supabase.functions.invoke('create-client-2', {
         body: {
             email: formData?.email,
             name: formData?.name,
@@ -123,13 +127,34 @@ async function update(input: UpdateClientInput) {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('update-client', {
+    const { data, error } = await supabase.functions.invoke('update-client-2', {
         body: input,
         headers: {
             Authorization: `Bearer ${session_token}`,
         },
         method: 'POST',
     });
+
+    return { data: data, error: error };
+}
+
+async function updateProfile(input: UpdateProfilInput) {
+    const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+    if (!sessionData?.session) throw new Error('No hay sesión activa');
+
+    const { data, error } = await supabase.functions.invoke(
+        'update-client-profile-2',
+        {
+            body: input,
+            headers: {
+                Authorization: `Bearer ${sessionData.session.access_token}`,
+            },
+            method: 'POST',
+        },
+    );
 
     return { data: data, error: error };
 }
@@ -144,7 +169,7 @@ async function remove(input: DeleteClientInput) {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('remove-client', {
+    const { data, error } = await supabase.functions.invoke('remove-client-2', {
         body: input,
         headers: {
             Authorization: `Bearer ${session_token}`,
@@ -161,5 +186,6 @@ export const clientService = {
     getByCustomId,
     create,
     update,
+    updateProfile,
     remove,
 };
