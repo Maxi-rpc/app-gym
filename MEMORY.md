@@ -60,6 +60,40 @@ profile_id)`. La función antigua y los consumidores legacy de `user_roles`
   nuevamente el orden por `user_id` expuesto por la SPA. Prettier, ESLint
   focalizado y build pasaron; queda desplegar estas dos funciones antes de la
   prueba remota.
+- **2026-10-31 — Plan de Profesores multi-gym:** se relevó
+  `src/pages/Employeers` y `employee.service.ts`. Sus cinco operaciones aún
+  consumen funciones legacy que autorizan y devuelven `user_roles`; la creación
+  y el borrado asumen que `profiles.id` coincide con `auth.users.id`, y el
+  borrado elimina la cuenta global. La migración deberá crear funciones v2
+  aisladas por el gym confiable para listar, leer, crear, actualizar el perfil
+  y datos laborales, y desactivar solamente la membership actual. Los tabs de
+  detalle consumen servicios legacy de membresías, pagos y asistencia y no se
+  incluirán ni modificarán en este alcance. `gym-membership.ts` es un helper
+  compartido y debe conservar íntegro su comportamiento actual; cualquier
+  helper de empleados se añadirá sin regresiones. El rol Profesor confirmado
+  para la membership es `EMPLOYEE_ROLE_ID = 2`.
+- **2026-10-31 — Profesores multi-gym implementado:** se agregaron las Edge
+  Functions v2 `get-employee-all-2`, `get-employee-by-id-2`,
+  `create-employee-2`, `update-employee-2`, `update-employee-profile-2` y
+  `remove-employee-2`. `gym-context.ts` incorpora `EMPLOYEE_ROLE_ID = 2` y
+  `getActiveEmployeeInGym`, sin modificar `gym-membership.ts`. El CRUD se
+  aísla al gym confiable, obtiene roles sólo desde `gym_memberships` y
+  `gym_membership_roles`, y la baja desactiva sólo la membership del gym
+  actual. La SPA consume los endpoints v2; la edición de perfil dejó de
+  invocar `update-profile`. Los tabs de detalle no fueron modificados.
+  Prettier y ESLint focalizados pasaron, al igual que `npm run build` (con la
+  advertencia conocida de chunk). `npm run lint` y `npm run format:check`
+  continúan fallando por la línea base: 136 errores/9 advertencias y 87
+  archivos de formato, respectivamente. Las funciones bajo `back/` siguen
+  ignoradas por Git y requieren despliegue/versionado explícito.
+- **2026-10-31 — Diagnóstico de prueba remota de Profesores:** invocar
+  `get-employee-by-id-2` devolvió `Name and last_name are required`, mensaje
+  que no existe en su handler local y que sólo emiten `create-employee-2` o
+  los endpoints de actualización de perfil. Antes de cambiar código debe
+  verificarse y corregirse el despliegue remoto/selección de función. Una vez
+  desplegado el handler correcto, la prueba debe enviar el UUID de
+  `profiles.id`; usar `auth.users.id` puede producir un `Not found` legítimo
+  porque el modelo multi-gym ya no asume que ambos IDs coinciden.
 
 ## Tarea activa
 

@@ -165,7 +165,7 @@ export default function DataTable({
                                         </button>
                                     </Tooltip>
 
-                                    <Tooltip message="Eliminar">
+                                    <Tooltip message="Desactivar">
                                         <button
                                             type="button"
                                             onClick={() => onDelet?.(employee)}

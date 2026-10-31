@@ -21,7 +21,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({ deletetext: '' });
 
-    const [validText] = useState('eliminar');
+    const [validText] = useState('desactivar');
 
     const handleClose = () => {
         onSubmit?.();
@@ -88,7 +88,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                     <Alert
                         variant="warning"
                         title="Advertencia"
-                        message="Se va a eliminar el registro de forma definitiva."
+                        message="Se desactivará al profesor sólo en este gimnasio. Su perfil y sus memberships en otros gimnasios no se modificarán."
                     />
                 </div>
                 <div>
@@ -111,7 +111,7 @@ export default function FormEdit({ onSubmit, onClose, deleteText }: Props) {
                 </Button>
                 <Button size="sm" type="submit" disabled={isLoading}>
                     {isLoading && <IconSpinner />}
-                    Eliminar
+                    Desactivar
                 </Button>
             </div>
             {feedback && (

@@ -19,7 +19,6 @@ import IconSpinner from '../../../components/ui/button/IconSpinner';
 import { Employee } from '../../../service/types/Employee';
 import { UserStatus } from '../../../service/types/UserStatus';
 import { employeeService } from '../../../service/employee.service';
-import { profileService } from '../../../service/profile.service';
 import { userStatusService } from '../../../service/userstatus.service';
 
 const employeeSchema = z.object({
@@ -122,7 +121,7 @@ export default function EmployeersAdd() {
                     employee_number: values.employee_number,
                     observations: values.observations,
                 }),
-                profileService.update({
+                employeeService.updateProfile({
                     id: data.profile.id,
                     email: values.email.trim(),
                     name: values.name.trim(),
