@@ -40,7 +40,7 @@ async function getByUser(input: GetAttendancesByUserInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-attendance-by-user-id',
+        'get-attendance-by-user-id-2',
         {
             body: input,
             headers: {
@@ -69,7 +69,7 @@ async function getById(id: string) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-attendance-by-id',
+        'get-attendance-by-id-2',
         {
             body: { id },
             headers: {
@@ -93,7 +93,7 @@ async function getAll(input: GetAttendancesInput = {}) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-attendance-all',
+        'get-attendance-all-2',
         {
             body: input,
             headers: {
@@ -127,7 +127,7 @@ async function register(formData: RegisterAttendanceInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'create-attendance-by-qr',
+        'create-attendance-by-qr-2',
         {
             body: {
                 qr_token: formData.qr_token,
@@ -154,7 +154,7 @@ async function registerTerminal(formData: RegisterAttendanceTerminalInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'attendance-by-terminal',
+        'attendance-by-terminal-2',
         {
             body: {
                 qr_token: formData.qr_token?.trim() || '',
@@ -189,10 +189,9 @@ async function update(formData: UpdateAttendanceInput) {
         ? toUtcIso(formData.new_check_out_at)
         : formData.check_out_at;
 
-    console.log(checkIn, checkOut);
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'update-attendance-by-id',
+        'update-attendance-by-id-2',
         {
             body: {
                 id: formData.id,
@@ -221,7 +220,7 @@ async function remove(formData: DeleteAttendanceInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'remove-attendance',
+        'remove-attendance-2',
         {
             body: {
                 id: formData.id,

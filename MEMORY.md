@@ -94,6 +94,24 @@ profile_id)`. La función antigua y los consumidores legacy de `user_roles`
   desplegado el handler correcto, la prueba debe enviar el UUID de
   `profiles.id`; usar `auth.users.id` puede producir un `Not found` legítimo
   porque el modelo multi-gym ya no asume que ambos IDs coinciden.
+- **2026-10-31 — Asistencias multi-gym implementado:**
+  `back/schemas/supabaseSchemas.sql` declara `gym_id` con índice y FK a
+  `gyms` para `attendance` y `client_memberships`; además, FKs compuestas
+  garantizan que el cliente, la asistencia y la membresía comercial pertenezcan
+  al mismo gimnasio. Se agregaron las funciones v2
+  `get-attendance-all-2`, `get-attendance-by-id-2`,
+  `get-attendance-by-user-id-2`, `create-attendance-by-qr-2`,
+  `update-attendance-by-id-2`, `remove-attendance-2` y
+  `attendance-by-terminal-2`, con `gym_id` resuelto de una fuente confiable y
+  sin usar `user_roles`. `attendance.service.ts` ya invoca sólo esos endpoints.
+  El terminal resuelve el gym mediante `CURRENT_GYM_SLUG` y exige el nuevo env
+  `TERMINAL_PROFILE_ID` para su auditoría, sustituyendo el UUID fijo. Build y
+  validaciones focalizadas pasaron; lint global mantiene 136 errores y 9
+  advertencias preexistentes, y format global 84 archivos preexistentes. Antes
+  de liberar se debe aplicar DDL/backfill, configurar `TERMINAL_PROFILE_ID`,
+  desplegar las funciones y validar los casos multi-gym remotos. Los archivos
+  de `back/` siguen ignorados por Git y deben versionarse o desplegarse de
+  forma explícita.
 
 ## Tarea activa
 
@@ -134,3 +152,6 @@ CONSTRAINT IF EXISTS gym_memberships_profile_id_key;`, revisar RLS para el
    función desplegada `get-memberships-client-by-id`, que no existe en
    `back/functions`; las pestañas de membresías, pagos y asistencia todavía
    requieren su propio aislamiento por `gym_id`.
+7. Aplicar el backfill y las restricciones de `gym_id` de asistencias y
+   membresías comerciales, configurar `TERMINAL_PROFILE_ID` y desplegar las
+   siete funciones v2 de Asistencias antes de publicar la SPA.
