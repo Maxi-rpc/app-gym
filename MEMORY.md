@@ -113,6 +113,32 @@ profile_id)`. La función antigua y los consumidores legacy de `user_roles`
   de `back/` siguen ignorados por Git y deben versionarse o desplegarse de
   forma explícita.
 
+- **2026-10-31 — Plan de Pagos multi-gym:** se acordó migrar las cinco
+  operaciones de pagos de membresías de `src/pages/Payments` mediante Edge
+  Functions v2 y RPCs nuevas, conservando las legacy. La RPC de alta se
+  llamará `register_membership_payment_v2`; la de actualización de fecha,
+  `update_membership_payment_date_v2`. El alcance aísla cada operación por
+  `client_memberships.gym_id`, usa `profiles.id` del actor como empleado y
+  valida su membership activa de Profesor. No requiere nuevas columnas ni
+  backfill: períodos y pagos heredan el gym a través de su membresía. Catálogos
+  de servicios, métodos y estados de pago siguen fuera de alcance y globales.
+- **2026-10-31 — Pagos multi-gym implementado:** se agregaron las Edge
+  Functions v2 `get-membership-payments-all-2`,
+  `get-membership-payments-by-id-2`, `register-membership-payment-2`,
+  `update-membership-payment-2` y `remove-membership-payment-2`, además de
+  las RPCs `register_membership_payment_v2` y
+  `update_membership_payment_date_v2`. Todas se aíslan por
+  `client_memberships.gym_id`, autentican mediante el contexto de gym y no
+  consultan `user_roles`; el cobro usa el `profiles.id` del actor y exige que
+  sea Profesor activo. Las cinco funciones reutilizan `jsonResponse` y
+  `corsPreflightResponse` de `_shared/json-response.ts`; `payments.service.ts`
+  consume sólo estos endpoints. No hubo DDL ni backfill. Prettier y ESLint focalizados, `git diff --check` y
+  build pasaron; lint global conserva 136 errores/9 advertencias y format
+  global 83 archivos preexistentes. Antes de liberar hay que aplicar las dos
+  RPCs, desplegar las cinco funciones y validar remotamente dos gyms. Los
+  archivos de `back/` siguen ignorados por Git y requieren despliegue o
+  versionado explícito.
+
 ## Tarea activa
 
 - Resolver el estado/pantalla para usuarios sin acceso al gym configurado;
@@ -155,3 +181,7 @@ CONSTRAINT IF EXISTS gym_memberships_profile_id_key;`, revisar RLS para el
 7. Aplicar el backfill y las restricciones de `gym_id` de asistencias y
    membresías comerciales, configurar `TERMINAL_PROFILE_ID` y desplegar las
    siete funciones v2 de Asistencias antes de publicar la SPA.
+8. Aplicar `register_membership_payment_v2` y
+   `update_membership_payment_date_v2`, desplegar las cinco Edge Functions de
+   Pagos v2 y validar en remoto aislamiento por gym, pagos parciales y
+   corrección de fechas antes de publicar la SPA.

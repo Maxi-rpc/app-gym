@@ -19,7 +19,7 @@ async function getByClient(id: string) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-membership-payments-by-id',
+        'get-membership-payments-by-id-2',
         {
             body: { id },
             headers: {
@@ -42,7 +42,7 @@ async function getAll(input: GetMembershipPaymentsInput = {}) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-membership-payments-all',
+        'get-membership-payments-all-2',
         {
             body: input,
             headers: {
@@ -70,7 +70,7 @@ async function create(formData: CreateMembershipPaymentInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'register-membership-payment',
+        'register-membership-payment-2',
         {
             body: {
                 client_id: formData.client_id,
@@ -102,7 +102,7 @@ async function update(formData: UpdateMembershipPaymentsInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'update-membership-payment',
+        'update-membership-payment-2',
         {
             body: {
                 id: formData.id,
@@ -129,7 +129,7 @@ async function remove(formData: DeleteMembershipPaymentInput) {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'remove-membership-payment',
+        'remove-membership-payment-2',
         {
             body: {
                 id: formData.id,
