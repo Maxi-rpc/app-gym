@@ -24,14 +24,12 @@ export interface StockMovement {
     employee: Employee;
 }
 
-export interface CreateStocktInput {
-    id: string;
-    name?: string;
-    movement_type: string;
+export type StockMovementType = 'Reposición' | 'Ajuste';
+
+export interface CreateStockInput {
+    product_id: string;
+    movement_type: StockMovementType;
     quantity: number;
-    previous_stock: number;
-    new_stock: number;
-    reference_id?: string | null;
     observation?: string;
 }
 

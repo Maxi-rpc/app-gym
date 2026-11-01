@@ -16,7 +16,7 @@ async function getAll() {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'product-categories',
+        'get-product-categories-2',
         {
             headers: {
                 Authorization: `Bearer ${session_token}`,

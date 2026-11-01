@@ -18,10 +18,8 @@ export interface Product {
     image?: string;
 }
 
-export interface ProductById {
-    id?: string;
-    name?: string;
-    sku?: string;
+export interface ProductByCode {
+    code?: string;
     barcode?: string;
 }
 
@@ -47,7 +45,6 @@ export interface UpdateProductInput {
     barcode?: string;
     cost_price: number;
     sale_price: number;
-    stock?: number;
     minimum_stock?: number;
     status: number;
     image?: string;

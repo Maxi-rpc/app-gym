@@ -15,12 +15,15 @@ async function getAll() {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('product-status', {
-        headers: {
-            Authorization: `Bearer ${session_token}`,
+    const { data, error } = await supabase.functions.invoke(
+        'get-product-status-2',
+        {
+            headers: {
+                Authorization: `Bearer ${session_token}`,
+            },
+            method: 'GET',
         },
-        method: 'GET',
-    });
+    );
 
     return { data: data?.data, error: error };
 }

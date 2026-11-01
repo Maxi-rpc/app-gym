@@ -22,13 +22,10 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        id: defaultData?.id || '',
+        product_id: defaultData?.id || '',
         name: defaultData?.name || '',
         movement_type: '',
         quantity: 0,
-        previous_stock: defaultData?.stock || 0,
-        new_stock: 0,
-        reference_id: null,
         observation: '',
     });
     const [listType] = useState([
@@ -48,16 +45,31 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
             setIsLoading(true);
 
             // Validación básica
-            if (!formData.name || !formData.movement_type) {
+            if (
+                !formData.product_id ||
+                !formData.movement_type ||
+                !Number.isInteger(Number(formData.quantity)) ||
+                (formData.movement_type === 'Reposición' &&
+                    Number(formData.quantity) <= 0) ||
+                (formData.movement_type === 'Ajuste' &&
+                    Number(formData.quantity) === 0)
+            ) {
                 setFeedback({
                     variant: 'info',
-                    title: 'Por favor completa todos los campos*',
-                    message: '',
+                    title: 'Revisá los datos del ajuste',
+                    message:
+                        'La reposición debe ser positiva. El ajuste puede sumar o restar, pero no puede ser cero.',
                 });
                 return;
             }
 
-            const resp = await productStockService.adjustStock(formData);
+            const resp = await productStockService.adjustStock({
+                product_id: formData.product_id,
+                movement_type: formData.movement_type as
+                    'Reposición' | 'Ajuste',
+                quantity: Number(formData.quantity),
+                observation: formData.observation,
+            });
             if (resp.error) {
                 throw resp.error;
             }
@@ -83,18 +95,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-
-        if (name == 'quantity') {
-            const newStock = Number(formData.previous_stock) + Number(value);
-            setFormData((prev) => ({
-                ...prev,
-                new_stock: newStock,
-            }));
-        }
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSelectChange = (value: string) => {
@@ -137,26 +138,10 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                                 name="quantity"
                                 onChange={handleChange}
                             />
-                        </div>
-
-                        <div className="col-span-2 md:col-span-2">
-                            <Label>Stock Actual</Label>
-                            <Input
-                                type="number"
-                                value={formData.previous_stock}
-                                name="previous_stock"
-                                disabled
-                            />
-                        </div>
-
-                        <div className="col-span-2 md:col-span-2">
-                            <Label>Nuevo Stock</Label>
-                            <Input
-                                type="number"
-                                value={formData.new_stock}
-                                name="new_stock"
-                                success
-                            />
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Reposición suma una cantidad positiva. Ajuste
+                                acepta una variación positiva o negativa.
+                            </p>
                         </div>
 
                         <div className="col-span-2 md:col-span-2">

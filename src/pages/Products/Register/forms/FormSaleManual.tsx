@@ -26,6 +26,7 @@ import { SaleItem, getItemTotal } from './sale.types';
 export default function FormSaleManual() {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [isSearching, setIsSearching] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(
         null,
     );
@@ -40,11 +41,11 @@ export default function FormSaleManual() {
     const [paymentMethod, setPaymentMethod] = useState(0);
     const [paymentStatus, setPaymentStatus] = useState(0);
 
-    const handleSearch = async (barcode: string) => {
+    const handleSearch = async (code: string) => {
         try {
             setFeedback(null);
             setIsSearching(true);
-            const response = await productService.getByCode({ barcode });
+            const response = await productService.getByCode({ code });
             if (response.error) throw response.error;
             if (!response.data) {
                 setSelectedProduct(null);
@@ -148,6 +149,8 @@ export default function FormSaleManual() {
 
     const handleSave = async () => {
         try {
+            setFeedback(null);
+            setIsSaving(true);
             if (
                 paymentMethod === 0 ||
                 paymentStatus === 0 ||
@@ -160,10 +163,6 @@ export default function FormSaleManual() {
                 });
                 return;
             }
-            const subtotal = items.reduce(
-                (total, item) => total + item.unit_price * item.quantity,
-                0,
-            );
             const totalDiscount = items.reduce(
                 (total, item) =>
                     total +
@@ -172,16 +171,15 @@ export default function FormSaleManual() {
                 0,
             );
 
-            const total = subtotal - totalDiscount;
-
             const formSale = {
-                original_amount: total,
                 discount: totalDiscount,
-                total_amount: total,
                 payment_method_id: paymentMethod,
                 status_id: paymentStatus,
                 observation: formData?.observation,
-                sale_items: items,
+                sale_items: items.map(({ product_id, quantity }) => ({
+                    product_id,
+                    quantity,
+                })),
             };
 
             const resp = await productSaleService.create(formSale);
@@ -211,6 +209,8 @@ export default function FormSaleManual() {
                 message:
                     'Verificá tu conexión e intentá nuevamente. Si el problema continúa, contactá al administrador.',
             });
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -252,6 +252,10 @@ export default function FormSaleManual() {
                             name="client"
                             onChange={handleChange}
                         />
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            La selección de cliente estará disponible en una
+                            próxima mejora; esta venta se registra sin cliente.
+                        </p>
                     </div>
 
                     <div>
@@ -314,17 +318,17 @@ export default function FormSaleManual() {
                         <Button
                             variant="outline"
                             type="button"
-                            disabled={items.length === 0}
+                            disabled={items.length === 0 || isSaving}
                             onClick={handleCancel}
                         >
                             Cancelar
                         </Button>
                         <Button
                             type="button"
-                            disabled={items.length === 0}
+                            disabled={items.length === 0 || isSaving}
                             onClick={handleSave}
                         >
-                            Guardar venta
+                            {isSaving ? 'Guardando...' : 'Guardar venta'}
                         </Button>
                     </div>
                 </div>

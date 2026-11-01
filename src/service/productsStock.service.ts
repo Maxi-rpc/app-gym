@@ -1,6 +1,6 @@
 import { supabase } from '../utils/supabase';
 
-import { CreateStocktInput } from './types/ProductStock';
+import { CreateStockInput } from './types/ProductStock';
 
 async function getAll() {
     const { data: sessionData, error: sessionError } =
@@ -13,7 +13,7 @@ async function getAll() {
 
     // 2) Invocar la Edge Function
     const { data, error } = await supabase.functions.invoke(
-        'get-stock-movements',
+        'get-stock-movements-2',
         {
             headers: {
                 Authorization: `Bearer ${session_token}`,
@@ -25,7 +25,7 @@ async function getAll() {
     return { data: data?.data, error: error };
 }
 
-async function adjustStock(formData: CreateStocktInput) {
+async function adjustStock(formData: CreateStockInput) {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -35,22 +35,21 @@ async function adjustStock(formData: CreateStocktInput) {
     const session_token = sessionData.session.access_token;
 
     // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('adjust-stock', {
-        body: {
-            id: formData.id,
-            name: formData.name,
-            movement_type: formData.movement_type,
-            quantity: formData.quantity,
-            previous_stock: formData.previous_stock,
-            new_stock: formData.new_stock,
-            reference_id: formData.reference_id,
-            observation: formData.observation,
+    const { data, error } = await supabase.functions.invoke(
+        'adjust-product-stock-2',
+        {
+            body: {
+                product_id: formData.product_id,
+                movement_type: formData.movement_type,
+                quantity: formData.quantity,
+                observation: formData.observation,
+            },
+            headers: {
+                Authorization: `Bearer ${session_token}`,
+            },
+            method: 'POST',
         },
-        headers: {
-            Authorization: `Bearer ${session_token}`,
-        },
-        method: 'POST',
-    });
+    );
 
     return { data: data, error: error };
 }

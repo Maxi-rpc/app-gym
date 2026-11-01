@@ -1,4 +1,4 @@
-import { ProductSaleItem } from './ProductSaleItem';
+import { CreateProductSaleItem, ProductSaleItem } from './ProductSaleItem';
 
 export interface ProductSale {
     id?: string;
@@ -17,13 +17,11 @@ export interface ProductSale {
 
 export interface CreateProductSale {
     client_id?: string;
-    original_amount?: number;
     discount?: number;
-    total_amount?: number;
     payment_method_id?: number; // PaymentMethods.id
     status_id?: number; // ProductSaleStatus.id
     observation?: string;
-    sale_items?: ProductSaleItem[];
+    sale_items?: CreateProductSaleItem[];
 }
 
 export interface UpdateProductSale {

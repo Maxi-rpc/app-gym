@@ -139,6 +139,23 @@ profile_id)`. La función antigua y los consumidores legacy de `user_roles`
   archivos de `back/` siguen ignorados por Git y requieren despliegue o
   versionado explícito.
 
+- **2026-11-01 — Productos multi-gym implementado:** el esquema de referencia
+  ya incorpora `gym_id` y FKs compuestas para `products`, `stock_movements`,
+  `product_sales` y `product_sale_items`. Se agregaron las RPCs
+  `adjust_product_stock_v2` y `register_product_sale_v2`, junto con doce Edge
+  Functions v2 para productos, inventario, ventas y los GET de sus catálogos
+  globales. La SPA de Products consume sólo los endpoints v2. El stock se
+  calcula en servidor y las ventas agrupan ítems, bloquean productos y crean
+  venta, ítems y movimientos en una transacción. Los listados de movimientos y
+  ventas declaran sus FKs de embed explícitamente para evitar ambigüedad entre
+  las FKs simples y compuestas. Roles de inventario: 1/2/3;
+  ventas: 1/2. Build, Prettier focalizado y `git diff --check` pasaron; lint y
+  format globales mantienen la línea base (136 errores/9 advertencias y 82
+  archivos, respectivamente). Antes de liberar hay que aplicar ambas RPCs,
+  desplegar las doce Functions, confirmar que `product_status.id = 1` es el
+  estado activo y validar remotamente el aislamiento de dos gyms. `back/`
+  continúa ignorado por Git y requiere despliegue/versionado explícito.
+
 ## Tarea activa
 
 - Resolver el estado/pantalla para usuarios sin acceso al gym configurado;
@@ -185,3 +202,6 @@ CONSTRAINT IF EXISTS gym_memberships_profile_id_key;`, revisar RLS para el
    `update_membership_payment_date_v2`, desplegar las cinco Edge Functions de
    Pagos v2 y validar en remoto aislamiento por gym, pagos parciales y
    corrección de fechas antes de publicar la SPA.
+9. Aplicar `adjust_product_stock_v2` y `register_product_sale_v2`, desplegar
+   las doce Functions v2 de Productos y validar en remoto aislamiento entre dos
+   gyms, concurrencia de stock/ventas y el mapeo `auth.users` a `profiles`.

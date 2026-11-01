@@ -6,16 +6,16 @@ import InputField from '../../../../components/form/input/InputField';
 import Button from '../../../../components/ui/button/Button';
 
 type Props = {
-    onSubmit: (barcode: string) => Promise<void>;
+    onSubmit: (code: string) => Promise<void>;
     isLoading?: boolean;
 };
 
 export default function FormSearch({ onSubmit, isLoading = false }: Props) {
-    const [barcode, setBarcode] = useState('');
+    const [code, setCode] = useState('');
     const handleSubmit = async () => {
-        const value = barcode.trim();
+        const value = code.trim();
         if (value) await onSubmit(value);
-        setBarcode('');
+        setCode('');
     };
 
     return (
@@ -29,19 +29,19 @@ export default function FormSearch({ onSubmit, isLoading = false }: Props) {
                         </p>
                     </div>
                     <div className="w-full lg:col-span-4">
-                        <Label htmlFor="barcode">Buscar producto</Label>
+                        <Label htmlFor="code">Buscar producto</Label>
                         <InputField
-                            id="barcode"
-                            placeholder="Código de barras"
-                            value={barcode}
-                            name="barcode"
-                            onChange={(event) => setBarcode(event.target.value)}
+                            id="code"
+                            placeholder="Código de barras o SKU"
+                            value={code}
+                            name="code"
+                            onChange={(event) => setCode(event.target.value)}
                         />
                     </div>
                     <div className="flex w-full items-end lg:col-span-2">
                         <Button
                             type="submit"
-                            disabled={isLoading || !barcode.trim()}
+                            disabled={isLoading || !code.trim()}
                         >
                             {isLoading ? 'Buscando...' : 'Buscar producto'}
                         </Button>

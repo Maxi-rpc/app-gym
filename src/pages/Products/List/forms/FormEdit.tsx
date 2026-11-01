@@ -34,7 +34,6 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
         barcode: defaultData?.barcode || '',
         cost_price: defaultData?.cost_price || 0,
         sale_price: defaultData?.sale_price || 0,
-        stock: defaultData?.stock || 0,
         minimum_stock: defaultData?.minimum_stock || 0,
         status: defaultData?.status?.id || 1,
         image: defaultData?.image || '',
@@ -59,11 +58,22 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
             setIsLoading(true);
 
             // Validación básica
-            if (!formData.name) {
+            if (
+                !formData.name.trim() ||
+                !Number.isInteger(formData.category) ||
+                formData.category <= 0 ||
+                !Number.isFinite(Number(formData.cost_price)) ||
+                Number(formData.cost_price) < 0 ||
+                !Number.isFinite(Number(formData.sale_price)) ||
+                Number(formData.sale_price) < 0 ||
+                !Number.isInteger(Number(formData.minimum_stock)) ||
+                Number(formData.minimum_stock) < 0
+            ) {
                 setFeedback({
                     variant: 'info',
-                    title: 'Por favor completa todos los campos*',
-                    message: '',
+                    title: 'Revisá los datos obligatorios',
+                    message:
+                        'Indicá categoría y valores numéricos válidos sin negativos.',
                 });
                 return;
             }
@@ -234,7 +244,7 @@ export default function FormEdit({ onSubmit, onClose, defaultData }: Props) {
                             <Label>Stock*</Label>
                             <Input
                                 type="number"
-                                value={formData.stock}
+                                value={defaultData?.stock ?? 0}
                                 name="stock"
                                 disabled
                             />

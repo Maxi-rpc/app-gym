@@ -10,10 +10,8 @@ export interface ProductSaleItem {
 }
 
 export interface CreateProductSaleItem {
-    product_id?: string; // Product.id
-    quantity?: number;
-    unit_price?: number;
-    subtotal?: number;
+    product_id: string; // Product.id
+    quantity: number;
 }
 
 export interface UpdateProductSaleItem {
