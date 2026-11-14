@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import { Pencil1Outlined } from '@lineiconshq/free-icons';
-
 import { Role } from '../../../service/types/Role';
 
 import { formatLocalDateTime } from '../../../utils/date';
@@ -17,18 +14,13 @@ type SortConfig = {
 type Props = {
     listData: Role[] | [];
     searchText: string;
-    onEdit?: (Role: Role) => void;
 };
 
-export default function DataTable({ listData, searchText, onEdit }: Props) {
+export default function DataTable({ listData, searchText }: Props) {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         key: 'id',
         direction: 'asc',
     });
-
-    const handleEdit = (data: Role) => {
-        onEdit?.(data);
-    };
 
     const filterData = (listData: Role[]) => {
         if (!searchText.trim()) {
@@ -143,11 +135,6 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
                                 Actualizado <SortIcon column="updatedAt" />
                             </button>
                         </th>
-                        <th className="px-4 py-3 text-left">
-                            <span className="font-semibold text-gray-700 dark:text-gray-300">
-                                Acciones
-                            </span>
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -174,19 +161,6 @@ export default function DataTable({ listData, searchText, onEdit }: Props) {
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {formatLocalDateTime(item.updated_at)}
-                            </td>
-                            <td className="px-4 py-3 text-sm">
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleEdit(item)}
-                                        className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-                                    >
-                                        <Lineicons
-                                            icon={Pencil1Outlined}
-                                            size={20}
-                                        />
-                                    </button>
-                                </div>
                             </td>
                         </tr>
                     ))}

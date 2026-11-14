@@ -2,6 +2,11 @@ import { supabase } from '../utils/supabase';
 
 import { CreateRoleInput, UpdateRoleInput } from './types/Role';
 
+type RoleMutationResponse = {
+    data?: { message?: string };
+    error: Error | null;
+};
+
 async function getAll() {
     const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
@@ -11,8 +16,7 @@ async function getAll() {
 
     const session_token = sessionData.session.access_token;
 
-    // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('roles', {
+    const { data, error } = await supabase.functions.invoke('roles-2', {
         headers: {
             Authorization: `Bearer ${session_token}`,
         },
@@ -22,53 +26,28 @@ async function getAll() {
     return { data: data?.data, error: error };
 }
 
-async function create(formData: CreateRoleInput) {
-    const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
-
-    if (sessionError) throw sessionError;
-    if (!sessionData?.session) throw new Error('No hay sesión activa');
-
-    const session_token = sessionData.session.access_token;
-
-    // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('roles', {
-        body: {
-            name: formData.name,
-            description: formData.description,
-        },
-        headers: {
-            Authorization: `Bearer ${session_token}`,
-        },
-        method: 'POST',
-    });
-
-    return { data: data, error: error };
+async function create(
+    formData: CreateRoleInput,
+): Promise<RoleMutationResponse> {
+    void formData;
+    return {
+        data: undefined,
+        error: new Error(
+            'La administración de roles estará disponible desde la plataforma.',
+        ),
+    };
 }
 
-async function update(formData: UpdateRoleInput) {
-    const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
-
-    if (sessionError) throw sessionError;
-    if (!sessionData?.session) throw new Error('No hay sesión activa');
-
-    const session_token = sessionData.session.access_token;
-
-    // 2) Invocar la Edge Function
-    const { data, error } = await supabase.functions.invoke('roles', {
-        body: {
-            id: formData.id || '',
-            name: formData.name || '',
-            description: formData.description || '',
-        },
-        headers: {
-            Authorization: `Bearer ${session_token}`,
-        },
-        method: 'PUT',
-    });
-
-    return { data: data, error: error };
+async function update(
+    formData: UpdateRoleInput,
+): Promise<RoleMutationResponse> {
+    void formData;
+    return {
+        data: undefined,
+        error: new Error(
+            'La administración de roles estará disponible desde la plataforma.',
+        ),
+    };
 }
 
 export const rolesService = {

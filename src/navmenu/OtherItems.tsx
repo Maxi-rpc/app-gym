@@ -13,7 +13,7 @@ const otherItems: NavItem[] = [
             {
                 name: 'Roles',
                 path: '/configurations/roles',
-                requiredRoles: ['Admin', 'Profesor'],
+                requiredRoles: ['Admin'],
                 pro: false,
             },
             {

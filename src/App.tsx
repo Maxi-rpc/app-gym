@@ -383,10 +383,7 @@ export default function App() {
                                     path="roles"
                                     element={
                                         <ProtectedRoute
-                                            requiredRoles={[
-                                                'Admin',
-                                                'Profesor',
-                                            ]}
+                                            requiredRoles={['Admin']}
                                         >
                                             <ConfigRoles />
                                         </ProtectedRoute>

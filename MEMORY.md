@@ -17,6 +17,14 @@ reemplaza el historial de Git, issues, pull requests ni documentación técnica.
 
 ## Estado actual
 
+- **2026-11-14 — Roles v2 solo lectura para Admin:** la ruta y la entrada de
+  menú de `/configurations/roles` quedaron restringidas al rol `Admin`; la
+  página dejó de exponer altas y ediciones. El listado consume la Edge Function
+  `roles-2`, que admite solo `GET`, resuelve la membership activa del gym
+  configurado y exige `ADMIN_ROLE_ID = 1`, sin consultar el legado
+  `user_roles`. La función legacy `roles` se conserva sin cambios; el catálogo
+  global de roles permanece sin mutaciones hasta introducir PlatformAdmin.
+
 - **2026-10-24 — Configuración de agentes:** se incorporaron los perfiles de
   orquestador, frontend, backend y QA en `.agents/`, junto con una plantilla
   de delegación. El perfil backend cubre Supabase, TypeScript de Edge

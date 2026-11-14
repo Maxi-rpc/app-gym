@@ -7,39 +7,19 @@ import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
 import Alert from '../../../components/ui/alert/Alert';
 import { Feedback } from '../../../components/ui/alert/types/AlertFeedback';
-import { useModal } from '../../../hooks/useModal';
-
 import { Lineicons } from '@lineiconshq/react-lineicons';
-import {
-    PlusOutlined,
-    RefreshCircle1ClockwiseOutlined,
-} from '@lineiconshq/free-icons';
+import { RefreshCircle1ClockwiseOutlined } from '@lineiconshq/free-icons';
 
 import { Role } from '../../../service/types/Role';
 import { rolesService } from '../../../service/role.service';
 
 import DataTable from './DataTable';
-import ModalAdd from './modals/ModalAdd';
-import ModalEdit from './modals/ModalEdit';
 
 export default function Roles() {
     const [feedback, setFeedback] = useState<Feedback>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const {
-        isOpen: isOpenAdd,
-        openModal: openModalAdd,
-        closeModal: closeModalAdd,
-    } = useModal();
-
-    const {
-        isOpen: isOpenEdit,
-        openModal: openModalEdit,
-        closeModal: closeModalEdit,
-    } = useModal();
-
     const [searchText, setSearchText] = useState('');
-    const [selectData, setSelectData] = useState<Role | null>(null);
     const [listData, setListData] = useState<Role[] | []>([]);
 
     const getData = async () => {
@@ -67,23 +47,8 @@ export default function Roles() {
         }
     };
 
-    const handleUpdate = () => {
-        closeModalEdit();
-        getData();
-    };
-
     const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
         setSearchText(e.target.value);
-    };
-
-    const handleSave = () => {
-        closeModalAdd();
-        getData();
-    };
-
-    const handleEdit = (item: Role) => {
-        setSelectData(item);
-        openModalEdit();
     };
 
     useEffect(() => {
@@ -104,8 +69,7 @@ export default function Roles() {
                     </h3>
 
                     <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-                        Se muestran los roles de la app, se puede Agregar o
-                        Editar.
+                        Se muestran los roles globales de la aplicación.
                     </p>
 
                     {feedback && (
@@ -147,43 +111,11 @@ export default function Roles() {
                     >
                         Actualizar
                     </Button>
-                    <Button
-                        size="sm"
-                        onClick={openModalAdd}
-                        startIcon={
-                            <Lineicons
-                                icon={PlusOutlined}
-                                size={20}
-                                color="white"
-                            />
-                        }
-                    >
-                        Agregar
-                    </Button>
                 </div>
 
                 {/* Data Table */}
-                <DataTable
-                    listData={listData}
-                    searchText={searchText}
-                    onEdit={handleEdit}
-                />
+                <DataTable listData={listData} searchText={searchText} />
             </div>
-
-            {/* Modal Add */}
-            <ModalAdd
-                isOpen={isOpenAdd}
-                onClose={closeModalAdd}
-                onSubmit={handleSave}
-            />
-
-            {/* Modal Edit */}
-            <ModalEdit
-                isOpen={isOpenEdit}
-                onClose={closeModalEdit}
-                onSubmit={handleUpdate}
-                defaultData={selectData}
-            />
         </div>
     );
 }
